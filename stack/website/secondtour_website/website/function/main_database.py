@@ -1050,6 +1050,23 @@ def delete_creneau(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
+def delete_creneau_by_candidat(id_candidat):
+    try:
+        creneau = {"id_candidat": id_candidat}
+        response = ask_api("data/deletefilter/creneau", creneau)
+        if response.status_code != 202:
+            logging.warning("Erreur lors de la suppression du creneau")
+            return "Erreur lors de la suppression du creneau", "danger"
+
+        # creneau = CRENEAU.query.filter_by(id_creneau=id).one()
+        # db.session.delete(creneau)
+        # db.session.commit()
+        return False
+    except Exception:
+        logging.warning('Erreur : ' + traceback.format_exc())
+        return ['Erreur : ' + traceback.format_exc(), 'danger']
+
+
 def delete_all_creneaux():
     try:
         response = ask_api("data/delete/creneau", {})

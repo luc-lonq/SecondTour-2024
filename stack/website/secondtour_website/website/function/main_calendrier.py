@@ -46,21 +46,18 @@ def generation_calendrier():
                                                               all_professeurs, all_liste_matiere, all_salles)
             passages = [passage_m1, passage_m2]
 
-            creneau_created = 0
             # For the 3 days of interogation
             for jour_passage in range(1, 4):
+                creneau_created = 0
 
                 for passage in passages:
 
                     creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, jour_passage, start, end)
-                    creneau_created = False
-
                     heure_debut_preparation_voulue = timedelta(hours=start)
                     while heure_debut_preparation_voulue + passage["temps_preparation"] + passage[
                         "temps_passage"] <= timedelta(hours=end):
                         aucune_collision = True
                         chosed_salle = None
-                        logging.info(candidat)
                         for creneau in creneaux_from_half_day:
 
                             if not is_candidat_available(passage, candidat, creneau, heure_debut_preparation_voulue):
@@ -72,7 +69,6 @@ def generation_calendrier():
                                 if is_salle_available(passage, salle, creneau, heure_debut_preparation_voulue):
                                     chosed_salle = salle
                                     break
-                            logging.info(chosed_salle)
 
                             if not chosed_salle:
                                 aucune_collision = False
@@ -89,13 +85,16 @@ def generation_calendrier():
                         if aucune_collision and not candidat["absent"]:
                             local_creneau = create_creneau(jour_passage, heure_debut_preparation_voulue, candidat,
                                                            passage, local_creneau, chosed_salle)
+                            logging.info(local_creneau)
                             creneau_created += 1
                             break
 
                         heure_debut_preparation_voulue += timedelta(minutes=10)
 
-                    if creneau_created == 2:
-                        break
+                if creneau_created == 2:
+                    break
+                else:
+                    local_creneau = delete_creneau(candidat["id_candidat"], local_creneau)
 
     result = test_calendar_complete()
     flash(result[0], result[1])
@@ -115,11 +114,11 @@ def order_candidats_list(all_candidats):
         else:
             list_candidats_afternoon.append(candidat)
 
-    list = [list_candidats_morning, list_candidats_afternoon]
+    list_candidats = [list_candidats_morning, list_candidats_afternoon]
 
     list_candidats_morning_ordered = []
     list_candidats_afternoon_ordered = []
-    for list_candidats_i in list:
+    for list_candidats_i in list_candidats:
         for candidat in list_candidats_i:
             if not candidat["tiers_temps"]:
                 if candidat["matin"]:
@@ -218,8 +217,6 @@ def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end):
 
 
 def is_salle_available(passage, salle, creneau, heure_debut_preparation_voulue):
-    logging.info(creneau)
-    logging.info(passage)
     if creneau["id_salle"] == salle["id_salle"] \
             and not ((heure_debut_preparation_voulue + passage["temps_preparation"] >= timedelta(
         hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
@@ -232,14 +229,14 @@ def is_salle_available(passage, salle, creneau, heure_debut_preparation_voulue):
 
 def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_voulue):
     if creneau["id_candidat"] == candidat["id_candidat"] \
-    and not ((heure_debut_preparation_voulue
-              >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute) + timedelta(minutes=30))
-    or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
-             <= timedelta(hours=creneau["debut_preparation"].hour, minutes=creneau["debut_preparation"].minute) + timedelta(minutes=30))):
-        logging.info("candidat indispoanible")
+            and not ((heure_debut_preparation_voulue
+                      >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute) + timedelta(minutes=30))
+                     or (heure_debut_preparation_voulue + passage["temps_preparation"] +
+                         passage["temps_passage"] + timedelta(minutes=30)
+                         <= timedelta(hours=creneau["debut_preparation"].hour,
+                                      minutes=creneau["debut_preparation"].minute))):
         return False
 
-    logging.info("candidat ispoanible")
     return True
 
 
@@ -300,6 +297,16 @@ def create_creneau(jour_passage, heure_debut_preparation_voulue, candidat, passa
         logging.warning(res[1][0])
     else:
         local_creneau.append(res[0])
+    return local_creneau
+
+
+def delete_creneau(id_candidat, local_creneau):
+    main_database.delete_creneau_by_candidat(id_candidat)
+    for i in range(len(local_creneau)):
+        if local_creneau[i]["id_candidat"] == id_candidat:
+            local_creneau.pop(i)
+            i -= 1
+
     return local_creneau
 
 
