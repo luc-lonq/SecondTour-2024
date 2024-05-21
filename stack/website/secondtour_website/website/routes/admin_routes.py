@@ -269,7 +269,7 @@ def salles():
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
         all_candidats, all_choix_matieres, all_series, all_matieres, all_professeurs, all_salles, all_creneaux, all_liste_matiere = response.json()
-        all_creneaux.sort(key=lambda creneau: creneau['debut_preparation'])
+        all_creneaux.sort(key=lambda creneau: datetime.strptime(creneau['debut_preparation'], '%a %b %d %H:%M:%S %Y'))
         for creneau in all_creneaux:
             creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["debut_preparation"]) == str else creneau["debut_preparation"]

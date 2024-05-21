@@ -25,7 +25,8 @@ def generation_calendrier():
                                            "choix_matiere", "matiere", "serie", "salle", "creneau", "horaire"])
     if response.status_code != 200:
         flash("Une erreur est survenue lors de la récupération des données", "danger")
-    all_candidats, all_professeurs, all_liste_matiere, all_choix_matieres, all_matieres, all_series, all_salles, all_creneau, all_horaires = response.json()
+    (all_candidats, all_professeurs, all_liste_matiere, all_choix_matieres, all_matieres, all_series, all_salles,
+     all_creneau, all_horaires) = response.json()
 
     list_candidats = order_candidats_list(all_candidats)
 

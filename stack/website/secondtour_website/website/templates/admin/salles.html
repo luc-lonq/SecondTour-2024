@@ -148,9 +148,9 @@
                                                                         creneau.id_matiere %}
                                                                         <td>
                                                                             {{ matiere_scope.nom }}
-
                                                                         </td>
-                                                                        <td>{% for serie in all_series %}
+                                                                        <td>
+                                                                            {% for serie in all_series %}
                                                                             {% if serie.id_serie ==
                                                                             matiere_scope.id_serie %}
                                                                             {{ serie.nom }}
