@@ -249,11 +249,11 @@ def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end):
 
 def is_salle_available(passage, salle, creneau, heure_debut_preparation_voulue):
     if creneau["id_salle"] == salle["id_salle"] \
-            and not ((heure_debut_preparation_voulue + passage["temps_preparation"] >= timedelta(
-        hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
-                     or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage[
-                "temps_passage"] <= timedelta(hours=creneau["fin_preparation"].hour,
-                                              minutes=creneau["fin_preparation"].minute))):
+            and not ((heure_debut_preparation_voulue + passage["temps_preparation"]
+                      >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
+                     or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
+                         <= timedelta(hours=creneau["fin_preparation"].hour,
+                                      minutes=creneau["fin_preparation"].minute))):
         return False
     return True
 
@@ -358,29 +358,6 @@ def swap_passage(passage):
     return passage
 
 
-def convert_from_decimal_time(decimal):
-    hours = int(decimal)
-    minutes = (decimal * 60) % 60
-    res = "%02d:%02d" % (hours, minutes)
-    return res
-
-
-def convert_to_decimal_time(time):
-    h, m = time.split(':')
-    r = int(h) + float(m) / 60
-    r = round(r, 2)
-    return r
-
-
-def convert_minute_to_string(time):
-    h, m = int(time / 60), int(time % 60)
-    return f"{h}:{m}"
-
-
-def order_by(e):
-    return e["debut_preparation"]
-
-
 def test_calendar_complete():
     response = ask_api("data/fetchmulti",
                        ["creneau", "candidat", "choix_matiere"])
@@ -388,12 +365,7 @@ def test_calendar_complete():
         flash("Une erreur est survenue lors de la récupération des données", "danger")
     all_creneaux, all_candidats, all_choix_matiere = response.json()
 
-    # all_choix_matiere = CHOIX_MATIERE.query.all()
-    # Because all_choix_matiere is immutable
     all_choix_matiere_left = deepcopy(all_choix_matiere)
-
-    # all_creneaux = CRENEAU.query.all()
-    # all_candidats = CANDIDATS.query.all()
 
     matiere_left = 0
     for _ in all_choix_matiere:
