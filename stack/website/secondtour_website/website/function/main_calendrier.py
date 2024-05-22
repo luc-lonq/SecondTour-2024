@@ -221,9 +221,9 @@ def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_pro
             "temps_preparation_tiers_temps"])
 
     return {"salle": salle_m1, "matiere": matiere1, "professeur": professeur_m1, "temps_passage": temps_passage_m1,
-            "temps_preparation": temps_preparation_m1, "valide": False}, \
+            "temps_preparation": temps_preparation_m1}, \
         {"salle": salle_m2, "matiere": matiere2, "professeur": professeur_m2, "temps_passage": temps_passage_m2,
-         "temps_preparation": temps_preparation_m2, "valide": False}
+         "temps_preparation": temps_preparation_m2}
 
 
 def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end):
