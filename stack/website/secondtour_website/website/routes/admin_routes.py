@@ -356,10 +356,10 @@ def professeurs():
                     logging.warning(result[0])
 
         response = ask_api("data/fetchmulti", ["candidat", "horaire",
-                           "matiere", "professeur", "salle", "creneau", "liste_matiere"])
+                           "matiere", "professeur", "salle", "creneau", "liste_matiere", "serie"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
-        all_candidats, all_horaires, all_matieres, all_professeurs, all_salles, all_creneaux, all_liste_matiere = response.json()
+        all_candidats, all_horaires, all_matieres, all_professeurs, all_salles, all_creneaux, all_liste_matiere, all_series = response.json()
         all_professeurs.sort(key=lambda professeur: professeur['nom'])
         all_creneaux.sort(key=lambda creneau: creneau['debut_preparation'])
         for creneau in all_creneaux:
@@ -410,7 +410,7 @@ def professeurs():
         # all_liste_matiere = []
         # for liste_matiere in liste_matieres:
         #     all_liste_matiere.append(liste_matiere.as_dict())
-        return render_template('admin/professeurs.html', all_profs=all_professeurs, all_matieres=all_matieres, all_salles=all_salles, all_creneaux=all_creneaux, all_candidats=all_candidats, all_liste_matiere=all_liste_matiere, all_horaires=all_horaires)
+        return render_template('admin/professeurs.html', all_profs=all_professeurs, all_matieres=all_matieres, all_salles=all_salles, all_creneaux=all_creneaux, all_candidats=all_candidats, all_liste_matiere=all_liste_matiere, all_horaires=all_horaires, all_series=all_series)
     else:
         return redirect(url_for('main_routes.connexion'))
 

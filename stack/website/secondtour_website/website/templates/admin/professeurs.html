@@ -37,9 +37,22 @@
                             </div>
                         </th>
                         <th scope="col">
-                            <div class="th-inner">Matière</div>
+                            <div class="th-inner">Série</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder(3, 2, false)">
+                                    <option select></option>
+                                    {% for a_serie in all_series %}
+                                    <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}{%
+                                    if a_serie.specialite1%} - {{a_serie.specialite1}}{% endif %}
+                                    </option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="th-inner">Matière</div>
+                            <div class="filter-control">
+                                <select class="form-select finder break-doublons" v-on:change="finder(4, 3, false)">
                                     <option select></option>
                                     {% for matiere in all_matieres %}
                                     <option>{{matiere.nom}}</option>
@@ -50,7 +63,7 @@
                         <th scope="col">
                             <div class="th-inner">Salle</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(4, 3)">
+                                <select class="form-select finder" v-on:change="finder(5, 4)">
                                     <option select></option>
                                     {% for salle in all_salles %}
                                     <option>{{salle.numero}}</option>
@@ -68,6 +81,18 @@
                     <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{a_prof.id_professeur}}">
                         <td scope="row">{{a_prof.nom}}</td>
                         <td scope="row">{{a_prof.prenom}}</td>
+                        <td scope="row">
+                            {% for a_matiere in all_matieres %}
+                            {% for lmatiere in all_liste_matiere %}
+                            {% for a_serie in all_series %}
+                            {% if a_matiere.id_matiere == lmatiere.id_matiere and lmatiere.id_professeur ==
+                            a_prof.id_professeur and a_matiere.id_serie == a_serie.id_serie%}
+                            {{a_serie.nom}}{%if a_serie.specialite1%} - {{a_serie.specialite1}}{% endif %}
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                            {% endfor %}
+                        </td>
                         <td scope="row">
                             {% for a_matiere in all_matieres %}
                             {% for lmatiere in all_liste_matiere %}
