@@ -43,7 +43,7 @@
                             </div>
                         </th>
                         <th scope="col">
-                            <div class="th-inner">Professeur</div>
+                            <div class="th-inner">Professeurs</div>
                             <div class="filter-control">
                                 <input type="text" class="form-control finder" v-on:keyup="finder(3, 2)" placeholder="">
                             </div>
@@ -92,7 +92,8 @@
                             {% for a_liste_matiere in all_liste_matiere %}
                             {% if a_liste_matiere.id_matiere == a_matiere.id_matiere %}
                             {% for a_prof in all_profs %}
-                            {% if a_prof.id_professeur == a_liste_matiere.id_professeur %}{{ a_prof.nom }} {{a_prof.prenom}}{% endif %}
+                            {% if a_prof.id_professeur == a_liste_matiere.id_professeur %}{{ a_prof.nom }} {{a_prof.prenom}}
+                            <br>{% endif %}
                             {% endfor %}
                             {% endif %}
                             {% endfor %}
@@ -213,10 +214,8 @@
                             <label for="selectSerie">Série</label>
                             <select class="form-control" id="selectSerie" name="serie">
                                 {% for a_serie in all_series %}
-                                <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}} - {%
-                                    if a_serie.specialite1
-                                    %}{{a_serie.specialite1}}{% endif %}{% if a_serie.specialite2
-                                    %}/{{a_serie.specialite2}}{% endif %}</option>
+                                <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}{%
+                                    if a_serie.specialite1%} - {{a_serie.specialite1}}{% endif %}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -306,10 +305,8 @@
                             <label for="selectSerie">Série</label>
                             <select class="form-control" id="select-serie-modif" name="serie" required onchange="">
                                 {% for a_serie in all_series %}
-                                <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}} - {%
-                                    if a_serie.specialite1
-                                    %}{{a_serie.specialite1}}{% endif %}{% if a_serie.specialite2
-                                    %}/{{a_serie.specialite2}}{% endif %}
+                                <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}{%
+                                    if a_serie.specialite1%} - {{a_serie.specialite1}}{% endif %}
                                 </option>
                                 {% endfor %}
                             </select>
