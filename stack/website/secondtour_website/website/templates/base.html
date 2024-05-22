@@ -472,7 +472,7 @@
               }
             }
           },
-          downloadCalendar: function (calendar_id, name = 'Calendrier.pdf') {
+          downloadCalendar: function (calendar_id, title, name = 'Calendrier.pdf') {
             let doc = new jsPDF('l', 'pt', 'a4')
             let htmlstring = ''
             let tempVarToCheckPageHeight = 0
@@ -497,7 +497,7 @@
             doc.setLineWidth(4)
             //doc.text(200, y = y + 30, "Liste d'émargement");
             doc.setFontSize(20)
-            this.centered_text('Calendrier', 60, doc)
+            this.centered_text(title, 60, doc)
             doc.autoTable({
               html: '#' + calendar_id,
               startY: 70,
@@ -517,8 +517,8 @@
             doc.save(name)
           },
           download_multiplePdf: function () {
-            this.downloadCalendar('calendarG', 'calendrierSerieGenerale')
-            this.downloadCalendar('calendarT', 'calendrierSerieTechnologique')
+            this.downloadCalendar('calendarG', 'Calendrier Serie Générale', 'calendrierSerieGenerale')
+            this.downloadCalendar('calendarT', 'Calendrier Serie Technologoqiue', 'calendrierSerieTechnologique')
           },
           allTrigger: function () {
             $('.clickable').click(function () {

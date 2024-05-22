@@ -9,12 +9,12 @@
                 data-bs-target="#generateCalendarModal">Générer le calendrier</button>
         </form>
         <div class="d-flex flex-row">
-            <button class="btn btn-primary" v-on:click="downloadCalendar('calendarG', 'calendrierSerieGenerale')"
+            <button class="btn btn-primary" v-on:click="downloadCalendar('calendarG', 'Calendrier Serie Générale', 'calendrierSerieGenerale')"
                 style="width: max-content; white-space:nowrap; background-color:blue;">
                 Télécharger Générale
                 <i class=" fas fa-print ml-s"></i>
             </button>
-            <button class="btn btn-primary" v-on:click="downloadCalendar('calendarT', 'calendrierSerieTechnologique')"
+            <button class="btn btn-primary" v-on:click="downloadCalendar('calendarT', 'Calendrier Serie Technologoqiue',  'calendrierSerieTechnologique')"
                 style="width: max-content; white-space:nowrap; background-color:blue;">
                 Télécharger Technologique
                 <i class=" fas fa-print ml-s"></i>
@@ -37,6 +37,7 @@
         {% endfor %}
         <div class="table-responsive thumbnail">
             {% for serie in all_series %}
+            <h2 class="text-white text-decoration-none">Série {{ serie.nom }}</h2>
             <table class="table table-light table-striped calendar" id="calendar{% if serie.nom == 'Générale' %}G{% else %}T{% endif %}">
                 <thead>
                     <tr>
@@ -50,17 +51,6 @@
                             <div class="th-inner">Prénom</div>
                             <div class="filter-control">
                                 <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
-                            </div>
-                        </th>
-                        <th scope="col">
-                            <div class="th-inner">Série</div>
-                            <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder()" style="width: 200px;">
-                                    <option selected></option>
-                                    {% for a_serie in all_series %}
-                                    <option>{{a_serie.nom}}</option>
-                                    {% endfor %}
-                                </select>
                             </div>
                         </th>
                         <th scope="col">
@@ -84,32 +74,22 @@
                         <td scope="row">{{candidat.nom}}</td>
                         <td scope="row">{{candidat.prenom}}</td>
 
-                        <td scope="row">
-                            {% for serie in all_series %}
-                            {% if serie.id_serie == candidat.id_serie %}
-                            {{serie.nom}}{% if serie.specialite1 %} - {{serie.specialite1}}{% endif %}{% if
-                            serie.specialite2 %}/{{serie.specialite2}}{% endif %}
-                            {% endif %}
-                            {% endfor %}
-                        </td>
                         {% for creneau in all_creneaux %}
                         {% if creneau.id_candidat == candidat.id_candidat %}
                         <td scope="row">
                             <div class="calendar-subject">
                                 {% for matiere in all_matieres %}
-
                                 {% if matiere.id_matiere == creneau.id_matiere %}
-                                <div>{{matiere.nom}} - {% for salle in all_salles %}
-                                    {% if salle.id_salle == creneau.id_salle %}
-                                    {{salle.numero}}
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% if matiere.loge %} - Loge {% for salle in all_salles %}{% if
-                                    matiere.loge == salle.id_salle %}{{salle.numero}}{% endif %}{% endfor %}
-                                    {% endif %}</div>
-                                <div>{{creneau.debut_preparation.strftime('%d')}} |
-                                    {{creneau.debut_preparation.strftime('%Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}}
-                                </div>
+                                {{creneau.debut_preparation.strftime('%d')}} | {{creneau.debut_preparation.strftime('%Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}}
+                                {% for salle in all_salles %}
+                                {% if salle.id_salle == creneau.id_salle %}
+                                 | {{salle.numero}}
+                                {% endif %}
+                                {% endfor %}
+                                {% if matiere.loge %} - Loge {% for salle in all_salles %}{% if
+                                matiere.loge == salle.id_salle %}{{salle.numero}}{% endif %}{% endfor %}
+                                {% endif %}
+                                 - {{matiere.nom}}
                                 {% endif %}
                                 {% endfor %}
                             </div>
