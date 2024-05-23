@@ -197,10 +197,10 @@ def candidats():
                 flash(result[0], result[1])
 
         response = ask_api(
-            "data/fetchmulti", ["candidat", "choix_matiere", "serie", "matiere", "professeur", "salle", "creneau"])
+            "data/fetchmulti", ["candidat", "choix_matiere", "serie", "matiere", "professeur", "salle", "creneau", "parametres"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
-        all_candidats, all_choix_matieres, all_series, all_matieres, all_professeurs, all_salles, all_creneaux = response.json()
+        all_candidats, all_choix_matieres, all_series, all_matieres, all_professeurs, all_salles, all_creneaux, parametres = response.json()
         all_candidats.sort(key=lambda candidat: candidat['nom'])
         all_creneaux.sort(key=lambda creneau: creneau['debut_preparation'])
 
@@ -212,11 +212,10 @@ def candidats():
             creneau["fin"] = datetime.strptime(creneau["fin"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin"]) == str else creneau["fin"]
 
+        logging.info(parametres)
         jour = []
-        for candidat in all_candidats:
-            if candidat["jour"] > len(jour):
-                for i in range(candidat["jour"] - len(jour)):
-                    jour.append(len(jour)+1)
+        for i in range(parametres[0]["max_jour"]):
+            jour.append(i+1)
 
         # candidats = CANDIDATS.query.order_by(CANDIDATS.nom).all()
         # all_candidats = []
@@ -241,7 +240,7 @@ def candidats():
         # all_professeurs = PROFESSEUR.query.all()
         # all_salles = SALLE.query.all()
         # all_creneaux = CRENEAU.query.order_by(CRENEAU.debut_preparation).all()
-        return render_template('admin/candidats.html', all_candidats=all_candidats, all_choix_matieres=all_choix_matieres, all_series=all_series, all_matieres=all_matieres, all_professeurs=all_professeurs, all_salles=all_salles, all_creneaux=all_creneaux, total_jour=jour)
+        return render_template('admin/candidats.html', all_candidats=all_candidats, all_choix_matieres=all_choix_matieres, all_series=all_series, all_matieres=all_matieres, all_professeurs=all_professeurs, all_salles=all_salles, all_creneaux=all_creneaux, max_jour=jour)
     else:
         return redirect(url_for('main_routes.connexion'))
 

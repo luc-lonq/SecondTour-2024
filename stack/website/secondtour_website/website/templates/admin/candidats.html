@@ -72,7 +72,7 @@
                             <div class="filter-control">
                                 <select class="form-select finder" v-on:change="finder(6, 5)">
                                     <option selected></option>
-                                    {% for jour in total_jour %}
+                                    {% for jour in max_jour %}
                                         <option>{{ jour }}</option>
                                     {% endfor %}
                                 </select>
@@ -256,6 +256,14 @@
                             <select class="form-control" name="tiers_temps" id="tierstempsSelect" required>
                                 <option selected value="False">Non</option>
                                 <option value="True">Oui</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="jourSelect">Jour</label>
+                            <select class="form-control" name="matin" id="jourSelect" required>
+                                {% for jour in max_jour %}
+                                <option {% if loop.first %}selected{% endif %} value="True">{{ jour }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">
