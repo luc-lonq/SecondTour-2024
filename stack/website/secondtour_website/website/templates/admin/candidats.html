@@ -68,9 +68,20 @@
                             </div>
                         </th>
                         <th scope="col">
-                            <div class="th-inner">Matin</div>
+                            <div class="th-inner">Jour</div>
                             <div class="filter-control">
                                 <select class="form-select finder" v-on:change="finder(6, 5)">
+                                    <option selected></option>
+                                    {% for jour in total_jour %}
+                                        <option>{{ jour }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="th-inner">Matin</div>
+                            <div class="filter-control">
+                                <select class="form-select finder" v-on:change="finder(7, 6)">
                                     <option selected></option>
                                     <option>Oui</option>
                                     <option>Non</option>
@@ -116,6 +127,9 @@
                         </td>
                         <td scope="row">
                             {% if candidat.tiers_temps %}Oui{% else %}Non{% endif %}
+                        </td>
+                        <td scope="row">
+                            {{ candidat.jour }}
                         </td>
                         <td scope="row">
                             {% if candidat.matin %}Oui{% else %}Non{% endif %}
