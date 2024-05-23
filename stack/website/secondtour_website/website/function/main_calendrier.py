@@ -7,8 +7,9 @@ from ..database.main_database import *
 
 
 def generation_calendrier():
-    all_candidats, all_professeurs, all_liste_matiere, all_choix_matieres, all_matieres, all_salles, all_creneau \
-        = get_data()
+    (all_candidats, all_professeurs, all_liste_matiere, all_choix_matieres, all_matieres, all_salles, all_creneau,
+     parametres) = get_data()
+    parametres = parametres[0]
 
     list_candidats = order_candidats_list(all_candidats)
     local_creneau = []
@@ -18,23 +19,21 @@ def generation_calendrier():
         for list_candidat_half_day in list_candidat_day:
             logging.info(list_candidat_half_day)
             for candidat in list_candidat_half_day:
-                start, end = get_horaires(candidat)
+                start, end = get_horaires(candidat, parametres)
                 passage_m1, passage_m2 = get_infos_about_candidat(candidat, all_choix_matieres, all_matieres,
                                                                   all_professeurs, all_liste_matiere, all_salles)
                 passages = [passage_m1, passage_m2]
                 creneaux_candidat = []
                 break_time = None
 
-                # For the 3 days of interogation
                 for _ in range(3):
 
                     for passage in passages:
                         creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, candidat["jour"], start,
                                                                                end)
-                        heure_debut_preparation_voulue = timedelta(hours=start)
+                        heure_debut_preparation_voulue = start
                         while (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
-                               <= timedelta(hours=end)):
-                            logging.info(heure_debut_preparation_voulue)
+                               <= end):
                             aucune_collision = True
                             chosed_salle = None
                             for creneau in creneaux_from_half_day:
@@ -56,7 +55,8 @@ def generation_calendrier():
 
                             if chosed_salle:
                                 if is_prof_owerhelmed(passage, chosed_salle, creneaux_from_half_day,
-                                                      heure_debut_preparation_voulue + passage["temps_preparation"]):
+                                                      heure_debut_preparation_voulue + passage["temps_preparation"],
+                                                      parametres["prof_max_passage_sans_pause"]):
                                     aucune_collision = False
 
                             if len(creneaux_from_half_day) == 0:
@@ -70,12 +70,12 @@ def generation_calendrier():
                                 creneaux_candidat.append(creneau_created)
                                 break
 
-                            heure_debut_preparation_voulue += timedelta(minutes=10)
+                            heure_debut_preparation_voulue += timedelta(minutes=parametres["intervalle"])
 
                     if len(creneaux_candidat) == 2:
 
                         if (creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
-                                == timedelta(minutes=30)):
+                                == timedelta(minutes=parametres["temps_pause_eleve"])):
                             break
                         if not break_time:
                             break_time = creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
@@ -113,7 +113,7 @@ def get_data():
         flash("Une erreur est survenue lors de la suppression des données", "danger")
 
     response = ask_api("data/fetchmulti", ["candidat", "professeur", "liste_matiere", "choix_matiere",
-                                           "matiere", "salle", "creneau"])
+                                           "matiere", "salle", "creneau", "parametres"])
     if response.status_code != 200:
         flash("Une erreur est survenue lors de la récupération des données", "danger")
     return response.json()
@@ -163,13 +163,17 @@ def order_candidats_list(all_candidats):
     return list_candidats_per_half_day
 
 
-def get_horaires(candidat):
+def get_horaires(candidat, parametres):
     if candidat["matin"]:
-        start = 8
-        end = 13
+        t = datetime.strptime(parametres["heure_debut_matin"], "%H:%M:%S")
+        start = timedelta(hours=t.hour, minutes=t.minute)
+        t = datetime.strptime(parametres["heure_fin_matin"], "%H:%M:%S")
+        end = timedelta(hours=t.hour, minutes=t.minute)
     else:
-        start = 14
-        end = 19
+        t = datetime.strptime(parametres["heure_debut_apres_midi"], "%H:%M:%S")
+        start = timedelta(hours=t.hour, minutes=t.minute)
+        t = datetime.strptime(parametres["heure_fin_apres_midi"], "%H:%M:%S")
+        end = timedelta(hours=t.hour, minutes=t.minute)
     return start, end
 
 
@@ -248,8 +252,8 @@ def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end):
 
     for creneau in all_creneaux:
         if creneau["debut_preparation"].day == jour_passage:
-            if timedelta(hours=creneau["debut_preparation"].hour) >= timedelta(hours=start) and timedelta(
-                    hours=creneau["fin"].hour) <= timedelta(hours=end):
+            if timedelta(hours=creneau["debut_preparation"].hour) >= start and timedelta(
+                    hours=creneau["fin"].hour) <= end:
                 creneaux_from_half_day.append(creneau)
 
     return creneaux_from_half_day
@@ -279,7 +283,7 @@ def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_vo
     return True
 
 
-def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue):
+def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue, max_passage_sans_pause):
     prof_in_salle = []
 
     for prof in passage["professeur"]:
@@ -296,12 +300,12 @@ def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue)
         creneau_all_prof.append(creneau_from_a_prof)
 
     for creneau_prof in creneau_all_prof:
-        if len(creneau_prof) < 5:
+        if len(creneau_prof) < max_passage_sans_pause:
             continue
 
         passage_sans_pause = 0
         debut_passage = heure_debut_passage_voulue
-        for i in range(5):
+        for i in range(max_passage_sans_pause):
             for creneau in creneau_prof:
                 if debut_passage == timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute):
                     passage_sans_pause += 1
@@ -312,7 +316,7 @@ def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue)
             if passage_sans_pause == i:
                 break
 
-        if passage_sans_pause == 5:
+        if passage_sans_pause == max_passage_sans_pause:
             return True
 
     return False
