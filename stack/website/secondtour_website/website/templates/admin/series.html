@@ -19,20 +19,10 @@
             <table class="table table-light table-striped table-hover" id="calendar">
                 <thead>
                     <tr>
-                        <th scope="col">
-                            <div class="th-inner">Série</div>
-                            <div class="filter-control">
-                                <select class="form-select finder break-doublons" v-on:change="finder(1, 0)">
-                                    <option select></option>
-                                    {% for an_serie in all_series %}
-                                    <option>{{an_serie.nom}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </th>
-                        <th scope="col" class="align-text-top">Spécialité</th>
-                        <th scope="col" class="modifier align-text-top">Modifier</th>
-                        <th scope="col" class="supprimer align-text-top">Supprimer</th>
+                        <th scope="col">Série</th>
+                        <th scope="col">Spécialité</th>
+                        <th scope="col" class="modifier">Modifier</th>
+                        <th scope="col" class="supprimer">Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
