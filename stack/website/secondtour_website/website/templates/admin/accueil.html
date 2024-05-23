@@ -9,14 +9,8 @@
                 data-bs-target="#generateCalendarModal">Générer le calendrier</button>
         </form>
         <div class="d-flex flex-row">
-            <button class="btn btn-primary" v-on:click="downloadCalendar('calendarG', 'Calendrier Serie Générale', 'calendrierSerieGenerale')"
-                style="width: max-content; white-space:nowrap; background-color:blue;">
-                Télécharger Générale
-                <i class=" fas fa-print ml-s"></i>
-            </button>
-            <button class="btn btn-primary" v-on:click="downloadCalendar('calendarT', 'Calendrier Serie Technologoqiue',  'calendrierSerieTechnologique')"
-                style="width: max-content; white-space:nowrap; background-color:blue;">
-                Télécharger Technologique
+            <button class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#downloadCalendar">Télécharger les calendriers
                 <i class=" fas fa-print ml-s"></i>
             </button>
             <form method="post">
@@ -37,71 +31,86 @@
         {% endfor %}
         <div class="table-responsive thumbnail">
             {% for serie in all_series %}
-            <h2 class="text-white text-decoration-none">Série {{ serie.nom }}</h2>
-            <table class="table table-light table-striped calendar" id="calendar{% if serie.nom == 'Générale' %}G{% else %}T{% endif %}">
-                <thead>
-                    <tr>
-                        <th scope="col">
-                            <div class="th-inner">Nom</div>
-                            <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
-                            </div>
-                        </th>
-                        <th scope="col">
-                            <div class="th-inner">Prénom</div>
-                            <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
-                            </div>
-                        </th>
-                        <th scope="col">
-                            <div class="th-inner">Epreuve 1</div>
-                            <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
-                            </div>
-                        </th>
-                        <th scope="col">
-                            <div class="th-inner">Epreuve 2</div>
-                            <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for candidat in all_candidats %}
-                    {% if candidat.id_serie == serie.id_serie %}
-                    <tr>
-                        <td scope="row">{{candidat.nom}}</td>
-                        <td scope="row">{{candidat.prenom}}</td>
+            <h3 class="text-white text-decoration-none">{{serie.nom}}{% if serie.specialite1 %} - {{serie.specialite1}}{% endif %}</h3>
+            <hr>
+            {% for candidats_day in all_candidats %}
+            {% set jour = loop.index %}
+            <h4 class="text-white text-decoration-none">Jour {{ jour }}</h4>
+            <hr>
+            <div class="d-flex" style="justify-content: space-between;">
+                {% for candidats_half_day in candidats_day %}
+                <div style="margin-right:{% if loop.index == 1 %}1em{% else %}0em{% endif %}">
+                    <h4 class="text-white text-decoration-none">{% if loop.index == 1 %}Matin{% else %}Après-midi{% endif %}</h4>
+                    <table class="table table-light table-striped calendar"
 
-                        {% for creneau in all_creneaux %}
-                        {% if creneau.id_candidat == candidat.id_candidat %}
-                        <td scope="row">
-                            <div class="calendar-subject">
-                                {% for matiere in all_matieres %}
-                                {% if matiere.id_matiere == creneau.id_matiere %}
-                                {{creneau.debut_preparation.strftime('%d')}} | {{creneau.debut_preparation.strftime('%Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}}
-                                {% for salle in all_salles %}
-                                {% if salle.id_salle == creneau.id_salle %}
-                                 | {{salle.numero}}
+                           id="calendar{{ serie.nom }}{% if serie.specialite1 %}{{serie.specialite1}}{% endif %}Jour{{ jour }}{% if loop.index == 1 %}Matin{% else %}ApresMidi{% endif %}">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="max-width: 8em">
+                                    <div class="th-inner">Nom</div>
+                                    <div class="filter-control">
+                                        <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                                    </div>
+                                </th>
+                                <th scope="col" style="max-width: 8em">
+                                    <div class="th-inner">Prénom</div>
+                                    <div class="filter-control">
+                                        <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                                    </div>
+                                </th>
+                                <th scope="col" style="max-width: 16em">
+                                    <div class="th-inner">Epreuve 1</div>
+                                    <div class="filter-control">
+                                        <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                                    </div>
+                                </th>
+                                <th scope="col" style="max-width: 16em">
+                                    <div class="th-inner">Epreuve 2</div>
+                                    <div class="filter-control">
+                                        <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for candidat in candidats_half_day %}
+                            {% if candidat.id_serie == serie.id_serie %}
+                            <tr>
+                                <td scope="row" style="max-width: 8em">{{candidat.nom}}</td>
+                                <td scope="row" style="max-width: 8em">{{candidat.prenom}}</td>
+                                {% for creneau in all_creneaux %}
+                                {% if creneau.id_candidat == candidat.id_candidat %}
+                                <td scope="row" style="max-width: 16em">
+                                    <div class="calendar-subject">
+                                        {% for matiere in all_matieres %}
+                                        {% if matiere.id_matiere == creneau.id_matiere %}
+                                        {{creneau.debut_preparation.strftime('%Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}}
+                                        {% for salle in all_salles %}
+                                        {% if salle.id_salle == creneau.id_salle %}
+                                         | {{salle.numero}}
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% if matiere.loge %}{% for salle in all_salles %}{% if
+                                        matiere.loge == salle.id_salle %}({{salle.numero}}){% endif %}{% endfor %}
+                                        {% endif %}
+                                        <br>
+                                        {{matiere.nom}}
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </td>
                                 {% endif %}
                                 {% endfor %}
-                                {% if matiere.loge %} - Loge {% for salle in all_salles %}{% if
-                                matiere.loge == salle.id_salle %}{{salle.numero}}{% endif %}{% endfor %}
-                                {% endif %}
-                                 - {{matiere.nom}}
-                                {% endif %}
-                                {% endfor %}
-                            </div>
-                        </td>
-                        {% endif %}
-                        {% endfor %}
-                    </tr>
-                    {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-            <br>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+            <hr>
+            {% endfor %}
             {% endfor %}
         </div>
         
@@ -147,6 +156,47 @@
                     <p>Chargement...</p>
                 </div>
                 <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="downloadCalendar" tabindex="-1" role="dialog"
+        aria-labelledby="downloadCalendar" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Télécharger les calendriers</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% for serie in all_series %}
+                    <p style="margin-top: 2em">{{ serie.nom }}{% if serie.specialite1 %} - {{serie.specialite1}}{% endif %} :</p>
+                    <div>
+                        {% for day in all_candidats %}
+                        {% set jour = loop.index %}
+                        <div class="d-flex" style="margin-bottom: 1em">
+                            {% for _ in day %}
+                            <button class="btn btn-primary"
+                                    v-on:click="downloadCalendar(
+                                                    'calendar{{ serie.nom }}{% if serie.specialite1 %}{{serie.specialite1}}{% endif %}Jour{{ jour }}{% if loop.index == 1 %}Matin{% else %}ApresMidi{% endif %}',
+                                                    'Calendrier Serie {{ serie.nom }}{% if serie.specialite1 %}{{serie.specialite1}}{% endif %} Jour {{ jour }}{% if loop.index == 1 %} Matin{% else %} Après-Midi{% endif %}',
+                                                    'calendrier{{ serie.nom }}{% if serie.specialite1 %}{{serie.specialite1}}{% endif %}Jour{{ jour }}{% if loop.index == 1 %}Matin{% else %}ApresMidi{% endif %}'
+                                                    )"
+                                    style="margin-right: 1em">
+                                Jour {{ jour }} {% if loop.index == 1 %}Matin{% else %}Après-Midi{% endif %}
+                                <i class=" fas fa-print ml-s"></i>
+                            </button>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>

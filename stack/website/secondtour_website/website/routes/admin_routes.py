@@ -68,7 +68,7 @@ def accueil():
             flash("Une erreur est survenue lors de la récupération des données", "danger")
         all_candidats, all_creneaux, all_series, all_matieres, all_professeurs, all_salles = response.json()
         all_candidats.sort(key=lambda candidat: candidat['nom'])
-        all_creneaux.sort(key=lambda creneau: creneau['debut_preparation'])
+        all_creneaux.sort(key=lambda creneau: datetime.strptime(creneau['debut_preparation'], '%a %b %d %H:%M:%S %Y'))
         for creneau in all_creneaux:
             creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["debut_preparation"]) == str else creneau["debut_preparation"]
@@ -76,6 +76,19 @@ def accueil():
                 creneau["fin_preparation"]) == str else creneau["fin_preparation"]
             creneau["fin"] = datetime.strptime(creneau["fin"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin"]) == str else creneau["fin"]
+
+        all_candidats_per_day = []
+        for candidat in all_candidats:
+            if candidat["jour"] > len(all_candidats_per_day):
+                for _ in range(candidat["jour"] - len(all_candidats_per_day)):
+                    all_candidats_per_day.append([[], []])
+            if candidat["matin"]:
+                all_candidats_per_day[candidat["jour"]-1][0].append(candidat)
+            else:
+                all_candidats_per_day[candidat["jour"]-1][1].append(candidat)
+
+
+
 
         # all_candidats = CANDIDAT.query.order_by(CANDIDAT.nom).all()
         # all_creneaux = CRENEAU.query.order_by(CRENEAU.debut_preparation).all()
@@ -91,7 +104,7 @@ def accueil():
         # all_salles = []
         # for salle in salles:
         #     all_salles.append(salle.as_dict())
-        return render_template('admin/accueil.html', all_professeurs=all_professeurs, all_candidats=all_candidats, all_creneaux=all_creneaux, all_series=all_series, all_matieres=all_matieres, all_salles=all_salles)
+        return render_template('admin/accueil.html', all_professeurs=all_professeurs, all_candidats=all_candidats_per_day, all_creneaux=all_creneaux, all_series=all_series, all_matieres=all_matieres, all_salles=all_salles)
     else:
         return redirect(url_for('main_routes.connexion'))
 
