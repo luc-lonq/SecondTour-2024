@@ -6,15 +6,12 @@ from . import main_database
 from ..database.main_database import *
 
 
-def generation_calendrier(jour=None, matin=None):
+def generation_calendrier():
     all_candidats, all_professeurs, all_liste_matiere, all_choix_matieres, all_matieres, all_salles, all_creneau \
         = get_data()
 
     list_candidats = order_candidats_list(all_candidats)
     local_creneau = []
-
-    if jour and matin:
-        list_candidats = list_candidats[jour][matin]
 
     # Create the creneau for each candidate
     for list_candidat_day in list_candidats:
