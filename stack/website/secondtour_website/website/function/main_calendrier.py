@@ -6,36 +6,38 @@ from . import main_database
 from ..database.main_database import *
 
 
-def generation_calendrier():
+def generation_calendrier(jour=None, matin=None):
     all_candidats, all_professeurs, all_liste_matiere, all_choix_matieres, all_matieres, all_salles, all_creneau \
         = get_data()
 
     list_candidats = order_candidats_list(all_candidats)
-
     local_creneau = []
 
+    if jour and matin:
+        list_candidats = list_candidats[jour][matin]
+
     # Create the creneau for each candidate
-    for list_candidat_half_day in list_candidats:
-        for candidat in list_candidat_half_day:
+    for list_candidat_day in list_candidats:
+        for list_candidat_half_day in list_candidat_day:
+            logging.info(list_candidat_half_day)
+            for candidat in list_candidat_half_day:
+                start, end = get_horaires(candidat)
+                passage_m1, passage_m2 = get_infos_about_candidat(candidat, all_choix_matieres, all_matieres,
+                                                                  all_professeurs, all_liste_matiere, all_salles)
+                passages = [passage_m1, passage_m2]
+                creneaux_candidat = []
+                break_time = None
 
-            start, end = get_horaires(candidat)
-            passage_m1, passage_m2 = get_infos_about_candidat(candidat, all_choix_matieres, all_matieres,
-                                                              all_professeurs, all_liste_matiere, all_salles)
-            passages = [passage_m1, passage_m2]
-            creneaux_candidat = []
-            break_time = None
-
-            # For the 3 days of interogation
-            for jour_passage in range(1, 4):
-
+                # For the 3 days of interogation
                 for _ in range(3):
 
                     for passage in passages:
-
-                        creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, jour_passage, start, end)
+                        creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, candidat["jour"], start,
+                                                                               end)
                         heure_debut_preparation_voulue = timedelta(hours=start)
                         while (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
                                <= timedelta(hours=end)):
+                            logging.info(heure_debut_preparation_voulue)
                             aucune_collision = True
                             chosed_salle = None
                             for creneau in creneaux_from_half_day:
@@ -64,7 +66,7 @@ def generation_calendrier():
                                 chosed_salle = passage["salle"][0]
 
                             if aucune_collision and not candidat["absent"]:
-                                local_creneau, creneau_created = create_creneau_in_local(jour_passage,
+                                local_creneau, creneau_created = create_creneau_in_local(candidat["jour"],
                                                                                          heure_debut_preparation_voulue,
                                                                                          candidat, passage,
                                                                                          local_creneau, chosed_salle)
@@ -101,7 +103,6 @@ def generation_calendrier():
                 if len(creneaux_candidat) == 2:
                     for creneau in creneaux_candidat:
                         create_creneau(creneau)
-                    break
 
     result = test_calendar_complete()
     flash(result[0], result[1])
@@ -126,33 +127,43 @@ def order_candidats_list(all_candidats):
     for candidat in all_candidats:
         list_candidats.append(candidat)
 
-    # Order by morning/afternoon
-    list_candidats_morning = []
-    list_candidats_afternoon = []
+    list_candidats_per_day = []
     for candidat in list_candidats:
-        if candidat["matin"]:
-            list_candidats_morning.append(candidat)
-        else:
-            list_candidats_afternoon.append(candidat)
+        if candidat["jour"] > len(list_candidats_per_day):
+            for _ in range(candidat["jour"] - len(list_candidats_per_day)):
+                list_candidats_per_day.append([])
+        list_candidats_per_day[candidat["jour"] - 1].append(candidat)
 
-    list_candidats = [list_candidats_morning, list_candidats_afternoon]
-
-    list_candidats_morning_ordered = []
-    list_candidats_afternoon_ordered = []
-    for list_candidats_i in list_candidats:
-        for candidat in list_candidats_i:
-            if not candidat["tiers_temps"]:
-                if candidat["matin"]:
-                    list_candidats_morning_ordered.append(candidat)
-                else:
-                    list_candidats_afternoon_ordered.append(candidat)
+    list_candidats_per_half_day = []
+    for list_candidats_a_day in list_candidats_per_day:
+        # Order by morning/afternoon
+        list_candidats_morning = []
+        list_candidats_afternoon = []
+        for candidat in list_candidats_a_day:
+            if candidat["matin"]:
+                list_candidats_morning.append(candidat)
             else:
-                if candidat["matin"]:
-                    list_candidats_morning_ordered.insert(0, candidat)
-                else:
-                    list_candidats_afternoon_ordered.insert(0, candidat)
+                list_candidats_afternoon.append(candidat)
 
-    return [list_candidats_morning_ordered, list_candidats_afternoon_ordered]
+        list_candidats = [list_candidats_morning, list_candidats_afternoon]
+
+        list_candidats_morning_ordered = []
+        list_candidats_afternoon_ordered = []
+        for list_candidats_i in list_candidats:
+            for candidat in list_candidats_i:
+                if not candidat["tiers_temps"]:
+                    if candidat["matin"]:
+                        list_candidats_morning_ordered.append(candidat)
+                    else:
+                        list_candidats_afternoon_ordered.append(candidat)
+                else:
+                    if candidat["matin"]:
+                        list_candidats_morning_ordered.insert(0, candidat)
+                    else:
+                        list_candidats_afternoon_ordered.insert(0, candidat)
+        list_candidats_per_half_day.append([list_candidats_morning_ordered, list_candidats_afternoon_ordered])
+
+    return list_candidats_per_half_day
 
 
 def get_horaires(candidat):
