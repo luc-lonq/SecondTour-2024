@@ -37,7 +37,7 @@
             {% set jour = loop.index %}
             <h4 class="text-white text-decoration-none">Jour {{ jour }}</h4>
             <hr>
-            <div class="d-flex" style="justify-content: space-between;">
+            <div class="d-flex">
                 {% for candidats_half_day in candidats_day %}
                 <div style="margin-right:{% if loop.index == 1 %}1em{% else %}0em{% endif %}">
                     <h4 class="text-white text-decoration-none">{% if loop.index == 1 %}Matin{% else %}Après-midi{% endif %}</h4>
@@ -46,25 +46,25 @@
                            id="calendar{{ serie.nom }}{% if serie.specialite1 %}{{serie.specialite1}}{% endif %}Jour{{ jour }}{% if loop.index == 1 %}Matin{% else %}ApresMidi{% endif %}">
                         <thead>
                             <tr>
-                                <th scope="col" style="max-width: 8em">
+                                <th scope="col" style="max-width: 8rem">
                                     <div class="th-inner">Nom</div>
                                     <div class="filter-control">
                                         <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
                                     </div>
                                 </th>
-                                <th scope="col" style="max-width: 8em">
+                                <th scope="col" style="max-width: 8rem">
                                     <div class="th-inner">Prénom</div>
                                     <div class="filter-control">
                                         <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
                                     </div>
                                 </th>
-                                <th scope="col" style="max-width: 16em">
+                                <th scope="col" style="max-width: 16rem">
                                     <div class="th-inner">Epreuve 1</div>
                                     <div class="filter-control">
                                         <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
                                     </div>
                                 </th>
-                                <th scope="col" style="max-width: 16em">
+                                <th scope="col" style="max-width: 16rem">
                                     <div class="th-inner">Epreuve 2</div>
                                     <div class="filter-control">
                                         <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
@@ -76,11 +76,11 @@
                             {% for candidat in candidats_half_day %}
                             {% if candidat.id_serie == serie.id_serie %}
                             <tr>
-                                <td scope="row" style="max-width: 8em">{{candidat.nom}}</td>
-                                <td scope="row" style="max-width: 8em">{{candidat.prenom}}</td>
+                                <td scope="row" style="max-width: 8rem">{{candidat.nom}}</td>
+                                <td scope="row" style="max-width: 8rem">{{candidat.prenom}}</td>
                                 {% for creneau in all_creneaux %}
                                 {% if creneau.id_candidat == candidat.id_candidat %}
-                                <td scope="row" style="max-width: 16em">
+                                <td scope="row" style="max-width: 16rem">
                                     <div class="calendar-subject">
                                         {% for matiere in all_matieres %}
                                         {% if matiere.id_matiere == creneau.id_matiere %}
