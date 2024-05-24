@@ -39,7 +39,7 @@ def generation_calendrier():
                             for creneau in creneaux_from_half_day:
 
                                 if not is_candidat_available(passage, candidat, creneau,
-                                                             heure_debut_preparation_voulue):
+                                                             heure_debut_preparation_voulue, parametres):
                                     aucune_collision = False
                                     break
 
@@ -270,12 +270,12 @@ def is_salle_available(passage, salle, creneau, heure_debut_preparation_voulue):
     return True
 
 
-def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_voulue):
+def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_voulue, parametres):
     if creneau["id_candidat"] == candidat["id_candidat"] \
             and not ((heure_debut_preparation_voulue
-                      >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute) + timedelta(minutes=30))
+                      >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute) + timedelta(minutes=parametres["temps_pause_eleve"]))
                      or (heure_debut_preparation_voulue + passage["temps_preparation"] +
-                         passage["temps_passage"] + timedelta(minutes=30)
+                         passage["temps_passage"] + timedelta(minutes=parametres["temps_pause_eleve"])
                          <= timedelta(hours=creneau["debut_preparation"].hour,
                                       minutes=creneau["debut_preparation"].minute))):
         return False
