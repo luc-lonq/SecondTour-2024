@@ -18,22 +18,22 @@ admin_routes = Blueprint('admin_routes', __name__,
 @admin_routes.route('/', methods=['POST', 'GET'])
 @admin_routes.route('/accueil', methods=['POST', 'GET'])
 def accueil():
-    if(os.getenv("NETWORK_VISU") == "true"):
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    if (os.getenv("NETWORK_VISU") == "true"):
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website:website-admin",
             "data": {
                 "target": "website:website-admin"
             }
         })
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website-admin:website-admin-accueil",
             "data": {
                 "target": "website-admin:website-admin-accueil"
             }
         })
-    
+
     if main_security.test_session_connected(session, True):
         if request.method == 'POST':
             form = request.form
@@ -43,7 +43,8 @@ def accueil():
                 filename = app.config['UPLOAD_FOLDER'] + "/donees.xlsx"
                 writer = pd.ExcelWriter(filename)
                 response = ask_api("data/fetchmulti", ["creneau", "candidat", "professeur", "salle", "serie",
-                                   "matiere", "choix_matiere", "utilisateur", "liste_matiere", "token", "horaire"])
+                                                       "matiere", "choix_matiere", "utilisateur", "liste_matiere",
+                                                       "token", "horaire"])
                 if response.status_code != 200:
                     flash(
                         "Une erreur est survenue lors de la récupération des données", "danger")
@@ -61,7 +62,7 @@ def accueil():
             flash(result[0], result[1]) if result[1] == "danger" else flash(
                 "Le calendrier est complet !", result[1])
             logging.warning(result[0] if result[1] ==
-                            "danger" else "Le calendrier est complet")
+                                         "danger" else "Le calendrier est complet")
         response = ask_api(
             "data/fetchmulti", ["candidat", "creneau", "serie", "matiere", "professeur", "salle"])
         if response.status_code != 200:
@@ -70,7 +71,8 @@ def accueil():
         all_candidats.sort(key=lambda candidat: candidat['nom'])
         all_creneaux.sort(key=lambda creneau: datetime.strptime(creneau['debut_preparation'], '%a %b %d %H:%M:%S %Y'))
         for creneau in all_creneaux:
-            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
+            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"],
+                                                             '%a %b %d %H:%M:%S %Y') if type(
                 creneau["debut_preparation"]) == str else creneau["debut_preparation"]
             creneau["fin_preparation"] = datetime.strptime(creneau["fin_preparation"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin_preparation"]) == str else creneau["fin_preparation"]
@@ -83,12 +85,9 @@ def accueil():
                 for _ in range(candidat["jour"] - len(all_candidats_per_day)):
                     all_candidats_per_day.append([[], []])
             if candidat["matin"]:
-                all_candidats_per_day[candidat["jour"]-1][0].append(candidat)
+                all_candidats_per_day[candidat["jour"] - 1][0].append(candidat)
             else:
-                all_candidats_per_day[candidat["jour"]-1][1].append(candidat)
-
-
-
+                all_candidats_per_day[candidat["jour"] - 1][1].append(candidat)
 
         # all_candidats = CANDIDAT.query.order_by(CANDIDAT.nom).all()
         # all_creneaux = CRENEAU.query.order_by(CRENEAU.debut_preparation).all()
@@ -104,36 +103,39 @@ def accueil():
         # all_salles = []
         # for salle in salles:
         #     all_salles.append(salle.as_dict())
-        return render_template('admin/accueil.html', all_professeurs=all_professeurs, all_candidats=all_candidats_per_day, all_creneaux=all_creneaux, all_series=all_series, all_matieres=all_matieres, all_salles=all_salles)
+        return render_template('admin/accueil.html', all_professeurs=all_professeurs,
+                               all_candidats=all_candidats_per_day, all_creneaux=all_creneaux, all_series=all_series,
+                               all_matieres=all_matieres, all_salles=all_salles)
     else:
         return redirect(url_for('main_routes.connexion'))
 
 
 @admin_routes.route('/candidats', methods=['POST', 'GET'])
 def candidats():
-    if(os.getenv("NETWORK_VISU") == "true"):
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    if (os.getenv("NETWORK_VISU") == "true"):
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website:website-admin",
             "data": {
                 "target": "website:website-admin"
             }
         })
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website-admin:website-admin-candidats",
             "data": {
                 "target": "website-admin:website-admin-candidats"
             }
         })
-    
+
     if main_security.test_session_connected(session, True):
         if request.method == 'POST':
             form = request.form
             if form.get('submit_button') is not None:
                 if 'name' in form and 'surname' in form and 'serie' in form and 'tiers_temps' in form and 'jour' in form and 'matin' in form and 'absent' in form:
                     result = main_database.add_candidat(
-                        form['name'], form['surname'], form['serie'], form['tiers_temps'], form['jour'], form['absent'], form['matin'], output=True)
+                        form['name'], form['surname'], form['serie'], form['tiers_temps'], form['jour'], form['absent'],
+                        form['matin'], output=True)
                     if result[1][1] == 'danger':
                         flash(result[0], result[1])
                         logging.warning(result[0])
@@ -163,7 +165,8 @@ def candidats():
                         logging.warning(r[0])
                     else:
                         result = main_database.add_candidat(
-                            form['name'], form['surname'], form['serie'], form['tiers_temps'], form['jour'], form['absent'], form['matin'], output=True)
+                            form['name'], form['surname'], form['serie'], form['tiers_temps'], form['jour'],
+                            form['absent'], form['matin'], output=True)
                         if result[1][1] == 'danger':
                             flash(result[0], result[1])
                             logging.warning(result[0])
@@ -197,7 +200,8 @@ def candidats():
                 flash(result[0], result[1])
 
         response = ask_api(
-            "data/fetchmulti", ["candidat", "choix_matiere", "serie", "matiere", "professeur", "salle", "creneau", "parametres"])
+            "data/fetchmulti",
+            ["candidat", "choix_matiere", "serie", "matiere", "professeur", "salle", "creneau", "parametres"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
         all_candidats, all_choix_matieres, all_series, all_matieres, all_professeurs, all_salles, all_creneaux, parametres = response.json()
@@ -205,17 +209,17 @@ def candidats():
         all_creneaux.sort(key=lambda creneau: creneau['debut_preparation'])
 
         for creneau in all_creneaux:
-            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
+            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"],
+                                                             '%a %b %d %H:%M:%S %Y') if type(
                 creneau["debut_preparation"]) == str else creneau["debut_preparation"]
             creneau["fin_preparation"] = datetime.strptime(creneau["fin_preparation"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin_preparation"]) == str else creneau["fin_preparation"]
             creneau["fin"] = datetime.strptime(creneau["fin"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin"]) == str else creneau["fin"]
 
-        logging.info(parametres)
         jour = []
         for i in range(parametres[0]["max_jour"]):
-            jour.append(i+1)
+            jour.append(i + 1)
 
         # candidats = CANDIDATS.query.order_by(CANDIDATS.nom).all()
         # all_candidats = []
@@ -240,29 +244,32 @@ def candidats():
         # all_professeurs = PROFESSEUR.query.all()
         # all_salles = SALLE.query.all()
         # all_creneaux = CRENEAU.query.order_by(CRENEAU.debut_preparation).all()
-        return render_template('admin/candidats.html', all_candidats=all_candidats, all_choix_matieres=all_choix_matieres, all_series=all_series, all_matieres=all_matieres, all_professeurs=all_professeurs, all_salles=all_salles, all_creneaux=all_creneaux, max_jour=jour)
+        return render_template('admin/candidats.html', all_candidats=all_candidats,
+                               all_choix_matieres=all_choix_matieres, all_series=all_series, all_matieres=all_matieres,
+                               all_professeurs=all_professeurs, all_salles=all_salles, all_creneaux=all_creneaux,
+                               max_jour=jour)
     else:
         return redirect(url_for('main_routes.connexion'))
 
 
 @admin_routes.route('/salles', methods=['POST', 'GET'])
 def salles():
-    if(os.getenv("NETWORK_VISU") == "true"):
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    if (os.getenv("NETWORK_VISU") == "true"):
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website:website-admin",
             "data": {
                 "target": "website:website-admin"
             }
         })
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website-admin:website-admin-salles",
             "data": {
                 "target": "website-admin:website-admin-salles"
             }
         })
-    
+
     if main_security.test_session_connected(session, True):
         if request.method == 'POST':
             form = request.form
@@ -283,13 +290,14 @@ def salles():
                         logging.warning(r[0])
 
         response = ask_api("data/fetchmulti", ["candidat", "choix_matiere",
-                           "serie", "matiere", "professeur", "salle", "creneau", "liste_matiere"])
+                                               "serie", "matiere", "professeur", "salle", "creneau", "liste_matiere"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
         all_candidats, all_choix_matieres, all_series, all_matieres, all_professeurs, all_salles, all_creneaux, all_liste_matiere = response.json()
         all_creneaux.sort(key=lambda creneau: datetime.strptime(creneau['debut_preparation'], '%a %b %d %H:%M:%S %Y'))
         for creneau in all_creneaux:
-            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
+            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"],
+                                                             '%a %b %d %H:%M:%S %Y') if type(
                 creneau["debut_preparation"]) == str else creneau["debut_preparation"]
             creneau["fin_preparation"] = datetime.strptime(creneau["fin_preparation"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin_preparation"]) == str else creneau["fin_preparation"]
@@ -321,29 +329,32 @@ def salles():
         # all_liste_matiere = LISTE_MATIERE.query.all()
         # all_series = SERIE.query.all()
 
-        return render_template('admin/salles.html', all_salles=all_salles, all_professeurs=all_professeurs, all_matieres=all_matieres, all_creneaux=all_creneaux, all_candidats=all_candidats, all_choix_matieres=all_choix_matieres, all_liste_matiere=all_liste_matiere, all_series=all_series)
+        return render_template('admin/salles.html', all_salles=all_salles, all_professeurs=all_professeurs,
+                               all_matieres=all_matieres, all_creneaux=all_creneaux, all_candidats=all_candidats,
+                               all_choix_matieres=all_choix_matieres, all_liste_matiere=all_liste_matiere,
+                               all_series=all_series)
     else:
         return redirect(url_for('main_routes.connexion'))
 
 
 @admin_routes.route('/professeurs', methods=['POST', 'GET'])
 def professeurs():
-    if(os.getenv("NETWORK_VISU") == "true"):
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    if (os.getenv("NETWORK_VISU") == "true"):
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website:website-admin",
             "data": {
                 "target": "website:website-admin"
             }
         })
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website-admin:website-admin-professeurs",
             "data": {
                 "target": "website-admin:website-admin-professeurs"
             }
         })
-    
+
     if main_security.test_session_connected(session, True):
         if request.method == 'POST':
             form = request.form
@@ -356,7 +367,10 @@ def professeurs():
                     else:
                         token = response.json()['token']
                         result = main_database.add_professeur(
-                            form['email'], form['name'], form['surname'], form['salle'], form.getlist('matieres[]') if 'matieres[]' in form else [], token, False, form['heure_arrivee1'], form['heure_depart1'], form['heure_arrivee2'], form['heure_depart2'], form['heure_arrivee3'], form['heure_depart3'])
+                            form['email'], form['name'], form['surname'], form['salle'],
+                            form.getlist('matieres[]') if 'matieres[]' in form else [], token, False,
+                            form['heure_arrivee1'], form['heure_depart1'], form['heure_arrivee2'],
+                            form['heure_depart2'], form['heure_arrivee3'], form['heure_depart3'])
                         flash(result[0], result[1])
                         logging.warning(result[0])
 
@@ -369,19 +383,25 @@ def professeurs():
                 if 'user' in form and 'prof_id' in form and 'name' in form and 'surname' in form and 'salle' in form:
                     # result = main_database.delete_professeur(form['prof_id'])
                     result = main_database.update_professeur_wep(form['prof_id'], form['user'],
-                                                                 form['name'], form['surname'], form['salle'], form.getlist('matieres[]') if 'matieres[]' in form else [], form['heure_arrivee1'], form['heure_depart1'], form['heure_arrivee2'], form['heure_depart2'], form['heure_arrivee3'], form['heure_depart3'])
+                                                                 form['name'], form['surname'], form['salle'],
+                                                                 form.getlist(
+                                                                     'matieres[]') if 'matieres[]' in form else [],
+                                                                 form['heure_arrivee1'], form['heure_depart1'],
+                                                                 form['heure_arrivee2'], form['heure_depart2'],
+                                                                 form['heure_arrivee3'], form['heure_depart3'])
                     flash(result[0], result[1])
                     logging.warning(result[0])
 
         response = ask_api("data/fetchmulti", ["candidat", "horaire",
-                           "matiere", "professeur", "salle", "creneau", "liste_matiere", "serie"])
+                                               "matiere", "professeur", "salle", "creneau", "liste_matiere", "serie"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
         all_candidats, all_horaires, all_matieres, all_professeurs, all_salles, all_creneaux, all_liste_matiere, all_series = response.json()
         all_professeurs.sort(key=lambda professeur: professeur['nom'])
         all_creneaux.sort(key=lambda creneau: creneau['debut_preparation'])
         for creneau in all_creneaux:
-            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
+            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"],
+                                                             '%a %b %d %H:%M:%S %Y') if type(
                 creneau["debut_preparation"]) == str else creneau["debut_preparation"]
             creneau["fin_preparation"] = datetime.strptime(creneau["fin_preparation"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin_preparation"]) == str else creneau["fin_preparation"]
@@ -389,7 +409,7 @@ def professeurs():
                 creneau["fin"]) == str else creneau["fin"]
         all_horaires_unsort = all_horaires.copy()
         all_horaires = transform_dict_strptime(all_horaires_unsort, [
-                                               "horaire_arr1", "horaire_dep1", "horaire_arr2", "horaire_dep2", "horaire_arr3", "horaire_dep3"])
+            "horaire_arr1", "horaire_dep1", "horaire_arr2", "horaire_dep2", "horaire_arr3", "horaire_dep3"])
         all_matieres_filtered = []
         for matiere in all_matieres:
             matiere["nom"] = matiere["nom"].replace(" - None", "")
@@ -428,36 +448,39 @@ def professeurs():
         # all_liste_matiere = []
         # for liste_matiere in liste_matieres:
         #     all_liste_matiere.append(liste_matiere.as_dict())
-        return render_template('admin/professeurs.html', all_profs=all_professeurs, all_matieres=all_matieres, all_salles=all_salles, all_creneaux=all_creneaux, all_candidats=all_candidats, all_liste_matiere=all_liste_matiere, all_horaires=all_horaires, all_series=all_series)
+        return render_template('admin/professeurs.html', all_profs=all_professeurs, all_matieres=all_matieres,
+                               all_salles=all_salles, all_creneaux=all_creneaux, all_candidats=all_candidats,
+                               all_liste_matiere=all_liste_matiere, all_horaires=all_horaires, all_series=all_series)
     else:
         return redirect(url_for('main_routes.connexion'))
 
 
 @admin_routes.route('/series', methods=['POST', 'GET'])
 def series():
-    if(os.getenv("NETWORK_VISU") == "true"):
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    if (os.getenv("NETWORK_VISU") == "true"):
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website:website-admin",
             "data": {
                 "target": "website:website-admin"
             }
         })
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website-admin:website-admin-series",
             "data": {
                 "target": "website-admin:website-admin-series"
             }
         })
-    
+
     if main_security.test_session_connected(session, True):
         if request.method == 'POST':
             form = request.form
             if form.get('submit_button') is not None:
                 if 'serie' in form:
                     result = main_database.add_serie(
-                        form['serie'], form['specialite1'] if 'specialite1' in form else 'null', form['specialite2'] if 'specialite2' in form else "null", True)
+                        form['serie'], form['specialite1'] if 'specialite1' in form else 'null',
+                        form['specialite2'] if 'specialite2' in form else "null", True)
                     flash(result[0][0], result[0][1])
                     logging.warning(result[0][0])
                     if result[0][1] == 'success':
@@ -494,7 +517,9 @@ def series():
                         logging.warning(result_s[0])
             elif form.get('modify_button') is not None:
                 if 'id' in form and 'serie' in form:
-                    if r := main_database.update_serie(form['id'], form['serie'], form['specialite1'] if 'specialite1' in form else 'null', form['specialite2'] if 'specialite2' in form else "null"):
+                    if r := main_database.update_serie(form['id'], form['serie'],
+                                                       form['specialite1'] if 'specialite1' in form else 'null',
+                                                       form['specialite2'] if 'specialite2' in form else "null"):
                         flash(r[0], r[1])
                         logging.warning(r[0])
             elif form.get('delete_button') is not None:
@@ -516,41 +541,48 @@ def series():
         # all_salle = SALLE.query.all()
         # all_matieres = MATIERES.query.all()
         # all_choix_matieres = CHOIX_MATIERE.query.all()
-        return render_template('admin/series.html', all_series=all_series, all_candidats=all_candidats, all_salle=all_salle, all_matieres=all_matieres, all_choix_matieres=all_choix_matieres)
+        return render_template('admin/series.html', all_series=all_series, all_candidats=all_candidats,
+                               all_salle=all_salle, all_matieres=all_matieres, all_choix_matieres=all_choix_matieres)
     else:
         return redirect(url_for('main_routes.connexion'))
 
 
 @admin_routes.route('/matieres', methods=['POST', 'GET'])
 def matieres():
-    if(os.getenv("NETWORK_VISU") == "true"):
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    if (os.getenv("NETWORK_VISU") == "true"):
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website:website-admin",
             "data": {
                 "target": "website:website-admin"
             }
         })
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website-admin:website-admin-matieres",
             "data": {
                 "target": "website-admin:website-admin-matieres"
             }
         })
-    
+
     if main_security.test_session_connected(session, True):
         if request.method == 'POST':
             form = request.form
             if form.get('submit_button') is not None:
                 if 'name' in form and 'serie' in form and 'temps_preparation' in form and 'temps_passage' in form and 'temps_preparation_tiers_temps' in form and 'temps_passage_tiers_temps' in form:
                     result = main_database.add_matiere(
-                        form['name'], form['serie'], form['temps_preparation'], form['temps_preparation_tiers_temps'], form['temps_passage'], form['temps_passage_tiers_temps'], form['loge'] if 'loge' in form else None)
+                        form['name'], form['serie'], form['temps_preparation'], form['temps_preparation_tiers_temps'],
+                        form['temps_passage'], form['temps_passage_tiers_temps'],
+                        form['loge'] if 'loge' in form else None)
                     flash(result[0], result[1])
                     logging.warning(result[0])
             elif form.get('modif_button') is not None:
                 if 'id' in form and 'matiereName' in form and 'serie' in form and 'temps_preparation' in form and 'temps_preparation_tiers_temps' in form and 'temps_passage' in form and 'temps_passage_tiers_temps' in form:
-                    if r := main_database.update_matiere(form['id'], form['matiereName'], form['serie'], form['temps_preparation'], form['temps_preparation_tiers_temps'], form['temps_passage'], form['temps_passage_tiers_temps'], form['loge'] if 'loge' in form else None):
+                    if r := main_database.update_matiere(form['id'], form['matiereName'], form['serie'],
+                                                         form['temps_preparation'],
+                                                         form['temps_preparation_tiers_temps'], form['temps_passage'],
+                                                         form['temps_passage_tiers_temps'],
+                                                         form['loge'] if 'loge' in form else None):
                         flash(r[0], r[1])
                         logging.warning(r[0])
 
@@ -561,7 +593,8 @@ def matieres():
                         logging.warning(r[0])
 
         response = ask_api(
-            "data/fetchmulti", ["candidat", "serie", "matiere", "salle", "choix_matiere", "professeur", "liste_matiere"])
+            "data/fetchmulti",
+            ["candidat", "serie", "matiere", "salle", "choix_matiere", "professeur", "liste_matiere"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
         all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_profs, all_liste_matiere = response.json()
@@ -573,29 +606,32 @@ def matieres():
         # all_salles = SALLE.query.all()
         # all_candidats = CANDIDATS.query.order_by(CANDIDATS.nom).all()
         # all_choix_matieres = CHOIX_MATIERE.query.all()
-        return render_template('admin/matieres.html', all_matieres=all_matieres, all_series=all_series, all_salles=all_salles, all_candidats=all_candidats, all_choix_matieres=all_choix_matieres, all_profs=all_profs, all_liste_matiere=all_liste_matiere)
+        return render_template('admin/matieres.html', all_matieres=all_matieres, all_series=all_series,
+                               all_salles=all_salles, all_candidats=all_candidats,
+                               all_choix_matieres=all_choix_matieres, all_profs=all_profs,
+                               all_liste_matiere=all_liste_matiere)
     else:
         return redirect(url_for('main_routes.connexion'))
 
 
 @admin_routes.route('/comptes', methods=['POST', 'GET'])
 def comptes():
-    if(os.getenv("NETWORK_VISU") == "true"):
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    if (os.getenv("NETWORK_VISU") == "true"):
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website:website-admin",
             "data": {
                 "target": "website:website-admin"
             }
         })
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website-admin:website-admin-account",
             "data": {
                 "target": "website-admin:website-admin-account"
             }
         })
-    
+
     if main_security.test_session_connected(session, True):
         if request.method == 'POST':
             form = request.form
@@ -631,29 +667,30 @@ def comptes():
         # all_users = UTILISATEURS.query.all()
         # all_tokens = TOKEN.query.all()
         # all_professeurs = PROFESSEUR.query.all()
-        return render_template('admin/comptes.html', all_users=all_users, all_tokens=all_tokens, all_professeurs=all_professeurs)
+        return render_template('admin/comptes.html', all_users=all_users, all_tokens=all_tokens,
+                               all_professeurs=all_professeurs)
     else:
         return redirect(url_for('main_routes.connexion'))
 
 
 @admin_routes.route('/creneau', methods=['POST', 'GET'])
 def creneau():
-    if(os.getenv("NETWORK_VISU") == "true"):
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    if (os.getenv("NETWORK_VISU") == "true"):
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website:website-admin",
             "data": {
                 "target": "website:website-admin"
             }
         })
-        requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
             "type": "trigger",
             "name": "website-admin:website-admin-creneau",
             "data": {
                 "target": "website-admin:website-admin-creneau"
             }
         })
-    
+
     if main_security.test_session_connected(session, True):
         if request.method == 'POST':
             form = request.form
@@ -667,7 +704,8 @@ def creneau():
                 if 'last_creneau_id' in form and 'candidat' in form and 'matiere' in form and 'salle' in form and 'debut' and 'fin_prepa' in form in form and 'fin' in form:
                     if not (res := main_database.delete_creneau(form['last_creneau_id'])):
                         result = main_database.add_creneau(
-                            form['candidat'], form['matiere'], form['salle'], form['debut'], form["fin_prepa"], form['fin'])
+                            form['candidat'], form['matiere'], form['salle'], form['debut'], form["fin_prepa"],
+                            form['fin'])
                         flash(result[0], result[1])
                         logging.warning(result[0])
                     else:
@@ -686,13 +724,15 @@ def creneau():
                 flash(result[0], result[1])
 
         response = ask_api("data/fetchmulti", ["candidat", "serie", "matiere",
-                           "salle", "choix_matiere", "professeur", "creneau", "liste_matiere", "horaire"])
+                                               "salle", "choix_matiere", "professeur", "creneau", "liste_matiere",
+                                               "horaire"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
         all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_professeur, all_creneau, all_liste_matieres, all_horaires = response.json()
         all_creneau.sort(key=lambda creneau: creneau['id_candidat'])
         for creneau in all_creneau:
-            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
+            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"],
+                                                             '%a %b %d %H:%M:%S %Y') if type(
                 creneau["debut_preparation"]) == str else creneau["debut_preparation"]
             creneau["fin_preparation"] = datetime.strptime(creneau["fin_preparation"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin_preparation"]) == str else creneau["fin_preparation"]
@@ -745,9 +785,58 @@ def creneau():
         # all_liste_matieres = []
         # for liste_matiere in liste_matieres:
         #     all_liste_matieres.append(liste_matiere.as_dict())
-        return render_template('admin/creneau.html', all_professeur=all_professeur, all_creneau=all_creneau, all_candidats=all_candidats, all_matieres=all_matieres, all_salles=all_salles, all_creneau_deb=all_creneau_deb, all_series=all_series, all_choix_matieres=all_choix_matieres, all_liste_matieres=all_liste_matieres, all_horaires=all_horaires)
+        return render_template('admin/creneau.html', all_professeur=all_professeur, all_creneau=all_creneau,
+                               all_candidats=all_candidats, all_matieres=all_matieres, all_salles=all_salles,
+                               all_creneau_deb=all_creneau_deb, all_series=all_series,
+                               all_choix_matieres=all_choix_matieres, all_liste_matieres=all_liste_matieres,
+                               all_horaires=all_horaires)
     else:
         return redirect(url_for('main_routes.connexion'))
+
+
+@admin_routes.route('/parametres', methods=['POST', 'GET'])
+def parametres():
+    if main_security.test_session_connected(session, True):
+        if request.method == 'POST':
+            logging.info("POST")
+            form = request.form
+            if form.get('modify_button') is not None:
+                logging.info("BOUTON")
+                #if 'jour' in form and 'debut_matin' in form and 'fin_matin' in form and 'debut_apresmidi' in form and 'fin_apresmidi' in form and 'intervalle' in form and 'pause' in form and 'passage' in form:
+                result = main_database.change_parametres(
+                    form['jour'], form['debut_matin'], form['fin_matin'], form['debut_apresmidi'],
+                    form["fin_apresmidi"], form['intervalle'], form['pause'], form['passage'])
+                flash(result[0], result[1])
+                logging.warning(result[0])
+
+    response = ask_api("data/fetch/parametres", [])
+    if response.status_code != 200:
+        flash("Une erreur est survenue lors de la récupération des données", "danger")
+
+    logging.info(response.json())
+    parametres = response.json()[0]
+    parametres["heure_debut_matin"] = datetime.strptime(parametres["heure_debut_matin"], '%H:%M:%S') if type(
+        parametres["heure_debut_matin"]) == str else parametres["heure_debut_matin"]
+    parametres["heure_fin_matin"] = datetime.strptime(parametres["heure_fin_matin"], '%H:%M:%S') if type(
+        parametres["heure_fin_matin"]) == str else parametres["heure_fin_matin"]
+    parametres["heure_debut_apres_midi"] = datetime.strptime(parametres["heure_debut_apres_midi"], '%H:%M:%S') if type(
+        parametres["heure_debut_apres_midi"]) == str else parametres["heure_debut_apres_midi"]
+    parametres["heure_fin_apres_midi"] = datetime.strptime(parametres["heure_fin_apres_midi"], '%H:%M:%S') if type(
+        parametres["heure_fin_apres_midi"]) == str else parametres["heure_fin_apres_midi"]
+
+    horaire_matin = []
+    for h in range(6, 14):
+        for m in range(0, 60, 10):
+            horaire = str(h) + ":" + str(m)
+            horaire_matin.append(datetime.strptime(horaire, "%H:%M"))
+
+    horaire_apresmidi = []
+    for h in range(14, 21):
+        for m in range(0, 60, 10):
+            horaire = str(h) + ":" + str(m)
+            horaire_apresmidi.append(datetime.strptime(horaire, "%H:%M"))
+
+    return render_template('admin/parametres.html', parametres=parametres, horaire_matin=horaire_matin, horaire_apresmidi=horaire_apresmidi)
 
 
 @admin_routes.route('/deconnexion')
@@ -761,232 +850,226 @@ def deconnexion():
     return redirect(url_for('main_routes.index'))
 
 
-
-if(os.getenv("NETWORK_VISU") == "true"):
-    
-    
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+if (os.getenv("NETWORK_VISU") == "true"):
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "node",
         "name": "website-admin",
         "data": {
-                "name": "Admin",
-                "id": "website-admin",
-                "size": 46,
-                "fsize": 30
+            "name": "Admin",
+            "id": "website-admin",
+            "size": 46,
+            "fsize": 30
         },
         "position": {
             "x": 580,
             "y": 736
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "edge",
         "name": "website:website-admin",
         "data": {
-                "id": "website:website-admin",
-                "weight": 1,
-                "source": "website",
-                "target": "website-admin"
+            "id": "website:website-admin",
+            "weight": 1,
+            "source": "website",
+            "target": "website-admin"
         }
     })
-    
-    
-    
-    
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "node",
         "name": "website-admin-account",
         "data": {
-                "name": "Comptes",
-                "id": "website-admin-account",
-                "size": 28,
-                "fsize": 20
+            "name": "Comptes",
+            "id": "website-admin-account",
+            "size": 28,
+            "fsize": 20
         },
         "position": {
             "x": 453,
             "y": 825
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "edge",
         "name": "website-admin:website-admin-account",
         "data": {
-                "id": "website-admin:website-admin-account",
-                "weight": 1,
-                "source": "website-admin",
-                "target": "website-admin-account"
+            "id": "website-admin:website-admin-account",
+            "weight": 1,
+            "source": "website-admin",
+            "target": "website-admin-account"
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "node",
         "name": "website-admin-creneau",
         "data": {
-                "name": "Créneaux",
-                "id": "website-admin-creneau",
-                "size": 28,
-                "fsize": 20
+            "name": "Créneaux",
+            "id": "website-admin-creneau",
+            "size": 28,
+            "fsize": 20
         },
         "position": {
             "x": 505,
             "y": 874
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "edge",
         "name": "website-admin:website-admin-creneau",
         "data": {
-                "id": "website-admin:website-admin-creneau",
-                "weight": 1,
-                "source": "website-admin",
-                "target": "website-admin-creneau"
+            "id": "website-admin:website-admin-creneau",
+            "weight": 1,
+            "source": "website-admin",
+            "target": "website-admin-creneau"
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "node",
         "name": "website-admin-professeurs",
         "data": {
-                "name": "Professeurs",
-                "id": "website-admin-professeurs",
-                "size": 28,
-                "fsize": 20
+            "name": "Professeurs",
+            "id": "website-admin-professeurs",
+            "size": 28,
+            "fsize": 20
         },
         "position": {
             "x": 562,
             "y": 888
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "edge",
         "name": "website-admin:website-admin-professeurs",
         "data": {
-                "id": "website-admin:website-admin-professeurs",
-                "weight": 1,
-                "source": "website-admin",
-                "target": "website-admin-professeurs"
+            "id": "website-admin:website-admin-professeurs",
+            "weight": 1,
+            "source": "website-admin",
+            "target": "website-admin-professeurs"
         }
     })
-    
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "node",
         "name": "website-admin-candidats",
         "data": {
-                "name": "Candidats",
-                "id": "website-admin-candidats",
-                "size": 28,
-                "fsize": 20
+            "name": "Candidats",
+            "id": "website-admin-candidats",
+            "size": 28,
+            "fsize": 20
         },
         "position": {
             "x": 624,
             "y": 888
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "edge",
         "name": "website-admin:website-admin-candidats",
         "data": {
-                "id": "website-admin:website-admin-candidats",
-                "weight": 1,
-                "source": "website-admin",
-                "target": "website-admin-candidats"
+            "id": "website-admin:website-admin-candidats",
+            "weight": 1,
+            "source": "website-admin",
+            "target": "website-admin-candidats"
         }
     })
-    
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "node",
         "name": "website-admin-matieres",
         "data": {
-                "name": "Matières",
-                "id": "website-admin-matieres",
-                "size": 28,
-                "fsize": 20
+            "name": "Matières",
+            "id": "website-admin-matieres",
+            "size": 28,
+            "fsize": 20
         },
         "position": {
             "x": 677,
             "y": 874
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "edge",
         "name": "website-admin:website-admin-matieres",
         "data": {
-                "id": "website-admin:website-admin-matieres",
-                "weight": 1,
-                "source": "website-admin",
-                "target": "website-admin-matieres"
+            "id": "website-admin:website-admin-matieres",
+            "weight": 1,
+            "source": "website-admin",
+            "target": "website-admin-matieres"
         }
     })
-    
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "node",
         "name": "website-admin-series",
         "data": {
-                "name": "Séries",
-                "id": "website-admin-series",
-                "size": 28,
-                "fsize": 20
+            "name": "Séries",
+            "id": "website-admin-series",
+            "size": 28,
+            "fsize": 20
         },
         "position": {
             "x": 716,
             "y": 850
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "edge",
         "name": "website-admin:website-admin-series",
         "data": {
-                "id": "website-admin:website-admin-series",
-                "weight": 1,
-                "source": "website-admin",
-                "target": "website-admin-series"
+            "id": "website-admin:website-admin-series",
+            "weight": 1,
+            "source": "website-admin",
+            "target": "website-admin-series"
         }
     })
-    
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "node",
         "name": "website-admin-accueil",
         "data": {
-                "name": "Accueil",
-                "id": "website-admin-accueil",
-                "size": 28,
-                "fsize": 20
+            "name": "Accueil",
+            "id": "website-admin-accueil",
+            "size": 28,
+            "fsize": 20
         },
         "position": {
             "x": 738,
             "y": 792
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "edge",
         "name": "website-admin:website-admin-accueil",
         "data": {
-                "id": "website-admin:website-admin-accueil",
-                "weight": 1,
-                "source": "website-admin",
-                "target": "website-admin-accueil"
+            "id": "website-admin:website-admin-accueil",
+            "weight": 1,
+            "source": "website-admin",
+            "target": "website-admin-accueil"
         }
     })
-    
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "node",
         "name": "website-admin-salles",
         "data": {
-                "name": "Salles",
-                "id": "website-admin-salles",
-                "size": 28,
-                "fsize": 20
+            "name": "Salles",
+            "id": "website-admin-salles",
+            "size": 28,
+            "fsize": 20
         },
         "position": {
             "x": 752,
             "y": 736
         }
     })
-    requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
+    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
         "type": "edge",
         "name": "website-admin:website-admin-salles",
         "data": {
-                "id": "website-admin:website-admin-salles",
-                "weight": 1,
-                "source": "website-admin",
-                "target": "website-admin-salles"
+            "id": "website-admin:website-admin-salles",
+            "weight": 1,
+            "source": "website-admin",
+            "target": "website-admin-salles"
         }
     })

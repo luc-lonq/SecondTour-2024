@@ -1,0 +1,80 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Administration{% endblock %}
+{% block sub_content %}
+<div class="main-div-admin">
+    <form method="post" action="{{url_for('admin_routes.parametres')}}" id="changeParametresForm">
+        <div class="form-group">
+            <label for="selectJour" class="text-white text-decoration-none">Nombre de jours</label>
+            <select class="form-control" id="selectJour" name="jour">
+                {% for i in range(1, 11) %}
+                <option value="{{ i }}" {% if parametres.max_jour == i %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="selectDebutMatin" class="text-white text-decoration-none">Heure de début le matin</label>
+            <select class="form-control" id="selectDebutMatin" name="debut_matin">
+                {% for horaire in horaire_matin %}
+                <option value="{{ horaire.strftime("%H:%M") }}" {% if parametres.heure_debut_matin.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="selectFinMatin" class="text-white text-decoration-none">Heure de fin le matin</label>
+            <select class="form-control" id="selectFinMatin" name="fin_matin">
+                {% for horaire in horaire_matin %}
+                <option value=" {{ horaire.strftime("%H:%M") }}" {% if parametres.heure_fin_matin.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="selectDebutApresMidi" class="text-white text-decoration-none">Heure de début l'après-midi</label>
+            <select class="form-control" id="selectDebutApresMidi" name="debut_apresmidi">
+                {% for horaire in horaire_apresmidi %}
+                <option value=" {{ horaire.strftime("%H:%M") }}" {% if parametres.heure_debut_apres_midi.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="selectFinApresMidi" class="text-white text-decoration-none">Heure de début l'après-midi</label>
+            <select class="form-control" id="selectFinApresMidi" name="fin_apresmidi">
+                {% for horaire in horaire_apresmidi %}
+                <option value=" {{ horaire.strftime("%H:%M") }}" {% if parametres.heure_fin_apres_midi.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="selectIntervalle" class="text-white text-decoration-none">Intervalle de précision de l'algorithme</label>
+            <select class="form-control" id="selectIntervalle" name="intervalle">
+                {% for i in range(1, 31) %}
+                <option value="{{ i }}" {% if parametres.intervalle == i %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="selectPause" class="text-white text-decoration-none">Temps de pause min pour les élèves entre les oraux</label>
+            <select class="form-control" id="selectPause" name="pause">
+                {% for i in range(0, 70, 10) %}
+                <option value="{{ i }}" {% if parametres.temps_pause_eleve == i %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="selectPassage" class="text-white text-decoration-none">Nombre d'oraux max que les professeurs peuvent faire sans pause</label>
+            <select class="form-control" id="selectPassage" name="passage">
+                {% for i in range(1, 6) %}
+                <option value="{{ i }}" {% if parametres.prof_max_passage_sans_pause == i %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    <button class="btn btn-primary" name="modify_button" type="submit" form="changeParametresForm">Changer les paramètres</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block sub_script %}
+<script>
+
+
+</script>
+{% endblock %}

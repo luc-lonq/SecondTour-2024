@@ -1130,6 +1130,36 @@ def delete_liste_matiere(id_liste_matiere):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
+def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, fin_apresmidi, intervalle, pause, passage):
+    try:
+        response = ask_api("data/delete/parametres", [])
+        if response.status_code != 202:
+            logging.warning("Erreur lors de la suppression des paramtres")
+            return "Erreur lors de la suppression des listes matieres", "danger"
+
+        debut_matin = json.loads(json.dumps(debut_matin, default=myconverter))
+
+        fin_matin = json.loads(json.dumps(fin_matin, default=myconverter))
+
+        debut_apresmidi = json.loads(json.dumps(debut_apresmidi, default=myconverter))
+
+        fin_apresmidi = json.loads(json.dumps(fin_apresmidi, default=myconverter))
+
+        parametres = {"max_jour": jour, "heure_debut_matin": debut_matin, "heure_fin_matin": fin_matin,
+                      "heure_debut_apres_midi": debut_apresmidi, "heure_fin_apres_midi": fin_apresmidi,
+                      "intervalle": intervalle, "temps_pause_eleve": pause, "prof_max_passage_sans_pause": passage}
+
+        response = ask_api("data/insert/parametres", parametres)
+        if response.status_code != 201:
+            logging.warning("Erreur lors de la creation des parametres")
+            return "Erreur lors de la creation des parametres", 'danger'
+        return ['Les parametres ont bien ete modifie', 'success']
+    except Exception:
+        logging.warning('Erreur : ' + traceback.format_exc())
+        return ['Erreur : ' + traceback.format_exc(), 'danger']
+
+
+
 def to_dict(row):
     if row is None:
         return None
