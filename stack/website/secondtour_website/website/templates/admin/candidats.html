@@ -260,9 +260,9 @@
                         </div>
                         <div class="form-group">
                             <label for="jourSelect">Jour</label>
-                            <select class="form-control" name="matin" id="jourSelect" required>
+                            <select class="form-control" name="jour" id="jourSelect" required>
                                 {% for jour in max_jour %}
-                                <option {% if loop.first %}selected{% endif %} value="True">{{ jour }}</option>
+                                <option {% if loop.first %}selected{% endif %} value="{{ jour }}">{{ jour }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -346,6 +346,14 @@
                             <select class="form-control" name="tiers_temps" id="tierstempsSelect" required>
                                 <option selected value="False">Non</option>
                                 <option value="True">Oui</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="jourSelect">Jour</label>
+                            <select class="form-control" name="jour" id="jourSelect" required>
+                                {% for jour in max_jour %}
+                                <option {% if loop.first %}selected{% endif %} value="{{ jour }}">{{ jour }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">

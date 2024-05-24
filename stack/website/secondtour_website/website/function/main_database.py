@@ -830,12 +830,13 @@ def delete_professeur(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_candidat(nom, prenom, id_serie, tiers_temps, absent, matin, output=False):
+def add_candidat(nom, prenom, id_serie, tiers_temps, jour, absent, matin, output=False):
     try:
         candidat = {"id_candidat": "null", "nom": nom, "prenom": prenom, "id_serie": id_serie,
                     "tiers_temps": "true" if tiers_temps == "True" else "false",
                     "absent": "true" if absent == "True" else "false",
-                    "matin": "true" if matin == "True" else "false"}
+                    "matin": "true" if matin == "True" else "false", "jour": jour}
+        logging.info(candidat)
         response = ask_api("data/insert/candidat", candidat)
         if response.status_code != 201:
             logging.warning("Erreur lors de la creation du candidat")

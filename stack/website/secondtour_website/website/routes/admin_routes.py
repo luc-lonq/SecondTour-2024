@@ -131,9 +131,9 @@ def candidats():
         if request.method == 'POST':
             form = request.form
             if form.get('submit_button') is not None:
-                if 'name' in form and 'surname' in form and 'serie' in form and 'tiers_temps' in form and 'matin' in form and 'absent' in form:
+                if 'name' in form and 'surname' in form and 'serie' in form and 'tiers_temps' in form and 'jour' in form and 'matin' in form and 'absent' in form:
                     result = main_database.add_candidat(
-                        form['name'], form['surname'], form['serie'], form['tiers_temps'], form['absent'], form['matin'], output=True)
+                        form['name'], form['surname'], form['serie'], form['tiers_temps'], form['jour'], form['absent'], form['matin'], output=True)
                     if result[1][1] == 'danger':
                         flash(result[0], result[1])
                         logging.warning(result[0])
@@ -157,13 +157,13 @@ def candidats():
                         flash(r[0], r[1])
                         logging.warning(r[0])
             elif form.get('modif_button') is not None:
-                if 'name' in form and 'surname' in form and 'serie' in form and 'id' in form and 'tiers_temps' in form and 'matin' in form and 'absent' in form:
+                if 'name' in form and 'surname' in form and 'serie' in form and 'id' in form and 'tiers_temps' in form and 'jour' in form and 'matin' in form and 'absent' in form:
                     if r := main_database.delete_candidat(form['id']):
                         flash(r[0], r[1])
                         logging.warning(r[0])
                     else:
                         result = main_database.add_candidat(
-                            form['name'], form['surname'], form['serie'], form['tiers_temps'], form['absent'], form['matin'], output=True)
+                            form['name'], form['surname'], form['serie'], form['tiers_temps'], form['jour'], form['absent'], form['matin'], output=True)
                         if result[1][1] == 'danger':
                             flash(result[0], result[1])
                             logging.warning(result[0])
