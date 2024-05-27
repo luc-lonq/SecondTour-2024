@@ -437,22 +437,25 @@
             }
         }
 
-        var id_matiere;
-        for (var i = 0; i < all_matieres.length; i++) {
-            if (all_matieres[i]['id_matiere'] == professeur.matiere) {
-                id_matiere = professeur.matiere;
-                break;
+        var id_matiere = null;
+        if (professeur.matiere) {
+            for (var i = 0; i < all_matieres.length; i++) {
+                if (all_matieres[i]['id_matiere'] == professeur.matiere) {
+                    id_matiere = professeur.matiere;
+                    break;
+                }
             }
         }
 
-        var id_salle;
-        for (var i = 0; i < all_salles.length; i++) {
-            if (all_salles[i]['id_salle'] == professeur.salle) {
-                id_salle = professeur.salle;
-                break;
+        var id_salle = null;
+        if (professeur.salle) {
+            for (var i = 0; i < all_salles.length; i++) {
+                if (all_salles[i]['id_salle'] == professeur.salle) {
+                    id_salle = professeur.salle;
+                    break;
+                }
             }
         }
-
 
 
         //Set the user
@@ -466,18 +469,13 @@
         
         select = form_elements[4];
         for (var i = 0; i < select.length; i++) {
-            if (select.options[i].id == "matiere" + id_matiere) {
-                select.options[i].selected = true;
-            }
+            select.options[i].selected = select.options[i].id == "matiere" + id_matiere;
         }
 
         //set the salle
         select = form_elements[5];
         for (var i = 0; i < select.length; i++) {
-            if (select.options[i].id == 'salle' + id_salle) {
-                select.options[i].selected = true;
-                break;
-            }
+            select.options[i].selected = select.options[i].id == 'salle' + id_salle;
         }
     });
 </script>
