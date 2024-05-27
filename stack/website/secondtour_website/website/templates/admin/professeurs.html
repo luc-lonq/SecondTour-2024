@@ -214,23 +214,23 @@
                                 aria-describedby="emailHelp" placeholder="Entrez un email" required="required">
                         </div>
                         <div class="form-group">
-                            <label for="nameAdd">Nom</label>
+                            <label for="nameAdd" class="col-form-label">Nom</label>
                             <div class="d-flex">
                                 <input type="text" class="form-control" id="nameAdd" name="name"
                                     placeholder="Entrez un nom" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="surnameAdd">Prénom</label>
+                            <label for="surnameAdd" class="col-form-label">Prénom</label>
                             <div class="d-flex">
                                 <input type="text" class="form-control" id="surnameAdd" name="surname"
                                     placeholder="Entrez un prénom" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="selectMatiere">Matière</label>
-                            <select class="form-control chosen-select matiere-choice-multiselect1" id="selectMatiere"
-                                name="matieres[]" multiple="multiple" style="width:100%;">
+                            <label for="selectMatiere" class="col-form-label">Matière</label>
+                            <select class="form-control" id="selectMatiere" name="matiere">
+                                <option selected></option>
                                 {% for a_matiere in all_matieres %}
                                 <option id="matiere{{a_matiere.id_matiere}}" value="{{a_matiere.id_matiere}}">
                                     {{a_matiere.nom}}</option>
@@ -238,7 +238,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="selectSalle">Salle</label>
+                            <label for="selectSalle" class="col-form-label">Salle</label>
                             <select class="form-control" id="selectSalle" name="salle">
                                 <option selected></option>
                                 {% for a_salle in all_salles %}
@@ -327,21 +327,20 @@
                         <input id="id_utilisateur_modify" name="user" value="" hidden>
 
                         <div class="form-group">
-                            <label for="name">Nom</label>
+                            <label for="name" class="col-form-label">Nom</label>
                             <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
                                 placeholder="Entrez un nom" required>
                         </div>
                         <div class="form-group">
-                            <label for="surname">Prenom</label>
+                            <label for="surname" class="col-form-label">Prenom</label>
                             <input type="text" class="form-control" id="surname" name="surname"
                                 aria-describedby="surnameHelp" placeholder="Entrez un prénom" required>
                         </div>
                         <div class="form-group">
-                            <label for="matiere" class="col-form-label">Matière</label>
-                            <select class="form-select matiere-choice-multiselect2" name="matieres[]"
-                                id="matiere-select-modif" multiple style="width:100%;">
+                            <label for="selectMatiere" class="col-form-label">Matière</label>
+                            <select class="form-control" id="selectMatiere" name="matiere">
                                 {% for matiere in all_matieres %}
-                                <option id="matiere_{{matiere.id_matiere}}" value="{{matiere.id_matiere}}">
+                                <option id="matiere{{matiere.id_matiere}}" value="{{matiere.id_matiere}}">
                                     {{matiere.nom}}</option>
                                 {% endfor %}
                             </select>
@@ -468,22 +467,16 @@
         form_elements[3].value = professeur['prenom'];
 
         //Set the matiere
-        if (matieres != null) {
-            for (let y = 0; y < matieres.length; y++) {
-                let matiere = matieres[y];
-                id_matiere = matiere['id_matiere'];
-                select = form_elements[4];
-                for (var i = 0; i < select.length; i++) {
-                    if (select.options[i].id == "matiere_" + id_matiere) {
-                        select.options[i].selected = true;
-                    }
-                } 
-
+        
+        select = form_elements[4];
+        for (var i = 0; i < select.length; i++) {
+            if (select.options[i].id == "matiere" + id_matiere) {
+                select.options[i].selected = true;
             }
         }
 
         //set the salle
-        select = form_elements[6];
+        select = form_elements[5];
         for (var i = 0; i < select.length; i++) {
             if (select.options[i].id == 'salle' + id_salle) {
                 select.options[i].selected = true;
