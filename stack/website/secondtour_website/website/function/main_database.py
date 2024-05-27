@@ -9,7 +9,6 @@ from itsdangerous import json
 
 from . import main_security
 from ..database.main_database import *
-from . import main_email
 
 
 def delete_all_content():
@@ -75,14 +74,6 @@ def add_account(email, password, user_type_string, output=False):
             return (user, ['Erreur : ' + traceback.logging.warning_exc(), 'danger'])
         logging.warning('Erreur : ' + traceback.logging.warning_exc())
         return ['Erreur : ' + traceback.logging.warning_exc(), 'danger']
-
-
-def add_account_token(email, token, user_type_string, id_prof):
-    # Token creation
-    user_type = True if user_type_string == "Administrateur" else False
-    add_token(email, token, user_type, id_prof)
-    logging.warning('Le token a bien été crée')
-    return ['L\'email à bien été envoyé', 'success']
 
 
 def delete_account(id):
@@ -449,29 +440,7 @@ def delete_salle(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_token(email, token, admin, id_prof):
-    token_data = {"id_token": "null", "email": email, "token": str(
-        token), "id_professeur": id_prof, "admin": "true" if admin else "false"}
-    response = ask_api("data/insert/token", token_data)
-    if response.status_code != 201:
-        logging.warning("Erreur lors de la creation du token")
-    # token_db = TOKEN(email, str(token), id_prof, admin)
-    # db.session.add(token_db)
-    # db.session.commit()
-    main_email.send_email(email, token)
-
-
-def delete_token(token):
-    token_filter = {"token": token}
-    response = ask_api("data/deletefilter/token", token_filter)
-    if response.status_code != 202:
-        logging.warning("Erreur lors de la suppression du token")
-    # token_db = TOKEN.query.filter_by(token=token).one()
-    # db.session.delete(token_db)
-    # db.session.commit()
-
-
-def add_professeur(email, nom, prenom, salle, matiere, token=None, admin=False, heure_arrivee1="08:00", heure_depart1="20:00", heure_arrivee2="08:00", heure_depart2="20:00", heure_arrivee3="08:00", heure_depart3="20:00", ret=False):
+def add_professeur(nom, prenom, salle, matiere, admin=False, heure_arrivee1="08:00", heure_depart1="20:00", heure_arrivee2="08:00", heure_depart2="20:00", heure_arrivee3="08:00", heure_depart3="20:00", ret=False):
     try:
         # user = add_account(email, 'test123', 'Professeur',
         #                    output=True, id_prof=1)
@@ -490,10 +459,6 @@ def add_professeur(email, nom, prenom, salle, matiere, token=None, admin=False, 
                 return (["Erreur lors de l'insertion d'un professeur", "danger"], professeur)
             return "Erreur lors de l'insertion d'un professeur", "danger"
         professeur["id_professeur"] = response.json()["id"]
-
-        if token:
-            add_token(email, token, admin, professeur["id_professeur"])
-            logging.warning('Le token a bien été créé')
 
         if type(heure_arrivee1) == str:
             heure_arrivee1 = json.loads(json.dumps(datetime.strptime(

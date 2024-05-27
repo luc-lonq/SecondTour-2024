@@ -359,20 +359,14 @@ def professeurs():
         if request.method == 'POST':
             form = request.form
             if form.get('submit_button') is not None:
-                if 'email' in form and 'name' in form and 'surname' in form and 'salle' in form:
-                    response = ask_api("data/token", {})
-                    if response.status_code != 200:
-                        logging.warning("Erreur lors de la creation du token")
-                        flash("Erreur lors de la creation du token", "danger")
-                    else:
-                        token = response.json()['token']
-                        result = main_database.add_professeur(
-                            form['email'], form['name'], form['surname'], form['salle'],
-                            form['matiere'], token, False,
-                            form['heure_arrivee1'], form['heure_depart1'], form['heure_arrivee2'],
-                            form['heure_depart2'], form['heure_arrivee3'], form['heure_depart3'])
-                        flash(result[0], result[1])
-                        logging.warning(result[0])
+                if 'name' in form and 'surname' in form and 'salle' in form:
+                    result = main_database.add_professeur(
+                        form['name'], form['surname'], form['salle'],
+                        form['matiere'], False,
+                        form['heure_arrivee1'], form['heure_depart1'], form['heure_arrivee2'],
+                        form['heure_depart2'], form['heure_arrivee3'], form['heure_depart3'])
+                    flash(result[0], result[1])
+                    logging.warning(result[0])
 
             elif form.get('delete_button') is not None:
                 if 'id' in form:
