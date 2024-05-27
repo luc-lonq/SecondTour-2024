@@ -89,13 +89,9 @@
                             {% endfor %}
                         </td>
                         <td scope="row">
-                            {% for a_liste_matiere in all_liste_matiere %}
-                            {% if a_liste_matiere.id_matiere == a_matiere.id_matiere %}
                             {% for a_prof in all_profs %}
-                            {% if a_prof.id_professeur == a_liste_matiere.id_professeur %}{{ a_prof.nom }} {{a_prof.prenom}}
+                            {% if a_prof.matiere == a_matiere.id_matiere %}{{ a_prof.nom }} {{a_prof.prenom}}
                             <br>{% endif %}
-                            {% endfor %}
-                            {% endif %}
                             {% endfor %}
                         </td>
                         <td scope="row">{{a_matiere.temps_preparation}}

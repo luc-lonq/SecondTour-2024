@@ -95,13 +95,9 @@
                                                 <td scope="row">{{a_prof.prenom}}</td>
                                                 <td scope="row">
                                                     {% for a_matiere in all_matieres %}
-                                                    {% for liste_matiere in all_liste_matiere %}
-                                                    {% if liste_matiere.id_professeur == a_prof.id_professeur %}
-                                                    {% if a_matiere.id_matiere == liste_matiere.id_matiere %}
+                                                    {% if a_matiere.id_matiere == a_prof.matiere %}
                                                     {{a_matiere.nom}}
                                                     {% endif %}
-                                                    {% endif %}
-                                                    {% endfor %}
                                                     {% endfor %}
                                                 </td>
                                             </tr>
@@ -129,10 +125,7 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     {% for creneau in all_creneaux %}
-                                                                    {% for liste_matiere in all_liste_matiere %}
-                                                                    {% if liste_matiere.id_professeur ==
-                                                                    a_prof.id_professeur %}
-                                                                    {% if creneau.id_matiere == liste_matiere.id_matiere
+                                                                    {% if creneau.id_matiere == a_prof.matiere
                                                                     %}
                                                                     {% if creneau.id_salle == a_prof.salle %}
                                                                     <tr class="not-null">
@@ -175,8 +168,6 @@
                                                                     </tr>
                                                                     {% endif %}
                                                                     {% endif %}
-                                                                    {% endif %}
-                                                                    {% endfor %}
                                                                     {% endfor %}
                                                                 </tbody>
                                                             </table>

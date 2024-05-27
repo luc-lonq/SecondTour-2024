@@ -83,24 +83,18 @@
                         <td scope="row">{{a_prof.prenom}}</td>
                         <td scope="row">
                             {% for a_matiere in all_matieres %}
-                            {% for lmatiere in all_liste_matiere %}
                             {% for a_serie in all_series %}
-                            {% if a_matiere.id_matiere == lmatiere.id_matiere and lmatiere.id_professeur ==
-                            a_prof.id_professeur and a_matiere.id_serie == a_serie.id_serie%}
+                            {% if a_matiere.id_matiere == a_prof.matiere and a_matiere.id_serie == a_serie.id_serie%}
                             {{a_serie.nom}}{%if a_serie.specialite1%} - {{a_serie.specialite1}}{% endif %}
                             {% endif %}
-                            {% endfor %}
                             {% endfor %}
                             {% endfor %}
                         </td>
                         <td scope="row">
                             {% for a_matiere in all_matieres %}
-                            {% for lmatiere in all_liste_matiere %}
-                            {% if a_matiere.id_matiere == lmatiere.id_matiere and lmatiere.id_professeur ==
-                            a_prof.id_professeur %}
+                            {% if a_matiere.id_matiere == a_prof.matiere %}
                             {{a_matiere.nom}}<br>
                             {% endif %}
-                            {% endfor %}
                             {% endfor %}
                         </td>
                         <td scope="row">
@@ -170,9 +164,7 @@
                                         </thead>
                                         <tbody>
                                             {% for creneau in all_creneaux %}
-                                            {% for liste_matiere in all_liste_matiere %}
-                                            {% if liste_matiere.id_professeur == a_prof.id_professeur %}
-                                            {% if creneau.id_matiere == liste_matiere.id_matiere and creneau.id_salle ==
+                                            {% if creneau.id_matiere == a_prof.matiere and creneau.id_salle ==
                                             a_prof.salle %}
                                             <tr class="not-null">
                                                 {% for candidat in all_candidats %}
@@ -189,8 +181,6 @@
                                                 <td scope="row" class="hide"></td>
                                             </tr>
                                             {% endif %}
-                                            {% endif %}
-                                            {% endfor %}
                                             {% endfor %}
                                         </tbody>
                                     </table>
@@ -442,8 +432,6 @@
         var all_matieres = JSON.parse(myvar_matieres);
         myvar_profs = '{{all_profs|tojson}}';
         var all_professeurs = JSON.parse(myvar_profs);
-        myvar_liste_matiere = '{{all_liste_matiere|tojson}}';
-        var all_liste_matiere = JSON.parse(myvar_liste_matiere);
         myvar_salles = '{{all_salles|tojson}}';
         all_salles = JSON.parse(myvar_salles);
 
@@ -454,10 +442,11 @@
             }
         }
 
-        var matieres = [];
-        for (var i = 0; i < all_liste_matiere.length; i++) {
-            if (all_liste_matiere[i]['id_professeur'] == professeur.id_professeur) {
-                matieres.push(all_matieres[i]);
+        var id_matiere;
+        for (var i = 0; i < all_matieres.length; i++) {
+            if (all_matieres[i]['id_matiere'] == professeur.matiere) {
+                id_matiere = professeur.matiere;
+                break;
             }
         }
 

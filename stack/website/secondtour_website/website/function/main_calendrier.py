@@ -7,7 +7,7 @@ from ..database.main_database import *
 
 
 def generation_calendrier():
-    (all_candidats, all_professeurs, all_liste_matiere, all_choix_matieres, all_matieres, all_salles, all_creneau,
+    (all_candidats, all_professeurs, all_choix_matieres, all_matieres, all_salles, all_creneau,
      parametres) = get_data()
     parametres = parametres[0]
 
@@ -21,7 +21,7 @@ def generation_calendrier():
             for candidat in list_candidat_half_day:
                 start, end = get_horaires(candidat, parametres)
                 passage_m1, passage_m2 = get_infos_about_candidat(candidat, all_choix_matieres, all_matieres,
-                                                                  all_professeurs, all_liste_matiere, all_salles)
+                                                                  all_professeurs, all_salles)
                 passages = [passage_m1, passage_m2]
                 creneaux_candidat = []
                 break_time = None
@@ -112,7 +112,7 @@ def get_data():
     if response.status_code != 202:
         flash("Une erreur est survenue lors de la suppression des données", "danger")
 
-    response = ask_api("data/fetchmulti", ["candidat", "professeur", "liste_matiere", "choix_matiere",
+    response = ask_api("data/fetchmulti", ["candidat", "professeur", "choix_matiere",
                                            "matiere", "salle", "creneau", "parametres"])
     if response.status_code != 200:
         flash("Une erreur est survenue lors de la récupération des données", "danger")
@@ -177,7 +177,7 @@ def get_horaires(candidat, parametres):
     return start, end
 
 
-def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_professeurs, all_liste_matiere,
+def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_professeurs,
                              all_salles):
     # Find the choix matiere correspondant
     choix_matiere = None
@@ -196,14 +196,12 @@ def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_pro
     # Get prof for each matiere
     professeur_m1, professeur_m2 = [], []
     for professeur in all_professeurs:
-        for liste_matiere in all_liste_matiere:
-            if liste_matiere["id_professeur"] == professeur["id_professeur"]:
-                if matiere1 is not None:
-                    if liste_matiere["id_matiere"] == matiere1["id_matiere"]:
-                        professeur_m1.append(professeur)
-                if matiere2 is not None:
-                    if liste_matiere["id_matiere"] == matiere2["id_matiere"]:
-                        professeur_m2.append(professeur)
+        if matiere1 is not None:
+            if professeur["matiere"] == matiere1["id_matiere"]:
+                professeur_m1.append(professeur)
+        if matiere2 is not None:
+            if professeur["matiere"] == matiere2["id_matiere"]:
+                professeur_m2.append(professeur)
 
     # salle for each matiere
     salle_m1, salle_m2 = [], []
