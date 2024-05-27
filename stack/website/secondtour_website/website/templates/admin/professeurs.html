@@ -334,6 +334,7 @@
                         <div class="form-group">
                             <label for="selectMatiere" class="col-form-label">Matière</label>
                             <select class="form-control" id="selectMatiere" name="matiere">
+                                <option selected></option>
                                 {% for matiere in all_matieres %}
                                 <option id="matiere{{matiere.id_matiere}}" value="{{matiere.id_matiere}}">
                                     {{matiere.nom}}</option>
