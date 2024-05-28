@@ -716,8 +716,9 @@ def creneau():
                 flash(result[0], result[1])
 
         response = ask_api("data/fetchmulti", ["candidat", "serie", "matiere",
-                                               "salle", "choix_matiere", "professeur", "creneau"
+                                               "salle", "choix_matiere", "professeur", "creneau",
                                                "horaire"])
+        logging.info(response.json())
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
         all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_professeur, all_creneau, all_horaires = response.json()
