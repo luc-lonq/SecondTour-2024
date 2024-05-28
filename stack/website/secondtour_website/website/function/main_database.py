@@ -620,14 +620,6 @@ def update_professeur_wep(id, user, nom, prenom, salle, matiere, heure_arrivee1=
 
 def delete_professeur(id):
     try:
-        # accounts
-        accounts = {"id_professeur": id}
-        response = ask_api("data/deletefilter/utilisateur", accounts)
-        if response.status_code != 202:
-            logging.warning(
-                "Erreur lors de la suppression du compte du professeur")
-            return "Erreur lors de la suppression du compte du professeur", "danger"
-
         # creneaux
         professeur_filter = {"id_professeur": id}
         response = ask_api("data/fetchfilter/professeur", professeur_filter)
@@ -650,14 +642,6 @@ def delete_professeur(id):
             logging.warning(
                 "Erreur lors de la suppression des horaires du professeur")
             return "Erreur lors de la suppression des horaires du professeur", "danger"
-
-        # tokens
-        tokens = {"id_professeur": id}
-        response = ask_api("data/deletefilter/token", tokens)
-        if response.status_code != 202:
-            logging.warning(
-                "Erreur lors de la suppression des tokens du professeur")
-            return "Erreur lors de la suppression des tokens du professeur", "danger"
 
         professeur = {"id_professeur": id}
         response = ask_api("data/deletefilter/professeur", professeur)
