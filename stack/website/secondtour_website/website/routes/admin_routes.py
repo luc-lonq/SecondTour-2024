@@ -290,10 +290,10 @@ def salles():
                         logging.warning(r[0])
 
         response = ask_api("data/fetchmulti", ["candidat", "choix_matiere",
-                                               "serie", "matiere", "professeur", "salle", "creneau"])
+                                               "serie", "matiere", "professeur", "salle", "creneau", "parametres"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
-        all_candidats, all_choix_matieres, all_series, all_matieres, all_professeurs, all_salles, all_creneaux = response.json()
+        all_candidats, all_choix_matieres, all_series, all_matieres, all_professeurs, all_salles, all_creneaux, parametres = response.json()
         all_creneaux.sort(key=lambda creneau: datetime.strptime(creneau['debut_preparation'], '%a %b %d %H:%M:%S %Y'))
         for creneau in all_creneaux:
             creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"],
@@ -332,7 +332,7 @@ def salles():
         return render_template('admin/salles.html', all_salles=all_salles, all_professeurs=all_professeurs,
                                all_matieres=all_matieres, all_creneaux=all_creneaux, all_candidats=all_candidats,
                                all_choix_matieres=all_choix_matieres,
-                               all_series=all_series)
+                               all_series=all_series, jour=parametres[0]["max_jour"])
     else:
         return redirect(url_for('main_routes.connexion'))
 

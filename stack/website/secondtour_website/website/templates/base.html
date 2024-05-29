@@ -424,7 +424,7 @@
                 theme: 'grid',
                 columnStyles: {
                   7: {
-                    cellWidth: 200
+                    cellWidth: 80
                   }
                 },
                 styles: {
@@ -436,34 +436,6 @@
                   }
                 }
               })
-            } else {
-              let elements = document.getElementsByClassName(name)
-              for (let i = 0; i < elements.length; i++) {
-                let startY
-                if (i == 0) {
-                  startY = 70
-                } else {
-                  startY = doc.lastAutoTable.finalY + 20
-                }
-                doc.autoTable({
-                  html: '#' + name + '_' + i.toString(),
-                  startY: startY,
-                  theme: 'grid',
-                  columnStyles: {
-                    7: {
-                      cellWidth: 100
-                    }
-                  },
-                  styles: {
-                    minCellHeight: 40
-                  },
-                  didParseCell: function (table) {
-                    if (table.section === 'head') {
-                      table.cell.styles.fillColor = '#4c5cff'
-                    }
-                  }
-                })
-              }
 
               if (!output) {
                 doc.save(num_salle.toString() + '_listeDEmargement.pdf')
