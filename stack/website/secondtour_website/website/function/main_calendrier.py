@@ -46,11 +46,11 @@ def generation_calendrier():
                         if not chosed_salle:
                             aucune_collision = False
 
-                    #if chosed_salle:
-                    #    if is_prof_owerhelmed(passage, chosed_salle, creneaux_from_half_day,
-                    #                          heure_debut_preparation_voulue + passage["temps_preparation"],
-                    #                          parametres["prof_max_passage_sans_pause"]):
-                    #        aucune_collision = False
+                    if chosed_salle:
+                        if is_prof_owerhelmed(passage, chosed_salle, creneaux_from_half_day,
+                                              heure_debut_preparation_voulue + passage["temps_preparation"],
+                                              parametres["prof_max_passage_sans_pause"]):
+                            aucune_collision = False
 
                     if len(creneaux_from_half_day) == 0:
                         chosed_salle = passage["salle"][0]
@@ -125,9 +125,9 @@ def order_candidats_list(all_candidats):
     list_candidats_ordered = []
     for candidat in list_candidats:
         if not candidat["tiers_temps"]:
-            list_candidats_ordered.append(candidat)
-        else:
             list_candidats_ordered.insert(0, candidat)
+        else:
+            list_candidats_ordered.append(candidat)
 
     for candidat in list_candidats_ordered:
         logging.info(candidat)
