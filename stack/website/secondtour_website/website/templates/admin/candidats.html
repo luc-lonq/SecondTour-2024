@@ -330,14 +330,14 @@
                         <div class="form-group">
                             <label for="matiere1SelectModif">Matière1</label>
                             <select class="form-control" id="matiere1SelectModif" name="matiere1"
-                                onchange="matiereGrise('matiere1SelectModif', 'matiere2SelectModif')">
+                                onchange="matiereGrise('matiere1SelectModif', 'matiere2SelectModif')" onclick="testMatiereCompatible()">
                                 <option selected value></option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="matiere2SelectModif">Matière2</label>
                             <select class="form-control" id="matiere2SelectModif" name="matiere2"
-                                onchange="matiereGrise('matiere2SelectModif', 'matiere1SelectModif')">
+                                onchange="matiereGrise('matiere2SelectModif', 'matiere1SelectModif')" onclick="testMatiereCompatible()">
                                 <option selected value></option>
                             </select>
                         </div>
@@ -442,14 +442,11 @@
         myvar = '{{all_matieres|tojson}}';
         let all_matieres = JSON.parse(myvar);
 
-
         let selectMatiereObject1 = document.getElementById('matiere1Select');
         let selectMatiereObject2 = document.getElementById('matiere2Select');
         let selectSerieObject = document.getElementById('serieSelect');
         let id_serie = selectSerieObject.value;
         manage_option(selectMatiereObject1, selectMatiereObject2, id_serie, all_matieres);
-
-
 
         let selectMatiereModifObject1 = document.getElementById('matiere1SelectModif');
         let selectMatiereModifObject2 = document.getElementById('matiere2SelectModif');
@@ -526,6 +523,7 @@
 
 <script>
     $('.modifRow').click(function () {
+
         var $myRowId = $(this).get(0).id;
         name = document.getElementById("ModalSubmitModifButton").getAttribute("form");
         $("#hiddenIdModif").attr('value', $myRowId);
@@ -589,27 +587,21 @@
         }
         //Set the tiers temps
         if (candidat['tiers_temps'] == true) {
-            form_elements[5].options[0].selected = false;
             form_elements[5].options[1].selected = true;
         } else {
             form_elements[5].options[0].selected = true;
-            form_elements[5].options[1].selected = false;
         }
         //Set matin
         if (candidat['matin'] == true) {
             form_elements[6].options[0].selected = true;
-            form_elements[6].options[1].selected = false;
         } else {
-            form_elements[6].options[0].selected = false;
             form_elements[6].options[1].selected = true;
         }
         //Set absent
         if (candidat['absent'] == true) {
-            form_elements[7].options[0].selected = false;
             form_elements[7].options[1].selected = true;
         } else {
             form_elements[7].options[0].selected = true;
-            form_elements[7].options[1].selected = false;
         }
 
         testMatiereCompatible();
@@ -618,6 +610,7 @@
         if (matiere1 != null) {
             id_matiere1 = matiere1['id_matiere'];
             select = form_elements[3];
+            console.log(id_matiere1);
             for (var i = 0; i < select.length; i++) {
                 if (select.options[i].id == "matiere1_" + id_matiere1) {
                     select.options[i].selected = true;
