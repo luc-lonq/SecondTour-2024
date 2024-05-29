@@ -390,7 +390,7 @@
             num_salle,
             output = false
           ) {
-            let doc = new jsPDF('l', 'pt', 'a4')
+            let doc = new jsPDF('p', 'pt', 'a4')
             let htmlstring = ''
             let tempVarToCheckPageHeight = 0
             let pageHeight = 0
@@ -451,7 +451,7 @@
                   theme: 'grid',
                   columnStyles: {
                     7: {
-                      cellWidth: 200
+                      cellWidth: 100
                     }
                   },
                   styles: {
@@ -473,7 +473,7 @@
             }
           },
           downloadCalendar: function (calendar_id, title, name = 'Calendrier.pdf') {
-            let doc = new jsPDF('l', 'pt', 'a4')
+            let doc = new jsPDF('p', 'pt', 'a4')
             let htmlstring = ''
             let tempVarToCheckPageHeight = 0
             let pageHeight = 0
