@@ -94,9 +94,9 @@ values (2, 'BARTHOLOME','Jules',2,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (3,'BERTHEOT','Tonin',2,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-values (4,'BOISSON','Tony',2,0,0,1,1);
+values (4,'BOISSON','Tony',2,1,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-values (5,'BONNIN','Titouan',2,0,0,1,1);
+values (5,'BONNIN','Titouan',2,1,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (6,'BRUNEAU','Shana',2,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
@@ -146,7 +146,7 @@ values (28,'BONNET','Louise',1,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (29,'BOUAN','Hugo',1,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-values (30,'BOURNET','Luca',1,0,0,1,1);
+values (30,'BOURNET','Luca',1,1,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (31,'BRAYNAS','Solane',1,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
@@ -166,7 +166,7 @@ values (38,'DJAKOVITCH','Inès',1,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (39,'DJERDJAR','Gabin',1,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-values (40,'DRAPEAU','Teddy',1,0,1,1,1);
+values (40,'DRAPEAU','Teddy',1,1,1,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (41,'EDOUARD LUQUE','Nolane',1,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
@@ -188,7 +188,7 @@ values (49,'GOUJON','Emma',1,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (50,'GUILLOZO','Lucie',1,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-values (51,'GURBUZ','Mélissa',1,0,0,1,1);
+values (51,'GURBUZ','Mélissa',1,1,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (52,'HERAUD','Louise',1,0,0,1,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
@@ -240,7 +240,7 @@ values (75,'LAUNETTE','Damien',1,0,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (76,'LOU','Loan',1,0,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-values (77,'LOZACH','Lysandre',1,0,0,0,1);
+values (77,'LOZACH','Lysandre',1,1,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (78,'MICHALLET-FERRIER','Tania',1,0,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
@@ -266,7 +266,7 @@ values (88,'PONIENSKI','Lola',1,0,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (89,'REBERE-AGION','Léane',1,0,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-values (90,'RENARD','Audélie',1,0,0,0,1);
+values (90,'RENARD','Audélie',1,1,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (91,'ROY','Baptiste',1,0,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
@@ -298,7 +298,7 @@ values (104,'TREPOS','Guilhem',1,0,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (105,'VASSAUX','Manon',1,0,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-values (106,'VERGELOT','Erine',1,0,0,0,1);
+values (106,'VERGELOT','Erine',1,1,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
 values (107,'YILMAZ','Teoman',1,0,0,0,1);
 insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
