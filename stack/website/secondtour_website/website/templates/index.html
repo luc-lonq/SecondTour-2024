@@ -71,28 +71,27 @@
                                     <td scope="row">
                                         <div class="calendar-subject">
                                             {% for creneau in all_creneaux %}
-                                                {% if creneau.id_candidat == candidat.id_candidat %}
-                                                    {% for matiere in all_matieres %}
-                                                        {% if matiere.id_matiere == creneau.id_matiere %}
-                                                            {{creneau.debut_preparation.strftime('%d')}} | {{creneau.debut_preparation.strftime('%Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}} |
-                                                            {% for salle in all_salles %}
-                                                                {% if salle.id_salle == creneau.id_salle %}
-                                                                    {{salle.numero}}
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                            {% if matiere.loge %}
-                                                                 - Loge
-                                                                {% for salle in all_salles %}
-                                                                    {% if matiere.loge == salle.id_salle %}
-                                                                        {{salle.numero}}
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                            {% endif %}
-                                                             - {{matiere.nom}}
-                                                            <br>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                {% endif %}
+                                            {% if creneau.id_candidat == candidat.id_candidat %}
+                                            {% for matiere in all_matieres %}
+                                            {% if matiere.id_matiere == creneau.id_matiere %}
+                                            {{creneau.debut_preparation.strftime('%d-%m-%Y | %Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}} |
+                                            {% for salle in all_salles %}
+                                            {% if salle.id_salle == creneau.id_salle %}
+                                            {{salle.numero}}
+                                            {% endif %}
+                                            {% endfor %}
+                                            {% if matiere.loge %}
+                                            {% for salle in all_salles %}
+                                            {% if matiere.loge == salle.id_salle %}
+                                             ({{salle.numero}})
+                                            {% endif %}
+                                            {% endfor %}
+                                            {% endif %}
+                                             | {{matiere.nom}}
+                                            <br>
+                                            {% endif %}
+                                            {% endfor %}
+                                            {% endif %}
                                             {% endfor %}
                                         </div>
                                     </td>
