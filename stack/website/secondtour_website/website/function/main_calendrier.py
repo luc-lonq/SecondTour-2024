@@ -1,3 +1,4 @@
+import datetime
 from datetime import timedelta
 from flask.helpers import flash
 from copy import deepcopy
@@ -26,22 +27,24 @@ def generation_calendrier():
         for _ in range(3):
 
             for passage in passages:
+                logging.info(local_creneau)
                 creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, candidat["jour"], start,
-                                                                       end)
+                                                                       end, parametres["date_premier_jour"])
                 heure_debut_preparation_voulue = start
                 while (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
                        <= end):
                     aucune_collision = True
                     chosed_salle = None
-                    for creneau in creneaux_from_half_day:
 
+                    for creneau in creneaux_from_half_day:
                         if not is_candidat_available(passage, candidat, creneau,
-                                                     heure_debut_preparation_voulue, parametres):
+                                                    heure_debut_preparation_voulue, parametres):
                             aucune_collision = False
                             break
 
                     if aucune_collision:
-                        chosed_salle = is_a_salle_available(passage, creneaux_from_half_day, heure_debut_preparation_voulue)
+                        chosed_salle = is_a_salle_available(passage, creneaux_from_half_day,
+                                                            heure_debut_preparation_voulue)
                         if not chosed_salle:
                             aucune_collision = False
 
@@ -58,7 +61,8 @@ def generation_calendrier():
                         local_creneau, creneau_created = create_creneau_in_local(candidat["jour"],
                                                                                  heure_debut_preparation_voulue,
                                                                                  candidat, passage,
-                                                                                 local_creneau, chosed_salle)
+                                                                                 local_creneau, chosed_salle,
+                                                                                 datetime.strptime(parametres["date_premier_jour"], '%a %b %d %H:%M:%S %Y'))
                         creneaux_candidat.append(creneau_created)
                         break
 
@@ -204,7 +208,7 @@ def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_pro
          "temps_preparation": temps_preparation_m2}
 
 
-def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end):
+def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end, date_premier_jour):
     for creneau in local_creneau:
         creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
             creneau["debut_preparation"]) == str else creneau["debut_preparation"]
@@ -212,12 +216,15 @@ def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end):
             creneau["fin_preparation"]) == str else creneau["fin_preparation"]
         creneau["fin"] = datetime.strptime(creneau["fin"], '%a %b %d %H:%M:%S %Y') if type(
             creneau["fin"]) == str else creneau["fin"]
+    date_premier_jour = datetime.strptime(date_premier_jour, '%a %b %d %H:%M:%S %Y')
 
     all_creneaux = local_creneau
     creneaux_from_half_day = []
 
     for creneau in all_creneaux:
-        if creneau["debut_preparation"].day == jour_passage:
+        if creneau["debut_preparation"].year == date_premier_jour.year \
+                and creneau["debut_preparation"].month == date_premier_jour.month \
+                and creneau["debut_preparation"].day == date_premier_jour.day + jour_passage - 1:
             if timedelta(hours=creneau["debut_preparation"].hour) >= start and timedelta(
                     hours=creneau["fin"].hour) <= end:
                 creneaux_from_half_day.append(creneau)
@@ -229,12 +236,15 @@ def is_a_salle_available(passage, creneaux_from_half_day, heure_debut_preparatio
     for salle in passage["salle"]:
         salle_available = True
         for creneau in creneaux_from_half_day:
+            logging.info(heure_debut_preparation_voulue + passage["temps_preparation"])
+            logging.info(timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
             if creneau["id_salle"] == salle["id_salle"] \
-                and not ((heure_debut_preparation_voulue + passage["temps_preparation"]
-                          >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
-                         or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
-                             <= timedelta(hours=creneau["fin_preparation"].hour,
-                                          minutes=creneau["fin_preparation"].minute))):
+                    and not ((heure_debut_preparation_voulue + passage["temps_preparation"]
+                              >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
+                             or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage[
+                        "temps_passage"]
+                                 <= timedelta(hours=creneau["fin_preparation"].hour,
+                                              minutes=creneau["fin_preparation"].minute))):
                 salle_available = False
                 break
         if salle_available:
@@ -246,7 +256,8 @@ def is_a_salle_available(passage, creneaux_from_half_day, heure_debut_preparatio
 def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_voulue, parametres):
     if creneau["id_candidat"] == candidat["id_candidat"] \
             and not ((heure_debut_preparation_voulue
-                      >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute) + timedelta(minutes=parametres["temps_pause_eleve"]))
+                      >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute) + timedelta(
+                minutes=parametres["temps_pause_eleve"]))
                      or (heure_debut_preparation_voulue + passage["temps_preparation"] +
                          passage["temps_passage"] + timedelta(minutes=parametres["temps_pause_eleve"])
                          <= timedelta(hours=creneau["debut_preparation"].hour,
@@ -295,15 +306,15 @@ def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue,
     return False
 
 
-def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candidat, passage, local_creneau, salle):
+def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candidat, passage, local_creneau, salle, date_debut):
     heure_debut_preparation_voulue_datetime = datetime.strptime(
-        f'{jour_passage}/{datetime.now().month}/{datetime.now().year} ' + str(heure_debut_preparation_voulue),
+        f'{date_debut.day + jour_passage - 1}/{date_debut.month}/{date_debut.year} ' + str(heure_debut_preparation_voulue),
         '%d/%m/%Y %H:%M:%S')
     fin_preparation_matiere_datetime = datetime.strptime(
-        f'{jour_passage}/{datetime.now().month}/{datetime.now().year} ' + str((
+        f'{date_debut.day + jour_passage - 1}/{date_debut.month}/{date_debut.year} ' + str((
                 heure_debut_preparation_voulue + passage["temps_preparation"])), '%d/%m/%Y %H:%M:%S')
     fin_passage_matiere_datetime = datetime.strptime(
-        f'{jour_passage}/{datetime.now().month}/{datetime.now().year} ' + str((
+        f'{date_debut.day + jour_passage - 1}/{date_debut.month}/{date_debut.year} ' + str((
                 heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"])),
         '%d/%m/%Y %H:%M:%S')
 
@@ -319,7 +330,7 @@ def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candid
 
 def create_creneau(creneau, date_debut, jour_candidat):
     creneau["debut_preparation"] = datetime.strptime(
-        f'{date_debut.day+jour_candidat-1}/{date_debut.month}/{date_debut.year} {creneau["debut_preparation"].hour}:{creneau["debut_preparation"].minute}:{creneau["debut_preparation"].second}',
+        f'{date_debut.day + jour_candidat - 1}/{date_debut.month}/{date_debut.year} {creneau["debut_preparation"].hour}:{creneau["debut_preparation"].minute}:{creneau["debut_preparation"].second}',
         '%d/%m/%Y %H:%M:%S')
     creneau["fin_preparation"] = datetime.strptime(
         f'{date_debut.day + jour_candidat - 1}/{date_debut.month}/{date_debut.year} {creneau["fin_preparation"].hour}:{creneau["fin_preparation"].minute}:{creneau["fin_preparation"].second}',
