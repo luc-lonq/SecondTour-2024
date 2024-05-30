@@ -27,7 +27,6 @@ def generation_calendrier():
         for _ in range(3):
 
             for passage in passages:
-                logging.info(local_creneau)
                 creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, candidat["jour"], start,
                                                                        end, parametres["date_premier_jour"])
                 heure_debut_preparation_voulue = start
@@ -236,8 +235,6 @@ def is_a_salle_available(passage, creneaux_from_half_day, heure_debut_preparatio
     for salle in passage["salle"]:
         salle_available = True
         for creneau in creneaux_from_half_day:
-            logging.info(heure_debut_preparation_voulue + passage["temps_preparation"])
-            logging.info(timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
             if creneau["id_salle"] == salle["id_salle"] \
                     and not ((heure_debut_preparation_voulue + passage["temps_preparation"]
                               >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
