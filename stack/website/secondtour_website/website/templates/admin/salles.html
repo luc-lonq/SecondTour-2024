@@ -33,7 +33,6 @@
                                 <input type="text" class="form-control finder" v-on:keyup="finder(1, 0)" placeholder="">
                             </div>
                         </th>
-                        <th scope="col" style="width: 15%;" class="align-text-top">Fiche d'émargement</th>
                         <th scope="col" class="modifier align-text-top">Modifier</th>
                         <th scope="col" class="supprimer align-text-top">Supprimer</th>
                     </tr>
@@ -45,13 +44,10 @@
                             a_salle.id_salle %} - Loge {{a_matiere.nom}} {% for serie in all_series %}{% if serie.id_serie ==
                             a_matiere.id_serie %}{{ serie.nom }}{% endif%}{% endfor %}{% endif %}{% endfor %}</td>
                         <td scope="row">
-
-                        </td>
-                        <td scope="row">
                             <form method="post" action="{{url_for('admin_routes.salles')}}"
                                 id="modifySalleForm{{a_salle.id_salle}}">
                                 <input type="hidden" name="id" value="{{a_salle.id_salle}}">
-                                <button type="button" id="{{a_salle.id_salle}}" data-bs-toggle="modal"
+                                <button type="button" id="modify{{a_salle.id_salle}}" data-bs-toggle="modal"
                                     data-bs-target="#modifyModal"
                                     class="modifRow btn btn-outline-warning">Modifier</button>
                             </form>
@@ -60,105 +56,119 @@
                             <form method="post" action="{{url_for('admin_routes.salles')}}"
                                 id="deleteSalleForm{{a_salle.id_salle}}">
                                 <input type="hidden" name="id" value="{{a_salle.id_salle}}">
-                                <button type="button" id="{{a_salle.id_salle}}" data-bs-toggle="modal"
+                                <button type="button" id="delete{{a_salle.id_salle}}" data-bs-toggle="modal"
                                     data-bs-target="#confirmDeleteModal"
                                     class="deleteRow btn btn-outline-danger">Supprimer</button>
                             </form>
                         </td>
                     </tr>
-                    {% for j in range(1,jour+1) %}
-                    {% for m in range(2) %}
                     <tr style="--bs-table-hover-bg: transparent; --bs-table-accent-bg: transparent;" class="not-null">
-                        <td colspan="100%"
-                            style="padding: 0; background: transparent; --bs-table-accent-bg: transparent;">
+                        <td colspan="100%" style="padding: 0; background: transparent; --bs-table-accent-bg: transparent;">
                             <div class="collapse" id="accordion{{a_salle.id_salle}}" style="margin: 15px 10px;">
                                 <div class="table-responsive thumbnail">
-                                    <table class="table table-light table-striped table-hover">
+                                    <table class="table table-light table-striped table-hover" id="calendar{{a_salle.id_salle}}">
                                         <thead>
                                             <tr>
-                                                <th>Jour {{j}} {% if m != 1 %}Matin{% else %}Après-midi{% endif %}</th>
-                                                <th>
-                                                    <div style="float:right">
-                                                        <button class="btn btn-primary"
-                                                            v-on:click="downloadPDFWithBrowserPrint('tableAccordion{{a_salle.id_salle}}{{j}}{{m}}', '{{a_salle.numero}}')">
-                                                            Télécharger<i class="fas fa-print ml-s"></i></button>
-                                                    </div>
+                                                <th scope="col" class="align-text-top">Demi-journée</th>
+                                                <th scope="col">
+                                                    <p style="float:right">Fiche émargement</p>
                                                 </th>
                                             </tr>
                                         </thead>
-                                    </table>
-                                </div>
-                                <div class="table-responsive thumbnail">
-                                    <table class="table table-light table-striped table-hover tableAccordion{{a_salle.id_salle}}{{j}}{{m}}"
-                                        id="tableAccordion{{a_salle.id_salle}}{{j}}{{m}}">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Nom</th>
-                                                <th scope="col">Prénom</th>
-                                                <th scope="col">Matière</th>
-                                                <th scope="col">Série</th>
-                                                <th scope="col">Heure de début préparation</th>
-                                                <th scope="col">Heure de fin préparation</th>
-                                                <th scope="col">Heure de fin de passage</th>
-                                                <th scope="col">Emargement</th>
-                                            </tr>
-                                        </thead>
                                         <tbody>
-                                            {% for creneau in all_creneaux %}
-                                            {% if creneau.id_salle == a_salle.id_salle %}
-                                            {% for candidat in all_candidats %}
-                                            {% if candidat.id_candidat == creneau.id_candidat %}
-                                            {% if candidat.jour == j %}
-                                            {% if candidat.matin != m %}
-
-                                            <tr class="not-null">
-                                                <td scope="row">{{candidat.nom}}</td>
-                                                <td scope="row">{{candidat.prenom}}</td>
-                                                {% for matiere_scope in all_matieres %}
-                                                {% if matiere_scope.id_matiere ==
-                                                creneau.id_matiere %}
+                                            {% for j in range(1,jour+1) %}
+                                            {% for m in range(2) %}
+                                            <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#tableAccordion{{a_salle.id_salle}}{{j}}{{m}}">
+                                                <td scope="row">Jour {{j}} {% if m != 1 %}Matin{% else %}Après-midi{% endif %}</td>
                                                 <td>
-                                                    {{ matiere_scope.nom }}
+                                                    <div style="float:right">
+                                                        <button class="btn btn-primary"
+                                                            v-on:click="downloadPDFWithBrowserPrint('tableEmargement{{a_salle.id_salle}}{{j}}{{m}}', '{{a_salle.numero}}')">
+                                                            Télécharger<i class="fas fa-print ml-s"></i></button>
+                                                    </div>
                                                 </td>
-                                                <td>
-                                                    {% for serie in all_series %}
-                                                    {% if serie.id_serie ==
-                                                    matiere_scope.id_serie %}
-                                                    {{ serie.nom }}
-                                                    {% endif%}
-                                                    {% endfor %}
-                                                </td>
-                                                {% endif %}
-                                                {% endfor %}
-                                                <td scope="row">Jour
-                                                    {{creneau.debut_preparation.strftime("%d")}}
-                                                    |
-                                                    {{creneau.debut_preparation.strftime("%H:%M")}}
-                                                </td>
-                                                <td scope="row">Jour
-                                                    {{creneau.fin_preparation.strftime("%d")}} |
-                                                    {{creneau.fin_preparation.strftime("%H:%M")}}
-                                                </td>
-                                                <td scope="row">Jour
-                                                    {{creneau.fin.strftime("%d")}} |
-                                                    {{creneau.fin.strftime("%H:%M")}}</td>
-                                                <td scope="row"></td>
                                             </tr>
-                                            {% endif %}
-                                            {% endif %}
-                                            {% endif %}
+                                            <tr style="--bs-table-hover-bg: transparent; --bs-table-accent-bg: transparent;" class="not-null">
+                                                <td colspan="100%" style="padding: 0; background: transparent; --bs-table-accent-bg: transparent;">
+                                                    <div class="collapse" id="tableAccordion{{a_salle.id_salle}}{{j}}{{m}}" style="margin: 15px 10px;">
+                                                        <div class="table-responsive thumbnail">
+                                                            <table class="table table-light table-striped table-hover tableEmargement{{a_salle.id_salle}}{{j}}{{m}}"
+                                                                id="tableEmargement{{a_salle.id_salle}}{{j}}{{m}}">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th scope="col">Nom</th>
+                                                                        <th scope="col">Prénom</th>
+                                                                        <th scope="col">Matière</th>
+                                                                        <th scope="col">Série</th>
+                                                                        <th scope="col">Heure de début préparation</th>
+                                                                        <th scope="col">Heure de fin préparation</th>
+                                                                        <th scope="col">Heure de fin de passage</th>
+                                                                        <th scope="col">Emargement</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {% for creneau in all_creneaux %}
+                                                                    {% if creneau.id_salle == a_salle.id_salle %}
+                                                                    {% for candidat in all_candidats %}
+                                                                    {% if candidat.id_candidat == creneau.id_candidat %}
+                                                                    {% if candidat.jour == j %}
+                                                                    {% if candidat.matin != m %}
+
+                                                                    <tr class="not-null">
+                                                                        <td scope="row">{{candidat.nom}}</td>
+                                                                        <td scope="row">{{candidat.prenom}}</td>
+                                                                        {% for matiere_scope in all_matieres %}
+                                                                        {% if matiere_scope.id_matiere ==
+                                                                        creneau.id_matiere %}
+                                                                        <td>
+                                                                            {{ matiere_scope.nom }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {% for serie in all_series %}
+                                                                            {% if serie.id_serie ==
+                                                                            matiere_scope.id_serie %}
+                                                                            {{ serie.nom }}
+                                                                            {% endif%}
+                                                                            {% endfor %}
+                                                                        </td>
+                                                                        {% endif %}
+                                                                        {% endfor %}
+                                                                        <td scope="row">Jour
+                                                                            {{creneau.debut_preparation.strftime("%d")}}
+                                                                            |
+                                                                            {{creneau.debut_preparation.strftime("%H:%M")}}
+                                                                        </td>
+                                                                        <td scope="row">Jour
+                                                                            {{creneau.fin_preparation.strftime("%d")}} |
+                                                                            {{creneau.fin_preparation.strftime("%H:%M")}}
+                                                                        </td>
+                                                                        <td scope="row">Jour
+                                                                            {{creneau.fin.strftime("%d")}} |
+                                                                            {{creneau.fin.strftime("%H:%M")}}</td>
+                                                                        <td scope="row"></td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endif %}
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                             {% endfor %}
-                                            {% endif %}
                                             {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
+
                             </div>
                         </td>
                     </tr>
                     <tr class="no-border not-null"></tr>
-                    {% endfor %}
-                    {% endfor %}
                     {% endfor %}
                 </tbody>
             </table>
