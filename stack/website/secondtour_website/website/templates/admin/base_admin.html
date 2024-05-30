@@ -19,7 +19,7 @@
             <a href="{{url_for('admin_routes.accueil')}}" {% if request.url_rule.endpoint=="admin_routes.accueil"
                 %}class="nav-link active" aria-current="page" {% else %}class="nav-link text-white" {% endif %}>
                 <i class="fas fa-home"></i>
-                <span class="ms-2">accueil</span>
+                <span class="ms-2">Accueil</span>
             </a>
         </li>
         <li>
@@ -76,7 +76,7 @@
         <li>
             <a href="{{url_for('admin_routes.parametres')}}" {% if request.url_rule.endpoint=="admin_routes.parametres"
                 %}class="nav-link active" aria-current="page" {% else %}class="nav-link text-white" {% endif %}>
-                <i class="fas fa-user-circle"></i>
+                <i class="bi bi-gear"></i>
                 <span class="ms-2">Paramètres</span>
             </a>
         </li>
