@@ -95,7 +95,8 @@ def accueil():
         #     all_salles.append(salle.as_dict())
         return render_template('admin/accueil.html', all_professeurs=all_professeurs,
                                all_candidats=all_candidats, all_creneaux=all_creneaux, all_series=all_series,
-                               all_matieres=all_matieres, all_salles=all_salles, jour=parametres[0]["max_jour"])
+                               all_matieres=all_matieres, all_salles=all_salles, jour=parametres[0]["max_jour"],
+                               date=datetime.strptime(parametres[0]["date_premier_jour"], '%a %b %d %H:%M:%S %Y'))
     else:
         return redirect(url_for('main_routes.connexion'))
 
