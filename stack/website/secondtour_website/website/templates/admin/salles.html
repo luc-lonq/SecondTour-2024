@@ -100,9 +100,8 @@
                                                                         <th scope="col">Prénom</th>
                                                                         <th scope="col">Matière</th>
                                                                         <th scope="col">Série</th>
-                                                                        <th scope="col">Heure de début préparation</th>
-                                                                        <th scope="col">Heure de fin préparation</th>
-                                                                        <th scope="col">Heure de fin de passage</th>
+                                                                        <th scope="col">Jour</th>
+                                                                        <th scope="col">Horaires</th>
                                                                         <th scope="col">Emargement</th>
                                                                     </tr>
                                                                 </thead>
@@ -133,18 +132,16 @@
                                                                         </td>
                                                                         {% endif %}
                                                                         {% endfor %}
-                                                                        <td scope="row">Jour
-                                                                            {{creneau.debut_preparation.strftime("%d")}}
-                                                                            |
-                                                                            {{creneau.debut_preparation.strftime("%H:%M")}}
+                                                                        <td scope="row">
+                                                                            {{creneau.debut_preparation.strftime("%d-%m")}}
                                                                         </td>
-                                                                        <td scope="row">Jour
-                                                                            {{creneau.fin_preparation.strftime("%d")}} |
-                                                                            {{creneau.fin_preparation.strftime("%H:%M")}}
+                                                                        <td scope="row">
+                                                                            Début de préparation : {{creneau.debut_preparation.strftime("%Hh%M")}}
+                                                                            <br>
+                                                                            Début de passage : {{creneau.fin_preparation.strftime("%Hh%M")}}
+                                                                            <br>
+                                                                            Fin : {{creneau.fin.strftime("%Hh%M")}}
                                                                         </td>
-                                                                        <td scope="row">Jour
-                                                                            {{creneau.fin.strftime("%d")}} |
-                                                                            {{creneau.fin.strftime("%H:%M")}}</td>
                                                                         <td scope="row"></td>
                                                                     </tr>
                                                                     {% endif %}
