@@ -14,7 +14,6 @@ def generation_calendrier():
     local_creneau = []
 
     for candidat in list_candidats:
-        logging.info(candidat)
         if candidat["absent"]:
             continue
         start, end = get_horaires(candidat, parametres)
@@ -96,7 +95,8 @@ def generation_calendrier():
 
         if len(creneaux_candidat) == 2:
             for creneau in creneaux_candidat:
-                create_creneau(creneau)
+                create_creneau(creneau, datetime.strptime(parametres["date_premier_jour"], '%a %b %d %H:%M:%S %Y'),
+                               candidat["jour"])
 
     result = test_calendar_complete()
     flash(result[0], result[1])
@@ -119,7 +119,6 @@ def get_data():
 def order_candidats_list(all_candidats):
     list_candidats = []
     for candidat in all_candidats:
-        logging.info(candidat)
         list_candidats.append(candidat)
 
     list_candidats_ordered = []
@@ -128,9 +127,6 @@ def order_candidats_list(all_candidats):
             list_candidats_ordered.insert(0, candidat)
         else:
             list_candidats_ordered.append(candidat)
-
-    for candidat in list_candidats_ordered:
-        logging.info(candidat)
 
     return list_candidats_ordered
 
@@ -302,14 +298,14 @@ def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue,
 def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candidat, passage, local_creneau, salle):
     heure_debut_preparation_voulue_datetime = datetime.strptime(
         f'{jour_passage}/{datetime.now().month}/{datetime.now().year} ' + str(heure_debut_preparation_voulue),
-        '%d/%m/%Y %H:%M:%f')
+        '%d/%m/%Y %H:%M:%S')
     fin_preparation_matiere_datetime = datetime.strptime(
         f'{jour_passage}/{datetime.now().month}/{datetime.now().year} ' + str((
-                heure_debut_preparation_voulue + passage["temps_preparation"])), '%d/%m/%Y %H:%M:%f')
+                heure_debut_preparation_voulue + passage["temps_preparation"])), '%d/%m/%Y %H:%M:%S')
     fin_passage_matiere_datetime = datetime.strptime(
         f'{jour_passage}/{datetime.now().month}/{datetime.now().year} ' + str((
                 heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"])),
-        '%d/%m/%Y %H:%M:%f')
+        '%d/%m/%Y %H:%M:%S')
 
     creneau = {"id_creneau": "null", "id_candidat": candidat["id_candidat"],
                "id_matiere": passage["matiere"]["id_matiere"], "id_salle": salle["id_salle"],
@@ -321,7 +317,17 @@ def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candid
     return local_creneau, creneau
 
 
-def create_creneau(creneau):
+def create_creneau(creneau, date_debut, jour_candidat):
+    creneau["debut_preparation"] = datetime.strptime(
+        f'{date_debut.day+jour_candidat-1}/{date_debut.month}/{date_debut.year} {creneau["debut_preparation"].hour}:{creneau["debut_preparation"].minute}:{creneau["debut_preparation"].second}',
+        '%d/%m/%Y %H:%M:%S')
+    creneau["fin_preparation"] = datetime.strptime(
+        f'{date_debut.day + jour_candidat - 1}/{date_debut.month}/{date_debut.year} {creneau["fin_preparation"].hour}:{creneau["fin_preparation"].minute}:{creneau["fin_preparation"].second}',
+        '%d/%m/%Y %H:%M:%S')
+    creneau["fin"] = datetime.strptime(
+        f'{date_debut.day + jour_candidat - 1}/{date_debut.month}/{date_debut.year} {creneau["fin"].hour}:{creneau["fin"].minute}:{creneau["fin"].second}',
+        '%d/%m/%Y %H:%M:%S')
+
     res = main_database.add_creneau(creneau["id_candidat"], creneau["id_matiere"], creneau["id_salle"],
                                     creneau["debut_preparation"], creneau["fin_preparation"], creneau["fin"],
                                     auto_commit=False, ret=True)
