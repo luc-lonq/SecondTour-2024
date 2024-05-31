@@ -39,24 +39,6 @@ def accueil():
             form = request.form
             if form.get('generate_button') is not None:
                 main_calendrier.generation_calendrier()
-            elif form.get('excel_button') is not None:
-                filename = app.config['UPLOAD_FOLDER'] + "/donees.xlsx"
-                writer = pd.ExcelWriter(filename)
-                response = ask_api("data/fetchmulti", ["creneau", "candidat", "professeur", "salle", "serie",
-                                                       "matiere", "choix_matiere", "utilisateur",
-                                                       "token", "horaire"])
-                if response.status_code != 200:
-                    flash(
-                        "Une erreur est survenue lors de la récupération des données", "danger")
-                tables = response.json()
-                for table in tables:
-                    data_list = table
-                    df = pd.DataFrame(data_list)
-                    if table:
-                        df.to_excel(writer, sheet_name=list(
-                            table[0].keys())[0].replace("id_", ""))
-                writer.save()
-                return send_file(filename)
         else:
             result = main_calendrier.test_calendar_complete()
             flash(result[0], result[1]) if result[1] == "danger" else flash(
