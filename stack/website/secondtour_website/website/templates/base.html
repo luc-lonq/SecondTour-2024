@@ -385,63 +385,68 @@
             let textOffset = (doc.internal.pageSize.width - textWidth) / 2
             doc.text(textOffset, y, text)
           },
-          downloadPDFWithBrowserPrint: function (
-            name,
-            num_salle,
-            output = false
+          downloadPDFEmargement: function (
+            name, num_salle, demi_journee, date, output = false
           ) {
-            let doc = new jsPDF('p', 'pt', 'a4')
-            let htmlstring = ''
-            let tempVarToCheckPageHeight = 0
-            let pageHeight = 0
+            let doc = new jsPDF('p', 'pt', 'a4');
+            let htmlstring = '';
+            let tempVarToCheckPageHeight = 0;
+            let pageHeight = 0;
+            let demi_journee_string
+            if (demi_journee == 0) {
+              demi_journee_string = 'Matin';
+            }
+            else {
+              demi_journee_string = "Après Midi"
+            }
 
-            pageHeight = doc.internal.pageSize.height
+            pageHeight = doc.internal.pageSize.height;
             specialElementHandlers = {
               // element with id of "bypass" - jQuery style selector
               '#bypassme': function (element, renderer) {
                 // true = "handled elsewhere, bypass text extraction"
                 return true
               }
-            }
+            };
             margins = {
               top: 150,
               bottom: 60,
               left: 40,
               right: 40,
               width: 600
-            }
-            doc.setFontSize(17)
-            doc.setLineWidth(4)
-            doc.text(20, 20, 'Salle : ' + num_salle.toString())
+            };
+            doc.setFontSize(17);
+            doc.setLineWidth(4);
+            doc.text(20, 20, num_salle + ' ' + date + ' ' + demi_journee_string);
             //doc.text(200, y = y + 30, "Liste d'émargement");
-            doc.setFontSize(20)
-            this.centered_text("Liste d'émargement", 60, doc)
-
+            doc.setFontSize(20);
+            centered_text("Liste d'émargement", 45, doc);
             if (document.getElementById(name)) {
               doc.autoTable({
                 html: '#' + name,
                 startY: 70,
                 theme: 'grid',
-                columnStyles: {
-                  7: {
-                    cellWidth: 80
-                  }
-                },
                 styles: {
                   minCellHeight: 40
                 },
                 didParseCell: function (table) {
                   if (table.section === 'head') {
-                    table.cell.styles.fillColor = '#4c5cff'
+                    table.cell.styles.fillColor = '#4c5cff';
                   }
                 }
-              })
+              });
+            }
 
-              if (!output) {
-                doc.save(num_salle.toString() + '_listeDEmargement.pdf')
-              } else {
-                return doc
+            if (!output) {
+              if (demi_journee == 0) {
+                demi_journee_string = 'matin';
               }
+              else {
+                demi_journee_string = "apresmidi"
+              }
+              doc.save(num_salle + 'emargement' + date + demi_journee_string);
+            } else {
+              return doc;
             }
           },
           downloadCalendar: function (calendar_id, title, name = 'Calendrier.pdf') {
@@ -525,14 +530,14 @@
             } else {
               document.forms['myform'].submit()
             }
+          },
+          mounted: function () {
+            // this.initParticles()
+            this.arrowOnTable()
+            this.breakAllDoublons()
+            this.instancitateTogglePassword()
+            this.allTrigger()
           }
-        },
-        mounted: function () {
-          // this.initParticles()
-          this.arrowOnTable()
-          this.breakAllDoublons()
-          this.instancitateTogglePassword()
-          this.allTrigger()
         }
       })
     </script>

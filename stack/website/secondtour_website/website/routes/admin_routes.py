@@ -323,7 +323,8 @@ def salles():
         return render_template('admin/salles.html', all_salles=all_salles, all_professeurs=all_professeurs,
                                all_matieres=all_matieres, all_creneaux=all_creneaux, all_candidats=all_candidats,
                                all_choix_matieres=all_choix_matieres,
-                               all_series=all_series, jour=parametres[0]["max_jour"])
+                               all_series=all_series, jour=parametres[0]["max_jour"],
+                               date=datetime.strptime(parametres[0]["date_premier_jour"], '%a %b %d %H:%M:%S %Y'))
     else:
         return redirect(url_for('main_routes.connexion'))
 
