@@ -47,7 +47,7 @@
                             <form method="post" action="{{url_for('admin_routes.salles')}}"
                                 id="modifySalleForm{{a_salle.id_salle}}">
                                 <input type="hidden" name="id" value="{{a_salle.id_salle}}">
-                                <button type="button" id="modify{{a_salle.id_salle}}" data-bs-toggle="modal"
+                                <button type="button" id="{{a_salle.id_salle}}" data-bs-toggle="modal"
                                     data-bs-target="#modifyModal"
                                     class="modifRow btn btn-outline-warning">Modifier</button>
                             </form>
@@ -56,8 +56,7 @@
                             <form method="post" action="{{url_for('admin_routes.salles')}}"
                                 id="deleteSalleForm{{a_salle.id_salle}}">
                                 <input type="hidden" name="id" value="{{a_salle.id_salle}}">
-                                <button type="button" id="delete{{a_salle.id_salle}}" data-bs-toggle="modal"
-                                    data-bs-target="#confirmDeleteModal"
+                                <button type="submit" name="delete_button" id="{{a_salle.id_salle}}"
                                     class="deleteRow btn btn-outline-danger">Supprimer</button>
                             </form>
                         </td>
@@ -397,16 +396,19 @@
 
         myvar_salles = '{{all_salles|tojson}}';
         var all_salles = JSON.parse(myvar_salles);
-
+        console.log(all_salles)
+        console.log($myRowId)
         let salle;
         for (var i = 0; i < all_salles.length; i++) {
             if (all_salles[i]['id_salle'] == $myRowId) {
                 salle = all_salles[i];
+                console.log(salle)
             }
         }
 
         //set salle
         form_elements[0].value = salle['numero'];
     })
+
 </script>
 {% endblock %}
