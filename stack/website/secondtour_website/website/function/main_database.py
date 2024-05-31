@@ -295,21 +295,27 @@ def delete_matiere(id):
                 "Impossible de supprimer les creneaux liés à la matiere")
             return ['Impossible de supprimer les creneaux liés à la matiere', 'danger']
         # choix matieres
-        choix_matiere_filter = {"matiere1": id}
+        choix_matiere_filter = {"filter": {"matiere1": id}, "data": {"matiere1": 'null'}}
         response = ask_api(
-            f"data/deletefilter/choix_matiere", choix_matiere_filter)
+            f"data/updatefilter/choix_matiere", choix_matiere_filter)
         if response.status_code != 202:
             logging.warning(
-                "Impossible de supprimer cette matiere dans le choix des candidats")
-            return ['Impossible de supprimer cette matiere dans le choix des candidats', 'danger']
-        choix_matiere_filter = {"matiere2": id}
+                "Impossible de modifier le choix de matière du candidat")
+            return ['Impossible de modifier le choix de matière du candidat', 'danger']
+        choix_matiere_filter = {"filter": {"matiere2": id}, "data": {"matiere2": 'null'}}
         response = ask_api(
-            f"data/deletefilter/choix_matiere", choix_matiere_filter)
+            f"data/updatefilter/choix_matiere", choix_matiere_filter)
         if response.status_code != 202:
             logging.warning(
-                "Impossible de supprimer cette matiere dans le choix des candidats")
-            return ['Impossible de supprimer cette matiere dans le choix des candidats', 'danger']
-
+                "Impossible de modifier le choix de matière du candidat")
+            return ['Impossible de modifier le choix de matière du candidat', 'danger']
+        professeur_filter = {"filter": {"matiere": id}, "data": {"matiere": 'null'}}
+        response = ask_api(
+            f"data/updatefilter/professeur", professeur_filter)
+        if response.status_code != 202:
+            logging.warning(
+                "Impossible de modifier ce professeur")
+            return ['Impossible de modifier ce professeur', 'danger']
         matiere_filter = {"id_matiere": id}
         response = ask_api(f"data/deletefilter/matiere", matiere_filter)
         if response.status_code != 202:
