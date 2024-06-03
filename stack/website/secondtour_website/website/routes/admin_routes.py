@@ -768,13 +768,17 @@ def parametres():
             logging.info("POST")
             form = request.form
             if form.get('modify_button') is not None:
-                logging.info("BOUTON")
-                #if 'jour' in form and 'debut_matin' in form and 'fin_matin' in form and 'debut_apresmidi' in form and 'fin_apresmidi' in form and 'intervalle' in form and 'pause' in form and 'passage' in form:
-                result = main_database.change_parametres(
-                    form['jour'], form['debut_matin'], form['fin_matin'], form['debut_apresmidi'],
-                    form["fin_apresmidi"], form['intervalle'], form['pause'], form['passage'])
+                if 'jour' in form and 'debut_matin' in form and 'fin_matin' in form and 'debut_apresmidi' in form and 'fin_apresmidi' in form and 'intervalle' in form and 'pause' in form and 'passage' in form:
+                    result = main_database.change_parametres(
+                        form['jour'], form['debut_matin'], form['fin_matin'], form['debut_apresmidi'],
+                        form["fin_apresmidi"], form['intervalle'], form['pause'], form['passage'])
+                    flash(result[0], result[1])
+                    logging.warning(result[0])
+            elif form.get('delete_button') is not None:
+                result = main_database.delete_all_content()
                 flash(result[0], result[1])
                 logging.warning(result[0])
+
 
     response = ask_api("data/fetch/parametres", [])
     if response.status_code != 200:

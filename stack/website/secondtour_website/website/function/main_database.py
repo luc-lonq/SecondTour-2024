@@ -12,13 +12,59 @@ from ..database.main_database import *
 
 
 def delete_all_content():
-    # for mapper in db.Model.registry.mappers:
-    #     if str(mapper) == "mapped class UTILISATEUR->UTILISATEUR":
-    #         continue
-    #     db.session.query(mapper).delete()
-    response = ask_api("data/deleteall", {})
-    if response.status_code != 202:
-        logging.warning("Erreur lors de la suppression des données")
+    try:
+        # choix matiere
+        response = ask_api("data/delete/choix_matiere", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des choix des matières")
+            return "Erreur lors de la suppression des choix de matières", "danger"
+
+        # creneaux
+        response = ask_api("data/delete/creneau", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des creneaux")
+            return "Erreur lors de la suppression des creneaux", "danger"
+
+        # professeurs
+        response = ask_api("data/delete/professeur", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des professeurs")
+            return "Erreur lors de la suppression des professeurs", "danger"
+
+        # matieres
+        response = ask_api("data/delete/matiere", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des matieres")
+            return "Erreur lors de la suppression des matieres", "danger"
+
+        # candidats
+        response = ask_api("data/delete/candidat", {})
+        if response.status_code != 202:
+            logging.warning("Erreur lors de la suppression des candidats")
+            return "Erreur lors de la suppression des candidats", "danger"
+
+        # salles
+        response = ask_api("data/delete/salle", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des salles")
+            return "Erreur lors de la suppression des salles", "danger"
+
+        # series
+        response = ask_api("data/delete/serie", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des series")
+            return "Erreur lors de la suppression des series", "danger"
+
+        return ['La base de données a été vidée', 'success']
+    except Exception:
+        logging.warning('Erreur : ' + traceback.format_exc())
+        return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
 def insert_admin():
@@ -777,10 +823,9 @@ def delete_all_candidats():
             logging.warning(
                 "Erreur lors de la suppression des creneaux du candidat")
             return "Erreur lors de la suppression des creneaux du candidat", "danger"
+
+        # candidats
         response = ask_api("data/delete/candidat", {})
-
-        print(response.text)
-
         if response.status_code != 202:
             logging.warning("Erreur lors de la suppression des candidats")
             return "Erreur lors de la suppression des candidats", "danger"
