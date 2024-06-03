@@ -492,7 +492,7 @@ def delete_salle(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_professeur(nom, prenom, salle, matiere, admin=False, heure_arrivee1="08:00", heure_depart1="20:00", heure_arrivee2="08:00", heure_depart2="20:00", heure_arrivee3="08:00", heure_depart3="20:00", ret=False):
+def add_professeur(nom, prenom, salle, matiere, ret=False):
     try:
         # user = add_account(email, 'test123', 'Professeur',
         #                    output=True, id_prof=1)
@@ -511,30 +511,6 @@ def add_professeur(nom, prenom, salle, matiere, admin=False, heure_arrivee1="08:
                 return (["Erreur lors de l'insertion d'un professeur", "danger"], professeur)
             return "Erreur lors de l'insertion d'un professeur", "danger"
         professeur["id_professeur"] = response.json()["id"]
-
-        if type(heure_arrivee1) == str:
-            heure_arrivee1 = json.loads(json.dumps(datetime.strptime(
-                heure_arrivee1, '%H:%M'), default=myconverter))
-            heure_depart1 = json.loads(json.dumps(datetime.strptime(
-                heure_depart1, '%H:%M'), default=myconverter))
-            heure_arrivee2 = json.loads(json.dumps(datetime.strptime(
-                heure_arrivee2, '%H:%M')+timedelta(days=1), default=myconverter))
-            heure_depart2 = json.loads(json.dumps(datetime.strptime(
-                heure_depart2, '%H:%M')+timedelta(days=1), default=myconverter))
-            heure_arrivee3 = json.loads(json.dumps(datetime.strptime(
-                heure_arrivee3, '%H:%M')+timedelta(days=2), default=myconverter))
-            heure_depart3 = json.loads(json.dumps(datetime.strptime(
-                heure_depart3, '%H:%M')+timedelta(days=2), default=myconverter))
-        # horaires = HORAIRE(heure_arrivee1, heure_depart1, heure_arrivee2, heure_depart2, heure_arrivee3, heure_depart3, professeur.id_professeur)
-        horaire = {"id_horaire": "null", "horaire_arr1": heure_arrivee1, "horaire_dep1": heure_depart1, "horaire_arr2": heure_arrivee2,
-                   "horaire_dep2": heure_depart2, "horaire_arr3": heure_arrivee3, "horaire_dep3": heure_depart3, "id_professeur": professeur["id_professeur"]}
-        response = ask_api("data/insert/horaire", horaire)
-        if response.status_code != 201:
-            logging.warning(
-                "Erreur lors de l'ajout des horaires du professeur")
-            if ret:
-                return (["Erreur lors de l'ajout des horaires du professeur", 'danger'], horaire)
-            return "Erreur lors de l'ajout des horaires du professeur", "danger"
 
         if ret:
             return [['Le professeur a bien été créé', 'success'], professeur]
@@ -599,7 +575,7 @@ def update_matiere(id, nom, id_serie, temps_preparation, temps_preparation_tiers
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def update_professeur_wep(id, user, nom, prenom, salle, matiere, heure_arrivee1=None, heure_depart1=None, heure_arrivee2=None, heure_depart2=None, heure_arrivee3=None, heure_depart3=None):
+def update_professeur_wep(id, nom, prenom, salle, matiere):
     try:
         professeur = {"filter": {"id_professeur": id}, "data": {
             "nom": nom, "prenom": prenom, "salle": salle if salle else "null",
@@ -610,26 +586,6 @@ def update_professeur_wep(id, user, nom, prenom, salle, matiere, heure_arrivee1=
                 "Erreur lors de l'insertion des matieres du professeur")
             return "Erreur lors de l'insertion des matieres du professeur", "danger"
 
-        heure_arrivee1 = json.loads(json.dumps(datetime.strptime(
-            heure_arrivee1, '%H:%M'), default=myconverter))
-        heure_depart1 = json.loads(json.dumps(datetime.strptime(
-            heure_depart1, '%H:%M'), default=myconverter))
-        heure_arrivee2 = json.loads(json.dumps(datetime.strptime(
-            heure_arrivee2, '%H:%M')+timedelta(days=1), default=myconverter))
-        heure_depart2 = json.loads(json.dumps(datetime.strptime(
-            heure_depart2, '%H:%M')+timedelta(days=1), default=myconverter))
-        heure_arrivee3 = json.loads(json.dumps(datetime.strptime(
-            heure_arrivee3, '%H:%M')+timedelta(days=2), default=myconverter))
-        heure_depart3 = json.loads(json.dumps(datetime.strptime(
-            heure_depart3, '%H:%M')+timedelta(days=2), default=myconverter))
-
-        horaire = {"filter": {"id_professeur": id}, "data": {"horaire_arr1": heure_arrivee1, "horaire_dep1": heure_depart1,
-                                                             "horaire_arr2": heure_arrivee2, "horaire_dep2": heure_depart2, "horaire_arr3": heure_arrivee3, "horaire_dep3": heure_depart3}}
-        response = ask_api("data/updatefilter/horaire", horaire)
-        if response.status_code != 202:
-            logging.warning(
-                "Erreur lors de l'insertion des matieres du professeur")
-            return "Erreur lors de l'insertion des matieres du professeur", "danger"
 
         # professeur = PROFESSEUR.query.filter_by(id_professeur=id).first()
         # if professeur:

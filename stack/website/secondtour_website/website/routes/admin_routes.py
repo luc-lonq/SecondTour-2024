@@ -336,9 +336,7 @@ def professeurs():
                 if 'name' in form and 'surname' in form and 'salle' in form:
                     result = main_database.add_professeur(
                         form['name'], form['surname'], form['salle'],
-                        form['matiere'], False,
-                        form['heure_arrivee1'], form['heure_depart1'], form['heure_arrivee2'],
-                        form['heure_depart2'], form['heure_arrivee3'], form['heure_depart3'])
+                        form['matiere'])
                     flash(result[0], result[1])
                     logging.warning(result[0])
 
@@ -350,20 +348,17 @@ def professeurs():
             elif form.get('modify_button') is not None:
                 if 'user' in form and 'prof_id' in form and 'name' in form and 'surname' in form and 'salle' in form:
                     # result = main_database.delete_professeur(form['prof_id'])
-                    result = main_database.update_professeur_wep(form['prof_id'], form['user'],
+                    result = main_database.update_professeur_wep(form['prof_id'],
                                                                  form['name'], form['surname'], form['salle'],
-                                                                 form.getlist('matiere'),
-                                                                 form['heure_arrivee1'], form['heure_depart1'],
-                                                                 form['heure_arrivee2'], form['heure_depart2'],
-                                                                 form['heure_arrivee3'], form['heure_depart3'])
+                                                                 form['matiere'])
                     flash(result[0], result[1])
                     logging.warning(result[0])
 
-        response = ask_api("data/fetchmulti", ["candidat", "horaire",
-                                               "matiere", "professeur", "salle", "creneau", "serie"])
+        response = ask_api("data/fetchmulti", ["candidat", "matiere", "professeur", "salle",
+                                               "creneau", "serie"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
-        all_candidats, all_horaires, all_matieres, all_professeurs, all_salles, all_creneaux, all_series = response.json()
+        all_candidats, all_matieres, all_professeurs, all_salles, all_creneaux, all_series = response.json()
         all_professeurs.sort(key=lambda professeur: professeur['nom'])
         all_creneaux.sort(key=lambda creneau: creneau['debut_preparation'])
         for creneau in all_creneaux:
@@ -374,9 +369,6 @@ def professeurs():
                 creneau["fin_preparation"]) == str else creneau["fin_preparation"]
             creneau["fin"] = datetime.strptime(creneau["fin"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin"]) == str else creneau["fin"]
-        all_horaires_unsort = all_horaires.copy()
-        all_horaires = transform_dict_strptime(all_horaires_unsort, [
-            "horaire_arr1", "horaire_dep1", "horaire_arr2", "horaire_dep2", "horaire_arr3", "horaire_dep3"])
         all_matieres_filtered = []
         for matiere in all_matieres:
             matiere["nom"] = matiere["nom"].replace(" - None", "")
@@ -417,7 +409,7 @@ def professeurs():
         #     all_liste_matiere.append(liste_matiere.as_dict())
         return render_template('admin/professeurs.html', all_profs=all_professeurs, all_matieres=all_matieres,
                                all_salles=all_salles, all_creneaux=all_creneaux, all_candidats=all_candidats,
-                               all_horaires=all_horaires, all_series=all_series)
+                               all_series=all_series)
     else:
         return redirect(url_for('main_routes.connexion'))
 
@@ -755,8 +747,7 @@ def creneau():
         return render_template('admin/creneau.html', all_professeur=all_professeur, all_creneau=all_creneau,
                                all_candidats=all_candidats, all_matieres=all_matieres, all_salles=all_salles,
                                all_creneau_deb=all_creneau_deb, all_series=all_series,
-                               all_choix_matieres=all_choix_matieres,
-                               all_horaires=all_horaires)
+                               all_choix_matieres=all_choix_matieres)
     else:
         return redirect(url_for('main_routes.connexion'))
 

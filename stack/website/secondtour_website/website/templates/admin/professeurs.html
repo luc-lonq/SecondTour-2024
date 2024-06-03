@@ -71,7 +71,6 @@
                                 </select>
                             </div>
                         </th>
-                        <th scope="col" class="supprimer align-text-top">Horaire</th>
                         <th scope="col" class="supprimer align-text-top">Modifier</th>
                         <th scope="col" class="supprimer align-text-top">Supprimer</th>
                     </tr>
@@ -101,30 +100,6 @@
                             {% for a_salle in all_salles %}
                             {% if a_salle.id_salle == a_prof.salle %}
                             {{a_salle.numero}}
-                            {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% for a_horaire in all_horaires %}
-                            {% if a_horaire.id_professeur == a_prof.id_professeur %}
-                            {% if a_horaire.horaire_arr1.strftime('%Hh%M') != '08h00' or
-                            a_horaire.horaire_dep1.strftime('%Hh%M') != '20h00' %}
-                            <div>{{a_horaire.horaire_arr1.strftime('%d')}} :
-                                {{a_horaire.horaire_arr1.strftime('%Hh%M')}}-{{a_horaire.horaire_dep1.strftime('%Hh%M')}}
-                            </div>
-                            {% endif %}
-                            {% if a_horaire.horaire_arr2.strftime('%Hh%M') != '08h00' or
-                            a_horaire.horaire_dep2.strftime('%Hh%M') != '20h00' %}
-                            <div>{{a_horaire.horaire_arr2.strftime('%d')}} :
-                                {{a_horaire.horaire_arr2.strftime('%Hh%M')}}-{{a_horaire.horaire_dep2.strftime('%Hh%M')}}
-                            </div>
-                            {% endif %}
-                            {% if a_horaire.horaire_arr3.strftime('%Hh%M') != '08h00' or
-                            a_horaire.horaire_dep3.strftime('%Hh%M') != '20h00' %}
-                            <div>{{a_horaire.horaire_arr3.strftime('%d')}} :
-                                {{a_horaire.horaire_arr3.strftime('%Hh%M')}}-{{a_horaire.horaire_dep3.strftime('%Hh%M')}}
-                            </div>
-                            {% endif %}
                             {% endif %}
                             {% endfor %}
                         </td>
@@ -241,37 +216,6 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="arrivee" class="col-form-label">Horaires</label>
-                            <div>
-                                <div class="d-flex justify-content-around" style="margin-top: 5px;">
-                                    <div style="margin: 0 5px;">
-                                        <p>jour 1 :</p>
-                                        <input type="text" class="form-control" id="heure_arrivee1"
-                                            name="heure_arrivee1" aria-describedby="heure_arrivee1_Help" value="08:00"
-                                            style="margin-bottom: 5px;">
-                                        <input type="text" class="form-control" id="heure_depart1" name="heure_depart1"
-                                            aria-describedby="heure_depart1_Help" value="20:00">
-                                    </div>
-                                    <div style="margin: 0 5px;">
-                                        <p>jour 2 :</p>
-                                        <input type="text" class="form-control" id="heure_arrivee2"
-                                            name="heure_arrivee2" aria-describedby="heure_arrivee2_Help" value="08:00"
-                                            style="margin-bottom: 5px;">
-                                        <input type="text" class="form-control" id="heure_depart2" name="heure_depart2"
-                                            aria-describedby="heure_depart2_Help" value="20:00">
-                                    </div>
-                                    <div style="margin: 0 5px;">
-                                        <p>jour 3 :</p>
-                                        <input type="text" class="form-control" id="heure_arrivee3"
-                                            name="heure_arrivee3" aria-describedby="heure_arrivee3_Help" value="08:00"
-                                            style="margin-bottom: 5px;">
-                                        <input type="text" class="form-control" id="heure_depart3" name="heure_depart3"
-                                            aria-describedby="heure_depart3_Help" value="20:00">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -297,7 +241,6 @@
                     <p style="color: orange;">[!] Si le prof est assigné à aucune salle, il n'aura aucun créneau.</p>
                     <form method="post" action="{{url_for('admin_routes.professeurs')}}" id="modifyProfesseurForm">
                         <input id="id_professeur_modify" name="prof_id" value="" hidden>
-                        <input id="id_utilisateur_modify" name="user" value="" hidden>
 
                         <div class="form-group">
                             <label for="name" class="col-form-label">Nom</label>
@@ -329,37 +272,6 @@
                                 </option>
                                 {% endfor %}
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="arrivee" class="col-form-label">Horaires</label>
-                            <div>
-                                <div class="d-flex justify-content-around" style="margin-top: 5px;">
-                                    <div style="margin: 0 5px;">
-                                        <p>jour 1 :</p>
-                                        <input type="text" class="form-control" id="heure_arrivee1"
-                                            name="heure_arrivee1" aria-describedby="heure_arrivee1_Help" value="08:00"
-                                            style="margin-bottom: 5px;">
-                                        <input type="text" class="form-control" id="heure_depart1" name="heure_depart1"
-                                            aria-describedby="heure_depart1_Help" value="20:00">
-                                    </div>
-                                    <div style="margin: 0 5px;">
-                                        <p>jour 2 :</p>
-                                        <input type="text" class="form-control" id="heure_arrivee2"
-                                            name="heure_arrivee2" aria-describedby="heure_arrivee2_Help" value="08:00"
-                                            style="margin-bottom: 5px;">
-                                        <input type="text" class="form-control" id="heure_depart2" name="heure_depart2"
-                                            aria-describedby="heure_depart2_Help" value="20:00">
-                                    </div>
-                                    <div style="margin: 0 5px;">
-                                        <p>jour 3 :</p>
-                                        <input type="text" class="form-control" id="heure_arrivee3"
-                                            name="heure_arrivee3" aria-describedby="heure_arrivee3_Help" value="08:00"
-                                            style="margin-bottom: 5px;">
-                                        <input type="text" class="form-control" id="heure_depart3" name="heure_depart3"
-                                            aria-describedby="heure_depart3_Help" value="20:00">
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </form>
                 </div>
@@ -440,18 +352,18 @@
         //$("#id_utilisateur_modify").attr('value', professeur.id_utilisateur);
 
         //Set the name surname
-        form_elements[2].value = professeur['nom'];
-        form_elements[3].value = professeur['prenom'];
+        form_elements[1].value = professeur['nom'];
+        form_elements[2].value = professeur['prenom'];
 
         //Set the matiere
         
-        select = form_elements[4];
+        select = form_elements[3];
         for (var i = 0; i < select.length; i++) {
             select.options[i].selected = select.options[i].id == "matiere" + id_matiere;
         }
 
         //set the salle
-        select = form_elements[5];
+        select = form_elements[4];
         for (var i = 0; i < select.length; i++) {
             select.options[i].selected = select.options[i].id == 'salle' + id_salle;
         }
