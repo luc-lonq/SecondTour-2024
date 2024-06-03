@@ -39,7 +39,7 @@
                 </thead>
                 <tbody>
                     {% for a_salle in all_salles %}
-                    <tr class="trfilter clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{a_salle.id_salle}}">
+                    <tr class="trfilter clickable salleRow" data-bs-toggle="collapse" data-bs-target="#accordion{{a_salle.id_salle}}">
                         <td scope="row">{{a_salle.numero}}{% for a_matiere in all_matieres %}{% if a_matiere.loge ==
                             a_salle.id_salle %} - Loge {{a_matiere.nom}} {% for serie in all_series %}{% if serie.id_serie ==
                             a_matiere.id_serie %}{{ serie.nom }}{% endif%}{% endfor %}{% endif %}{% endfor %}</td>
@@ -78,11 +78,11 @@
                                             {% for j in range(1,jour+1) %}
                                             {% set n_jour = date.strftime('%d')|int + j - 1%}
                                             {% for m in range(2) %}
-                                            <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#tableAccordion{{a_salle.id_salle}}{{j}}{{m}}">
+                                            <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#tableAccordion{{a_salle.id_salle}}{{j}}{{m}}" id="salleRow{{a_salle.id_salle}}{{j}}{{m}}">
                                                 <td scope="row">{% if n_jour < 10 %}0{% endif %}{{n_jour}}{{date.strftime('-%m-%Y')}}{% if m != 1 %} Matin{% else %} Après-midi{% endif %}</td>
                                                 <td>
                                                     <div style="float:right">
-                                                        <button class="btn btn-primary"
+                                                        <button class="btn btn-primary" id="boutonEmargement{{a_salle.id_salle}}{{j}}{{m}}"
                                                             v-on:click="downloadPDFEmargement('tableEmargement{{a_salle.id_salle}}{{j}}{{m}}',
                                                                         '{{a_salle.numero}}', {{m}},
                                                                         '{% if n_jour < 10 %}0{% endif %}{{n_jour}}{{date.strftime('-%m-%Y')}}')">
@@ -114,7 +114,7 @@
                                                                     {% if candidat.jour == j %}
                                                                     {% if candidat.matin != m %}
 
-                                                                    <tr class="not-null">
+                                                                    <tr class="not-null creneauRow{{a_salle.id_salle}}{{j}}{{m}}">
                                                                         <td scope="row">{{candidat.nom}}</td>
                                                                         <td scope="row">{{candidat.prenom}}</td>
                                                                         {% for matiere_scope in all_matieres %}
@@ -408,6 +408,30 @@
 
         //set salle
         form_elements[0].value = salle['numero'];
+    })
+
+    $('.salleRow').click(function () {
+        myvar_salles = '{{all_salles|tojson}}';
+        var all_salles = JSON.parse(myvar_salles);
+
+        console.log('?')
+        console.log('{{jour}}')
+        for (let salle = 0; salle < all_salles.length; salle++) {
+            for (let jour = 1; jour - 1 < '{{jour}}'; jour++) {
+                for (let matin = 0; matin < 2; matin++) {
+                    console.log('creneauRow' + all_salles[salle]['id_salle'].toString() + jour.toString() + matin.toString())
+                    let tr = document.getElementsByClassName('creneauRow' + all_salles[salle]['id_salle'].toString() + jour.toString() + matin.toString())
+                    if (tr.length === 0) {
+                        console.log('cahce toi')
+                        console.log('salleRow' + all_salles[salle]['id_salle'].toString() + jour.toString() + matin.toString())
+                        let salleRow = document.getElementById('salleRow' + all_salles[salle]['id_salle'].toString() + jour.toString() + matin.toString())
+                        console.log(salleRow)
+                        salleRow.hidden = true;
+                    }
+                }
+            }
+        }
+
     })
 
 </script>
