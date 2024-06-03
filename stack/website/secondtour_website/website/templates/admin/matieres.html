@@ -22,7 +22,7 @@
                         <th scope="col">
                             <div class="th-inner">Nom</div>
                             <div class="filter-control">
-                                <select class="form-select finder break-doublons" v-on:change="finder(1, 0)">
+                                <select class="form-select finder break-doublons" v-on:change="finder">
                                     <option select></option>
                                     {% for matiere in all_matieres %}
                                     <option>{{matiere.nom}}</option>
@@ -33,7 +33,7 @@
                         <th scope="col">
                             <div class="th-inner">Série</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(2, 1)">
+                                <select class="form-select finder" v-on:change="finder">
                                     <option select></option>
                                     {% for a_serie in all_series %}
                                     <option>{{a_serie.nom}}{% if a_serie.specialite1 %} - {{a_serie.specialite1}}{%
@@ -45,27 +45,27 @@
                         <th scope="col">
                             <div class="th-inner">Professeurs</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder(3, 2)" placeholder="">
+                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Temps de préparation</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder(4, 3)"
+                                <input type="text" class="form-control finder" v-on:keyup="finder"
                                 style="width: 150px;" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Temps de passage</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder(5, 4)"
+                                <input type="text" class="form-control finder" v-on:keyup="finder"
                                 style="width: 150px;" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Loge assignée</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(6, 5)">
+                                <select class="form-select finder" v-on:change="finder">
                                     <option select></option>
                                     {% for salle in all_salles %}
                                     <option>{{salle.numero}}</option>
@@ -79,7 +79,7 @@
                 </thead>
                 <tbody>
                     {% for a_matiere in all_matieres %}
-                    <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{a_matiere.id_matiere}}">
+                    <tr class="trfilter clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{a_matiere.id_matiere}}">
                         <td scope="row">{{a_matiere.nom}}</td>
                         <td scope="row">
                             {% for a_serie in all_series %}

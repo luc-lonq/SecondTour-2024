@@ -28,21 +28,21 @@
                         <th scope="col">
                             <div class="th-inner">Nom</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder(1, 0)"
+                                <input type="text" class="form-control finder" v-on:keyup="finder"
                                     style="width: 100px;" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Prénom</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder(2, 1)"
+                                <input type="text" class="form-control finder" v-on:keyup="finder"
                                 style="width: 100px;" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Série</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(3, 2)">
+                                <select class="form-select finder" v-on:change="finder">
                                     <option selected></option>
                                     {% for a_serie in all_series %}
                                     <option>{{a_serie.nom}}{% if a_serie.specialite1 %} - {{a_serie.specialite1}}{%
@@ -54,13 +54,13 @@
                         <th scope="col">
                             <div class="th-inner">Matières</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder(4, 3)" placeholder="">
+                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Tiers temps</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(5, 4)">
+                                <select class="form-select finder" v-on:change="finder">
                                     <option selected></option>
                                     <option>Oui</option>
                                     <option>Non</option>
@@ -70,7 +70,7 @@
                         <th scope="col">
                             <div class="th-inner">Jour</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(6, 5)">
+                                <select class="form-select finder" v-on:change="finder">
                                     <option selected></option>
                                     {% for jour in max_jour %}
                                         <option>{{ jour }}</option>
@@ -81,7 +81,7 @@
                         <th scope="col">
                             <div class="th-inner">Matin</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(7, 6)">
+                                <select class="form-select finder" v-on:change="finder">
                                     <option selected></option>
                                     <option>Oui</option>
                                     <option>Non</option>
@@ -94,7 +94,7 @@
                 </thead>
                 <tbody>
                     {% for candidat in all_candidats %}
-                    <tr class="clickable {% if candidat.absent == False %}table-success{% else %}table-danger{% endif %}"
+                    <tr class="trfilter clickable {% if candidat.absent == False %}table-success{% else %}table-danger{% endif %}"
                         data-bs-target="#accordion{{candidat.id_candidat}}" data-bs-toggle="collapse">
                         <td scope="row">{{candidat.nom}}</td>
                         <td scope="row">{{candidat.prenom}}</td>

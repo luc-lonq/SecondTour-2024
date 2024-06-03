@@ -30,7 +30,7 @@
                         <th scope="col">
                             <div class="th-inner">Numéro</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder(1, 0)" placeholder="">
+                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
                         </th>
                         <th scope="col" class="modifier align-text-top">Modifier</th>
@@ -39,7 +39,7 @@
                 </thead>
                 <tbody>
                     {% for a_salle in all_salles %}
-                    <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{a_salle.id_salle}}">
+                    <tr class="trfilter clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{a_salle.id_salle}}">
                         <td scope="row">{{a_salle.numero}}{% for a_matiere in all_matieres %}{% if a_matiere.loge ==
                             a_salle.id_salle %} - Loge {{a_matiere.nom}} {% for serie in all_series %}{% if serie.id_serie ==
                             a_matiere.id_serie %}{{ serie.nom }}{% endif%}{% endfor %}{% endif %}{% endfor %}</td>

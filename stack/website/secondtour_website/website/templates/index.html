@@ -19,25 +19,25 @@
     <div class="padding-main-calendar">
         <div class="calendar table-responsive">
             <div class="thumbnail" style="overflow: hidden;">
-                <table class="table table-light table-striped calendar">
+                <table class="table table-light table-striped calendar" id="calendar">
                     <thead>
                         <tr>
                             <th scope="col">
                                 <div class="th-inner">Nom</div>
                                 <div class="filter-control">
-                                    <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                                    <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                                 </div>
                             </th>
                             <th scope="col">
                                 <div class="th-inner">Prénom</div>
                                 <div class="filter-control">
-                                    <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                                    <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                                 </div>
                             </th>
                             <th scope="col">
                                 <div class="th-inner">Série</div>
                                 <div class="filter-control">
-                                    <select class="form-select finder" v-on:change="finder()">
+                                    <select class="form-select finder" v-on:change="finder">
                                         <option selected></option>
                                         {% for a_serie in all_series %}
                                         <option>{{a_serie.nom}}</option>
@@ -48,7 +48,7 @@
                             <th scope="col">
                             <div class="th-inner">Epreuves</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
                         </th>
                         </tr>
@@ -57,7 +57,7 @@
                         {% for serie in all_series %}
                             {% for candidat in all_candidats %}
                                 {% if candidat.id_serie == serie.id_serie %}
-                                <tr>
+                                <tr class="trfilter">
                                     <td scope="row">{{candidat.nom}}</td>
                                     <td scope="row">{{candidat.prenom}}</td>
                                     {% for serie in all_series %}
