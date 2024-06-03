@@ -73,6 +73,14 @@
                 {% endfor %}
             </select>
         </div>
+        <div class="form-group" style="margin-top: 1em">
+            <label for="selectDateDebut" class="text-white text-decoration-none">Date du début des épreuves du second groupe</label>
+            <select class="form-control" id="selectDateDebut" name="date_debut">
+                {% for i in range(1, 32) %}
+                <option value="{{ i }}" {% if parametres.debut_premier_jour == i %}selected{% endif %}>{{ i }} Juillet</option>
+                {% endfor %}
+            </select>
+        </div>
         <div style="margin-top: 1em">
             <button class="btn btn-primary" name="modify_button" type="submit" form="changeParametresForm"
                     style="background-color:blue;">Changer les paramètres</button>
@@ -82,6 +90,7 @@
     </form>
 </div>
 {% endblock %}
+
 
 {% block sub_script %}
 <script>

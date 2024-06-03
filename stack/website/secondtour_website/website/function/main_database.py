@@ -941,7 +941,7 @@ def delete_all_creneaux():
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, fin_apresmidi, intervalle, pause, passage):
+def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, fin_apresmidi, intervalle, pause, passage, date_debut):
     try:
         response = ask_api("data/delete/parametres", [])
         if response.status_code != 202:
@@ -958,13 +958,16 @@ def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, fin_apresmi
 
         parametres = {"max_jour": jour, "heure_debut_matin": debut_matin, "heure_fin_matin": fin_matin,
                       "heure_debut_apres_midi": debut_apresmidi, "heure_fin_apres_midi": fin_apresmidi,
-                      "intervalle": intervalle, "temps_pause_eleve": pause, "prof_max_passage_sans_pause": passage}
+                      "intervalle": intervalle, "temps_pause_eleve": pause, "prof_max_passage_sans_pause": passage,
+                      "date_premier_jour": date_debut}
+
+        logging.info(parametres)
 
         response = ask_api("data/insert/parametres", parametres)
         if response.status_code != 201:
             logging.warning("Erreur lors de la creation des parametres")
             return "Erreur lors de la creation des parametres", 'danger'
-        return ['Les parametres ont bien ete modifie', 'success']
+        return ['Les parametres ont bien été modifié', 'success']
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']

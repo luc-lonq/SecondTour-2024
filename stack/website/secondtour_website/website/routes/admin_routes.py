@@ -758,10 +758,11 @@ def parametres():
             logging.info("POST")
             form = request.form
             if form.get('modify_button') is not None:
-                if 'jour' in form and 'debut_matin' in form and 'fin_matin' in form and 'debut_apresmidi' in form and 'fin_apresmidi' in form and 'intervalle' in form and 'pause' in form and 'passage' in form:
+                if 'jour' in form and 'debut_matin' in form and 'fin_matin' in form and 'debut_apresmidi' in form and 'fin_apresmidi' in form and 'intervalle' in form and 'pause' in form and 'passage' in form and 'date_debut' in form:
+                    date_debut = datetime(year=datetime.now().year, month=7, day=int(form['date_debut']))
                     result = main_database.change_parametres(
                         form['jour'], form['debut_matin'], form['fin_matin'], form['debut_apresmidi'],
-                        form["fin_apresmidi"], form['intervalle'], form['pause'], form['passage'])
+                        form["fin_apresmidi"], form['intervalle'], form['pause'], form['passage'], date_debut.strftime('%Y-%m-%d'))
                     flash(result[0], result[1])
                     logging.warning(result[0])
             elif form.get('delete_button') is not None:
