@@ -679,7 +679,7 @@ def creneau():
                         logging.warning(res[0])
             elif form.get('delete_button') is not None:
                 if 'id' in form:
-                    if (res := main_database.delete_creneau(form['id'])):
+                    if res := main_database.delete_creneau(form['id']):
                         flash(res[0], res[1])
                         logging.warning(res[0])
                     else:
