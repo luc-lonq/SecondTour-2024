@@ -44,8 +44,7 @@
                             <form method="post" action="{{url_for('admin_routes.series')}}"
                                 id="deleteSerieForm{{an_serie.id_serie}}">
                                 <input type="hidden" name="id" value="{{an_serie.id_serie}}">
-                                <button type="button" id="{{an_serie.id_serie}}" data-bs-toggle="modal"
-                                    data-bs-target="#confirmDeleteModal"
+                                <button type="submit" name="delete_button" id="{{an_serie.id_serie}}"
                                     class="deleteRow btn btn-outline-danger">Supprimer</button>
                             </form>
                         </td>

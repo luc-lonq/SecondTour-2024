@@ -181,10 +181,11 @@ def delete_serie(id):
             logging.warning(
                 "Impossible de supprimer les matieres correspondantes")
             return ['Impossible de supprimer les matieres correspondantes', 'danger']
-        matieres = response.json
+        matieres = response.json()
+        logging.info(matieres)
 
         for matiere in matieres:
-            professeur_filter = {"matiere": matiere["id"]}
+            professeur_filter = {"matiere": matiere["id_matiere"]}
             response = ask_api(f"data/deletefilter/professeur", professeur_filter)
             if response.status_code != 202:
                 logging.warning(
