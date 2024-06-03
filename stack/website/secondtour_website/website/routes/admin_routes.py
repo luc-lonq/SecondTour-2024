@@ -682,12 +682,11 @@ def creneau():
                 flash(result[0], result[1])
 
         response = ask_api("data/fetchmulti", ["candidat", "serie", "matiere",
-                                               "salle", "choix_matiere", "professeur", "creneau",
-                                               "horaire"])
+                                               "salle", "choix_matiere", "professeur", "creneau"])
         logging.info(response.json())
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
-        all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_professeur, all_creneau, all_horaires = response.json()
+        all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_professeur, all_creneau = response.json()
         all_creneau.sort(key=lambda creneau: creneau['id_candidat'])
         for creneau in all_creneau:
             creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"],
