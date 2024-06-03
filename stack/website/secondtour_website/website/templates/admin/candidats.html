@@ -146,8 +146,7 @@
                             <form method="post" action="{{url_for('admin_routes.candidats')}}"
                                 id="deleteCandidatsForm{{candidat.id_candidat}}">
                                 <input type="hidden" name="id" value="{{candidat.id_candidat}}">
-                                <button type="button" id="{{candidat.id_candidat}}" data-bs-toggle="modal"
-                                    data-bs-target="#confirmDeleteModal"
+                                <button type="submit" name="delete_button" id="{{candidat.id_candidat}}"
                                     class="deleteRow btn btn-outline-danger">Supprimer</button>
                             </form>
                         </td>
