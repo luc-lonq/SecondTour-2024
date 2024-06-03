@@ -326,15 +326,15 @@
         }
     }
 
-    function downloadAllEmargement(jour, date) {
+    function downloadAllEmargement(jour_debut, date) {
         let zip = new JSZip();
         let all_salles = JSON.parse('{{all_salles|tojson}}');
 
         for (let i = 0; i < all_salles.length; i++) {
             let salle = all_salles[i];
-            for (let j = 1; j <= jour; j++) {
+            for (let jour = 1; jour <= jour_debut; jour++) {
                 let date_it = new Date(date)
-                date_it.setDate(date_it.getDate() + j - 1)
+                date_it.setDate(date_it.getDate() + jour - 1)
                 let date_jour
                 let date_month
                 if (date_it.getDate() < 10) {
@@ -349,20 +349,23 @@
                 else {
                     date_month = date_it.getMonth().toString()
                 }
-                for (let k = 0; k < 2; k++) {
-                    let doc = downloadPDFEmargement('tableEmargement' + salle.id_salle + j + k,
-                        salle.numero, k, date_jour + '-' + date_month + '-' + date_it.getFullYear(), true);
-                    try {
-                        let demi_journee;
-                        if (k == 0) {
-                            demi_journee = 'matin';
+                for (let matin = 0; matin < 2; matin++) {
+                    let tr = document.getElementsByClassName('creneauRow' + all_salles[i]['id_salle'].toString() + jour.toString() + matin.toString())
+                    if (tr.length > 0) {
+                        let doc = downloadPDFEmargement('tableEmargement' + salle.id_salle + jour + matin,
+                            salle.numero, matin, date_jour + '-' + date_month + '-' + date_it.getFullYear(), true);
+                        try {
+                            let demi_journee;
+                            if (matin == 0) {
+                                demi_journee = 'matin';
+                            }
+                            else {
+                                demi_journee = 'apresmidi';
+                            }
+                            zip.file(salle.numero + 'emargement' + date_jour + '-' + date_month + '-' + date_it.getFullYear() + demi_journee + '.pdf', doc.output('blob'));
+                        } catch {
+                            console.error('Something went wrong!');
                         }
-                        else {
-                            demi_journee = 'apresmidi';
-                        }
-                        zip.file(salle.numero + 'emargement' + date_jour + '-' + date_month + '-' + date_it.getFullYear() + demi_journee + '.pdf', doc.output('blob'));
-                    } catch {
-                        console.error('Something went wrong!');
                     }
                 }
             }
@@ -414,18 +417,12 @@
         myvar_salles = '{{all_salles|tojson}}';
         var all_salles = JSON.parse(myvar_salles);
 
-        console.log('?')
-        console.log('{{jour}}')
         for (let salle = 0; salle < all_salles.length; salle++) {
             for (let jour = 1; jour - 1 < '{{jour}}'; jour++) {
                 for (let matin = 0; matin < 2; matin++) {
-                    console.log('creneauRow' + all_salles[salle]['id_salle'].toString() + jour.toString() + matin.toString())
                     let tr = document.getElementsByClassName('creneauRow' + all_salles[salle]['id_salle'].toString() + jour.toString() + matin.toString())
                     if (tr.length === 0) {
-                        console.log('cahce toi')
-                        console.log('salleRow' + all_salles[salle]['id_salle'].toString() + jour.toString() + matin.toString())
                         let salleRow = document.getElementById('salleRow' + all_salles[salle]['id_salle'].toString() + jour.toString() + matin.toString())
-                        console.log(salleRow)
                         salleRow.hidden = true;
                     }
                 }
