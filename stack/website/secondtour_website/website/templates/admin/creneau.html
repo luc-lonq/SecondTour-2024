@@ -295,7 +295,7 @@
                             </div>
                             <div style="width: 50%; margin-left: 5px;">
                                 <label for="fin" class="col-form-label">Fin de préparation</label>
-                                <select class="form-select disabled" name="fin" id="fin_prepa-select-modif" required>
+                                <select class="form-select disabled" name="fin_prepa" id="fin_prepa-select-modif" required>
                                     <option selected></option>
                                 </select>
                             </div>
@@ -438,21 +438,19 @@
                 }
             }
         }
-        heureChange();
+        heureChange(opt);
     }
 
     function heureChange(opt = "") {
         cleanUp(["fin_prepa-select" + opt, "fin-select" + opt]);
 
         //Heure
-        let heureDebutSelect = document.getElementById("debut-select" + opt);
-        let heureFinPrepa = document.getElementById("fin_prepa-select" + opt);
-        let heureFinSelect = document.getElementById("fin-select" + opt);
+        let select_debut = document.getElementById("debut-select" + opt);
+        let select_fin_prep = document.getElementById("fin_prepa-select" + opt);
+        let select_fin = document.getElementById("fin-select" + opt);
         let all_matieres = JSON.parse('{{all_matieres|tojson}}');
         let salleId = document.getElementById("salle-select" + opt).value;
-        let all_salles = JSON.parse('{{all_salles|tojson}}');
         let all_creneaux = JSON.parse('{{all_creneau|tojson}}');
-        let all_professeur = JSON.parse('{{all_professeur|tojson}}');
         let matiereId = document.getElementById("matiere-select" + opt).value;
         let matiere = null;
         for (let i = 0; i < all_matieres.length; i++) {
@@ -469,123 +467,119 @@
                 candidat = all_candidats[i];
             }
         }
-
-        var temps_passage_matiere;
-        var temps_preparation_matiere;
-        if (!candidat.tiers_temps) {
-            temps_passage_matiere = convert_to_decimal_time(convert_minute_to_string(matiere.temps_passage))
-            temps_preparation_matiere = convert_to_decimal_time(convert_minute_to_string(matiere.temps_preparation))
-        } else {
-            temps_passage_matiere = convert_to_decimal_time(convert_minute_to_string(matiere.temps_passage_tiers_temps))
-            temps_preparation_matiere = convert_to_decimal_time(convert_minute_to_string(matiere.temps_preparation_tiers_temps))
+        let date_passage = new Date('{{parametres.date_premier_jour}}')
+        date_passage.setDate(date_passage.getDate() + candidat.jour - 1)
+        let datetime_debut
+        let datetime_fin
+        if (candidat.matin) {
+            datetime_debut = new Date(date_passage)
+            datetime_debut.setHours(get_hours_in_string('{{parametres.heure_debut_matin}}'))
+            datetime_debut.setMinutes(get_minutes_in_string('{{parametres.heure_debut_matin}}'))
+            datetime_fin = new Date(date_passage)
+            datetime_fin.setHours(get_hours_in_string('{{parametres.heure_fin_matin}}'))
+            datetime_fin.setMinutes(get_minutes_in_string('{{parametres.heure_fin_matin}}'))
         }
-        let jour_debut_preparation_voulue = 1
-        for (jour_debut_preparation_voulue; jour_debut_preparation_voulue < 4; jour_debut_preparation_voulue++) {
-            let heure_debut_preparation_voulue = 8.00;
-            while (heure_debut_preparation_voulue < 20.00) {
-                for (let i = 0; i < all_salles.length; i++) {
-                    if (all_salles[i].id_salle == salleId) {
-                        let a_salle = all_salles[i];
-                        // reset the var
-                        let aucune_collision = true;
-                        let all_creneaux = JSON.parse('{{all_creneau|tojson}}');
-                        for (let x = 0; x < all_creneaux.length; x++) {
-                            let creneau = all_creneaux[x];
-                            debut_prepa_date = new Date(creneau.debut_preparation);
-                            fin_creneau_date = new Date(creneau.fin);
-                            if (debut_prepa_date.getDate() == jour_debut_preparation_voulue) {
-                                let debut_preparation_creneau_date = debut_prepa_date;
-                                let debut_preparation_creneau = debut_preparation_creneau_date.getUTCHours() + debut_preparation_creneau_date.getUTCMinutes() / 60;
-                                let fin_passage_creneau_date = fin_creneau_date;
-                                let fin_passage_creneau = fin_passage_creneau_date.getUTCHours() + fin_passage_creneau_date.getUTCMinutes() / 60;
-                                let matiere_creneau;
-                                for (let z = 0; z < all_matieres.length; z++) {
-                                    if (all_matieres[z].id_matiere == creneau.id_matiere) {
-                                        matiere_creneau = all_matieres[z];
-                                    }
-                                }
-                                let temps_passage_creneau = convert_to_decimal_time(convert_minute_to_string(matiere_creneau.temps_passage));
-                                let temps_preparation_creneau = convert_to_decimal_time(convert_minute_to_string(matiere_creneau.temps_preparation));
-                                let fin_passage_matiere = heure_debut_preparation_voulue + temps_preparation_matiere + temps_passage_matiere;
-                                // Test if the salle is empty
-                                if (matiere != null && heure_debut_preparation_voulue != null && temps_preparation_matiere != null && temps_passage_matiere != null) {
+        else {
+            datetime_debut = new Date(date_passage)
+            datetime_debut.setHours(get_hours_in_string('{{parametres.heure_debut_apres_midi}}'))
+            datetime_debut.setMinutes(get_minutes_in_string('{{parametres.heure_debut_apres_midi}}'))
+            datetime_fin = new Date(date_passage)
+            datetime_fin.setHours(get_hours_in_string('{{parametres.heure_fin_apres_midi}}'))
+            datetime_fin.setMinutes(get_minutes_in_string('{{parametres.heure_fin_apres_midi}}'))
+        }
 
-                                    if (creneau.id_salle == a_salle.id_salle
-                                        && !((heure_debut_preparation_voulue + temps_preparation_matiere >= fin_passage_creneau)
-                                            || (heure_debut_preparation_voulue + temps_preparation_matiere + temps_passage_matiere <= debut_preparation_creneau + temps_preparation_creneau))) {
-                                        aucune_collision = false;
-                                    }
-                                }
+        let temps_prep
+        let temps_pas
+        if (!candidat.tiers_temps) {
+            temps_prep = matiere.temps_preparation
+            temps_pas = matiere.temps_passage
+        }
+        else {
+            temps_prep = matiere.temps_preparation_tiers_temps
+            temps_pas = matiere.temps_passage_tiers_temps
+        }
+        let times_to_disable = []
+        for (let i = 0; i < all_creneaux.length; i++) {
+            if (all_creneaux[i].id_matiere == matiere.id_matiere) {
+                if (all_creneaux[i].id_salle == salleId) {
+                    if (all_creneaux[i].id_candidat != candidat.id_candidat ) {
+                        let datetime_debut_creneau = new Date(remove_GMT_in_date(all_creneaux[i].debut_preparation))
+                        let datetime_debut_creneau_offset = new Date(datetime_debut_creneau)
+                        datetime_debut_creneau_offset.setMinutes(datetime_debut_creneau.getMinutes() - temps_pas + parseInt('{{parametres.intervalle}}'))
+                        console.log(datetime_debut_creneau_offset)
 
-                                // Test if the user don't have already creneau and need a pause
-                                if (creneau.id_candidat == candidat.id_candidat
-                                    && !((fin_passage_matiere <= debut_preparation_creneau - 0.5)
-                                        || (heure_debut_preparation_voulue >= fin_passage_creneau + 0.5))) {
-                                    aucune_collision = false;
-                                }
+                        let datetime_fin_creneau = new Date(remove_GMT_in_date(all_creneaux[i].fin))
 
-
-
-                                // Test for lunch
-                                /*
-                                if (((heure_debut_preparation_voulue >= 13.00 && heure_debut_preparation_voulue < 14.00)
-                                    || (fin_passage_matiere > 13.00 && fin_passage_matiere <= 14.00)
-                                    || (heure_debut_preparation_voulue <= 13.00 && fin_passage_matiere >= 14.00))) {
-                                    aucune_collision = false;
-
-                                }*/
-                            }
-                        }
-                        let date = new Date();
-                        let year = date.getYear() + 1900;
-                        let month = (date.getMonth() + 1)
-                        heure_debut_preparation_voulue_datetime = year + '/' + month + '/' + '0' + jour_debut_preparation_voulue + ':' + convert_from_decimal_time(heure_debut_preparation_voulue)
-                        fin_preparation_matiere_datetime = year + '/' + month + '/' + '0' + jour_debut_preparation_voulue + ':' + convert_from_decimal_time(heure_debut_preparation_voulue + temps_preparation_matiere)
-                        fin_passage_matiere_datetime = year + '/' + month + '/' + '0' + jour_debut_preparation_voulue + ':' + convert_from_decimal_time(heure_debut_preparation_voulue + temps_preparation_matiere + temps_passage_matiere)
-                        
-                        if (aucune_collision) {
-                            let optionDebut = document.createElement("option");
-                            optionDebut.value = heure_debut_preparation_voulue_datetime;
-                            optionDebut.text = "Jour " + jour_debut_preparation_voulue + "  | " + convert_from_decimal_time(heure_debut_preparation_voulue);
-
-                            //Append
-                            heureDebutSelect.append(optionDebut);
-                        } else {
-                            let optionDebut = document.createElement("option");
-                            optionDebut.value = heure_debut_preparation_voulue_datetime;
-                            optionDebut.text = "Jour " + jour_debut_preparation_voulue + " | " + convert_from_decimal_time(heure_debut_preparation_voulue);
-                            optionDebut.disabled = true;
-
-                            //Append
-                            heureDebutSelect.append(optionDebut);
+                        let datetime_it = new Date(datetime_debut_creneau_offset)
+                        while (datetime_it < datetime_fin_creneau) {
+                            console.log(datetime_it)
+                            times_to_disable.push(new Date(datetime_it))
+                            datetime_it = new Date(datetime_it.setMinutes(datetime_it.getMinutes()+parseInt('{{parametres.intervalle}}')))
                         }
                     }
                 }
-                heure_debut_preparation_voulue += 0.5
+            }
+            else {
+                if (all_creneaux[i].id_candidat == candidat.id_candidat) {
+
+                    let datetime_debut_creneau = new Date(remove_GMT_in_date(all_creneaux[i].debut_preparation))
+                    let datetime_debut_creneau_offset = new Date(datetime_debut_creneau)
+                    datetime_debut_creneau_offset.setMinutes(datetime_debut_creneau.getMinutes() - temps_pas - temps_prep + parseInt('{{parametres.intervalle}}'))
+                    let datetime_fin_creneau = new Date(remove_GMT_in_date(all_creneaux[i].fin))
+
+                    let datetime_it = new Date(datetime_debut_creneau_offset)
+                    while (datetime_it < datetime_fin_creneau) {
+                        console.log(datetime_it)
+                        times_to_disable.push(new Date(datetime_it))
+                        datetime_it = new Date(datetime_it.setMinutes(datetime_it.getMinutes()+parseInt('{{parametres.intervalle}}')))
+                    }
+                }
             }
         }
-        const regex = /Jour .* | /;
-        let heureDebutSelected = convert_to_decimal_time(heureDebutSelect.options[heureDebutSelect.selectedIndex].text.replace(regex, ""));
-        let heureDebutSelected_datetime = heureDebutSelect.value;
 
-        fin_matiere_datetime = new Date(heureDebutSelected_datetime);
-        fin_matiere_datetime.setHours(fin_matiere_datetime.getHours() + temps_preparation_matiere + temps_passage_matiere);
+        //let year = fin_matiere_datetime.getYear() + 1900;
+        let datetime_now = datetime_debut
+        while (datetime_now < datetime_fin) {
+            let option_debut_prep = document.createElement("option")
+            option_debut_prep.value = datetime_now.toString().substring(0, 24)
+            option_debut_prep.text = convert_from_decimal_time(datetime_now.getHours(), datetime_now.getMinutes())
+            for (let i = 0; i < times_to_disable.length; i++) {
+                if (times_to_disable[i].getDate() === datetime_now.getDate() &&
+                        times_to_disable[i].getMonth() === datetime_now.getMonth() &&
+                        times_to_disable[i].getFullYear() === datetime_now.getFullYear() &&
+                        times_to_disable[i].getHours() === datetime_now.getHours() &&
+                        times_to_disable[i].getMinutes() === datetime_now.getMinutes()) {
+                    option_debut_prep.disabled = true;
+                    break;
+                }
+            }
+            select_debut.append(option_debut_prep)
+            datetime_now = new Date(datetime_now.setMinutes(datetime_now.getMinutes()+parseInt('{{parametres.intervalle}}')))
+        }
 
-        let year = fin_matiere_datetime.getYear() + 1900;
-
-        let optionFin = document.createElement("option");
-        optionFin.value = year + "/" + fin_matiere_datetime.getMonth() + "/" + fin_matiere_datetime.getDay() + ":" + convert_from_decimal_time(heureDebutSelected + temps_passage_matiere + temps_preparation_matiere);
-        optionFin.text = convert_from_decimal_time(heureDebutSelected + temps_passage_matiere + temps_preparation_matiere);
-        heureFinSelect.append(optionFin);
-
-        fin_preparation_matiere_datetime = new Date(heureDebutSelected_datetime);
-        fin_preparation_matiere_datetime.setHours(fin_preparation_matiere_datetime.getHours() + temps_preparation_matiere);
-        let optionFinPrepa = document.createElement("option");
-        optionFinPrepa.value = year + "/" + fin_preparation_matiere_datetime.getMonth() + "/" + fin_preparation_matiere_datetime.getDay() + ":" + convert_from_decimal_time(heureDebutSelected + temps_passage_matiere);
-        optionFinPrepa.text = convert_from_decimal_time(heureDebutSelected + temps_passage_matiere);
-        heureFinPrepa.append(optionFinPrepa)
-
-        break_doublons();
+        let datetime_select_debut
+        let datetime_select_fin_prep
+        let datetime_select_fin
+        let option_fin_prep = document.createElement("option")
+        let option_fin = document.createElement("option")
+        for (let i = 0; i < select_debut.options.length; i++) {
+            if (select_debut.options[i].selected) {
+                datetime_select_debut = new Date(select_debut.options[i].value)
+                datetime_select_fin_prep = new Date(datetime_select_debut)
+                datetime_select_fin_prep.setMinutes(datetime_select_debut.getMinutes() + temps_prep)
+                datetime_select_fin = new Date(datetime_select_fin_prep)
+                datetime_select_fin.setMinutes(datetime_select_fin_prep.getMinutes() + temps_pas)
+                option_fin_prep.value = datetime_select_fin_prep.toString().substring(0, 24)
+                option_fin_prep.text = convert_from_decimal_time(datetime_select_fin_prep.getHours(), datetime_select_fin_prep.getMinutes())
+                option_fin_prep.selected = true
+                option_fin.value = datetime_select_fin.toString().substring(0, 24)
+                option_fin.text = convert_from_decimal_time(datetime_select_fin.getHours(), datetime_select_fin.getMinutes())
+                option_fin.selected = true
+                break
+            }
+        }
+        select_fin_prep.append(option_fin_prep)
+        select_fin.append(option_fin)
     }
 
 
@@ -599,47 +593,34 @@
         }
     }
 
-    function break_doublons() {
-        let all = ["matiere-select", "salle-select", "debut-select", "fin_prepa_select", "fin-select"];
-        for (let i = 0; i < all.length; i++) {
-            let options = []
-            document.querySelectorAll('#' + all[i] + ' > option').forEach((option) => {
-                if (options.includes(option.value)) option.remove()
-                else options.push(option.value)
-            })
-        }
+    function remove_GMT_in_date(date) {
+        let new_date = date.replace(' GMT', '')
+        console.log(new_date)
+        return new_date
     }
 
-    function convert_from_decimal_time(decimal) {
-        let hours = parseInt(decimal, 10);
+    function get_hours_in_string(time) {
+        let time_split = time.split(':')
+        return time_split[0]
+    }
+
+    function get_minutes_in_string(time) {
+        let time_split = time.split(':')
+        return time_split[1]
+    }
+
+    function convert_from_decimal_time(hours, minutes) {
         if (hours < 10) {
             hours = "0" + hours.toString();
         } else {
             hours = hours.toString();
         }
-        let minutes = parseInt((decimal * 60) % 60, 10);
         if (minutes < 10) {
             minutes = "0" + minutes.toString();
         } else {
             minutes = minutes.toString();
         }
-        let res = hours + ":" + minutes;
-        return res;
-    }
-
-    function convert_to_decimal_time(time) {
-        let alls = time.split(':');
-        let h = alls[0];
-        let m = alls[1];
-        let r = parseInt(h, 10) + parseFloat(m) / 60;
-        r = Math.round((r) * 100) / 100;
-        return r;
-    }
-
-    function convert_minute_to_string(time) {
-        let h = parseInt(time / 60, 10);
-        let m = parseInt(time % 60, 10);
-        return h.toString() + ":" + m.toString();
+        return hours + ":" + minutes;
     }
 </script>
 <script>

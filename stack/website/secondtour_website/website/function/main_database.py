@@ -836,13 +836,13 @@ def add_creneau(id_candidat, id_matiere, id_salle, debut_preparation, fin_prepar
     try:
         if type(debut_preparation) == str:
             debut_preparation = json.loads(json.dumps(datetime.strptime(
-                debut_preparation, '%Y/%m/%d:%H:%M'), default=myconverter))
+                debut_preparation, '%a %b %d %Y %H:%M:%S'), default=myconverter))
 
             fin_preparation = json.loads(json.dumps(datetime.strptime(
-                fin_preparation, '%Y/%m/%d:%H:%M'), default=myconverter))
+                fin_preparation, '%a %b %d %Y %H:%M:%S'), default=myconverter))
 
             fin = json.loads(json.dumps(datetime.strptime(
-                fin, '%Y/%m/%d:%H:%M'), default=myconverter))
+                fin, '%a %b %d %Y %H:%M:%S'), default=myconverter))
         else:
             debut_preparation = json.loads(json.dumps(
                 debut_preparation, default=myconverter))

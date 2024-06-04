@@ -659,7 +659,7 @@ def creneau():
                     flash(result[0], result[1])
                     logging.warning(result[0])
             elif form.get('modify_button') is not None:
-                if 'last_creneau_id' in form and 'candidat' in form and 'matiere' in form and 'salle' in form and 'debut' and 'fin_prepa' in form in form and 'fin' in form:
+                if 'last_creneau_id' in form and 'candidat' in form and 'matiere' in form and 'salle' in form and 'debut' in form and 'fin_prepa' in form and 'fin' in form:
                     if not (res := main_database.delete_creneau(form['last_creneau_id'])):
                         result = main_database.add_creneau(
                             form['candidat'], form['matiere'], form['salle'], form['debut'], form["fin_prepa"],
@@ -682,11 +682,11 @@ def creneau():
                 flash(result[0], result[1])
 
         response = ask_api("data/fetchmulti", ["candidat", "serie", "matiere",
-                                               "salle", "choix_matiere", "professeur", "creneau"])
+                                               "salle", "choix_matiere", "professeur", "creneau", "parametres"])
         logging.info(response.json())
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
-        all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_professeur, all_creneau = response.json()
+        all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_professeur, all_creneau, parametres = response.json()
         all_creneau.sort(key=lambda creneau: creneau['id_candidat'])
         for creneau in all_creneau:
             creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"],
@@ -746,7 +746,7 @@ def creneau():
         return render_template('admin/creneau.html', all_professeur=all_professeur, all_creneau=all_creneau,
                                all_candidats=all_candidats, all_matieres=all_matieres, all_salles=all_salles,
                                all_creneau_deb=all_creneau_deb, all_series=all_series,
-                               all_choix_matieres=all_choix_matieres)
+                               all_choix_matieres=all_choix_matieres, parametres=parametres[0])
     else:
         return redirect(url_for('main_routes.connexion'))
 
