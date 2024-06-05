@@ -2,7 +2,6 @@ import logging
 from time import strptime
 from flask import Blueprint, render_template, session, request, redirect, url_for, send_file
 from flask.helpers import flash
-import pandas as pd
 from zipfile import ZipFile
 import os
 
