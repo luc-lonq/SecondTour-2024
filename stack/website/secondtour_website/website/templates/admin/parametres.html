@@ -1,7 +1,7 @@
 {% extends "admin/base_admin.html" %}
 {% block title %}Administration{% endblock %}
 {% block sub_content %}
-<div class="main-div-admin" style="margin: 20px 0 0 0;">
+<div class="main-div-admin" style="margin: 20px 0 0 0;" onload = "prefill()">
     {%- for category, message in get_flashed_messages(with_categories = true) %}
         <div class="alert alert-{{category}}  alert-dismissible fade show" role="alert">
             {{ message }}
@@ -29,7 +29,7 @@
             <label for="selectFinMatin" class="text-white text-decoration-none">Heure de fin le matin</label>
             <select class="form-control" id="selectFinMatin" name="fin_matin">
                 {% for horaire in horaire_matin %}
-                <option value=" {{ horaire.strftime("%H:%M") }}" {% if parametres.heure_fin_matin.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
+                <option value="{{ horaire.strftime("%H:%M") }}" {% if parametres.heure_fin_matin.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -37,7 +37,7 @@
             <label for="selectDebutApresMidi" class="text-white text-decoration-none">Heure de début l'après-midi</label>
             <select class="form-control" id="selectDebutApresMidi" name="debut_apresmidi">
                 {% for horaire in horaire_apresmidi %}
-                <option value=" {{ horaire.strftime("%H:%M") }}" {% if parametres.heure_debut_apres_midi.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
+                <option value="{{ horaire.strftime("%H:%M") }}" {% if parametres.heure_debut_apres_midi.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -77,7 +77,7 @@
             <label for="selectDateDebut" class="text-white text-decoration-none">Date du début des épreuves du second groupe</label>
             <select class="form-control" id="selectDateDebut" name="date_debut">
                 {% for i in range(1, 32) %}
-                <option value="{{ i }}" {% if parametres.debut_premier_jour == i %}selected{% endif %}>{{ i }} Juillet</option>
+                <option value="{{ i }}">{{ i }} Juillet</option>
                 {% endfor %}
             </select>
         </div>
@@ -95,6 +95,19 @@
 {% block sub_script %}
 <script>
 
+    window.onload = prefill()
+
+    function prefill() {
+        myvar = '{{parametres|tojson}}';
+        let parametres = JSON.parse(myvar);
+        select_date_debut = document.getElementById('selectDateDebut')
+        date_debut = new Date(parametres.date_premier_jour)
+        for (let i = 0; i < select_date_debut.length; i++) {
+            if (select_date_debut[i].value == date_debut.getDate()) {
+                select_date_debut[i].selected = true;
+            }
+        }
+    }
 
 </script>
 {% endblock %}
