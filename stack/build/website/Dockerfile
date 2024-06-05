@@ -7,10 +7,11 @@ FROM ubuntu
 
 
 # Update & install nginx & python
-RUN apt-get update && apt-get install -y nginx \
-    && apt-get install nano \
-    && apt install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools \
-    && rm /etc/nginx/sites-enabled/default
+RUN apt-get update
+RUN apt-get install -y nginx
+RUN apt-get install nano
+RUN apt install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
+RUN rm /etc/nginx/sites-enabled/default
 
 RUN mkdir -p /app/website/secondtour_website 
 
