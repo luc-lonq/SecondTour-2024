@@ -647,5 +647,5 @@ insert into parametres (id_parametre, max_jour, heure_debut_matin, heure_fin_mat
                         date_premier_jour)
 values (1,1,'08:00','13:00','14:00','20:00',10,30,5,'2024-07-09');
 
-insert into utilisateur (id_utilisateur, email, password)
-values (1,'admin@ac-poitiers.fr','$p5k2$3e8$AfpOzesj$.KoGR.raCRkA3gne.aZrF1bQobRfdSIH',1);
+insert into utilisateur (id_utilisateur, email, password, admin)
+values (1,'admin@ac-poitiers.fr','$p5k2$3e8$AfpOzesj$.KoGR.raCRkA3gne.aZrF1bQobRfdSIH',true);
