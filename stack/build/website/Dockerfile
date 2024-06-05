@@ -10,6 +10,7 @@ FROM ubuntu
 RUN apt-get update
 RUN apt-get install -y nginx
 RUN apt-get install nano
+RUN dpkg --configure -a
 RUN apt install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
 RUN rm /etc/nginx/sites-enabled/default
 
