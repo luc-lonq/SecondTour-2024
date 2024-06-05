@@ -143,7 +143,7 @@ def delete_account(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_serie(serie_choice, specialite1, specialite2, ret=False):
+def add_serie(serie_choice, specialite1, ret=False):
     try:
         serie = {"id_serie": "null", "nom": serie_choice, "specialite1": specialite1 if specialite1 else "null"}
         response = ask_api("data/insert/serie", serie)
@@ -154,7 +154,7 @@ def add_serie(serie_choice, specialite1, specialite2, ret=False):
             return "Erreur lors de l'insertion d'une serie", "danger"
         serie["id_serie"] = response.json()["id"]
         if not ret:
-            return [['La série a bien été crée', 'success']]
+            return ['La série a bien été crée', 'success']
         else:
             return [['La série a bien été crée', 'success'], serie]
         # serie = SERIE(serie_choice, specialite1, specialite2)
@@ -173,18 +173,20 @@ def add_serie(serie_choice, specialite1, specialite2, ret=False):
         return [['Erreur : ' + traceback.format_exc(), 'danger']]
 
 
-def update_serie(id, nom, specialite1, specialite2):
+def update_serie(id, nom, specialite1):
     try:
         serie = {"filter": {"id_serie": id}, "data": {"id_serie": id,
-                                                      "nom": nom, "specialite1": specialite1, "specialite2": specialite2}}
+                                                      "nom": nom, "specialite1": specialite1}}
         response = ask_api("data/updatefilter/serie", serie)
         if response.status_code != 202:
             logging.warning("Erreur lors de l'insertion des séries")
             return "Erreur lors de l'insertion des séries", "danger"
 
+        return ['La série a bien été modifiée', 'success']
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
+
 
 
 def delete_serie(id):
@@ -250,7 +252,7 @@ def delete_serie(id):
             logging.warning("Impossible de supprimer cette serie", "danger")
             return ['Impossible de supprimer cette serie', 'danger']
 
-        return False
+        return ['La série a bien été supprimé', 'success']
         # user = SERIE.query.filter_by(id_serie=id).one()
         # # Delete the dependency
         # matieres = MATIERE.query.filter_by(id_serie=id)
@@ -387,7 +389,7 @@ def delete_matiere(id):
         #     matiere_actual.matiere2 = None
         # db.session.delete(matiere)
         # db.session.commit()
-        return False
+        return ['La matière a bien été supprimé', 'success']
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
@@ -434,6 +436,7 @@ def update_salle(id, numero):
         if response.status_code != 202:
             logging.warning("Erreur lors de l'insertion des salles")
             return "Erreur lors de l'insertion des salles", "danger"
+        return ['Le salle a correctement été modifiée', 'success']
 
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
@@ -486,7 +489,7 @@ def delete_salle(id):
         #     db.session.delete(matiere)
         # db.session.delete(salle)
         # db.session.commit()
-        return False
+        return ['La série a bien été supprimé', 'success']
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
@@ -569,6 +572,7 @@ def update_matiere(id, nom, id_serie, temps_preparation, temps_preparation_tiers
         if response.status_code != 202:
             logging.warning("Erreur lors de l'insertion des matieres")
             return "Erreur lors de l'insertion des matieres", "danger"
+        return ['La matière a bien été modifiée', 'success']
 
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
@@ -580,6 +584,7 @@ def update_professeur_wep(id, nom, prenom, salle, matiere):
         professeur = {"filter": {"id_professeur": id}, "data": {
             "nom": nom, "prenom": prenom, "salle": salle if salle else "null",
             "matiere": matiere if matiere else "null"}}
+        logging.info(professeur)
         response = ask_api("data/updatefilter/professeur", professeur)
         if response.status_code != 202:
             logging.warning(
@@ -643,14 +648,6 @@ def delete_professeur(id):
                 "Erreur lors de la suppression des creneaux associé à ce professeur")
             return "Erreur lors de la suppression des creneaux associé à ce professeur", "danger"
 
-        # horaires
-        horaires = {"id_professeur": id}
-        response = ask_api("data/deletefilter/horaire", horaires)
-        if response.status_code != 202:
-            logging.warning(
-                "Erreur lors de la suppression des horaires du professeur")
-            return "Erreur lors de la suppression des horaires du professeur", "danger"
-
         professeur = {"id_professeur": id}
         response = ask_api("data/deletefilter/professeur", professeur)
         if response.status_code != 202:
@@ -678,7 +675,7 @@ def delete_professeur(id):
 
         # db.session.delete(professeur)
         # db.session.commit()
-        return False
+        return ['Le professeur a bien été supprimé', 'success']
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
@@ -826,7 +823,7 @@ def delete_choix_matiere(id):
         #     id_choix_matiere=id).one()
         # db.session.delete(choix_matiere)
         # db.session.commit()
-        return False
+        return ['Les choix du candidat ont bien été supprimés', 'success']
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
@@ -915,7 +912,7 @@ def delete_creneau_by_candidat(id_candidat):
         # creneau = CRENEAU.query.filter_by(id_creneau=id).one()
         # db.session.delete(creneau)
         # db.session.commit()
-        return False
+        return ['Les créneaux du candidat ont bien été supprimés', 'success']
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
@@ -967,7 +964,7 @@ def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, fin_apresmi
         if response.status_code != 201:
             logging.warning("Erreur lors de la creation des parametres")
             return "Erreur lors de la creation des parametres", 'danger'
-        return ['Les parametres ont bien été modifié', 'success']
+        return ['Les paramètres ont bien été modifiés', 'success']
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']

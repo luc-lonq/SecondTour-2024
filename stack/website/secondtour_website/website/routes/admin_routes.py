@@ -128,7 +128,9 @@ def candidats():
 
             elif form.get('delete_button') is not None:
                 if 'id' in form:
-                    if r := main_database.delete_candidat(form['id']):
+                    if not (r := main_database.delete_candidat(form['id'])):
+                        flash('Le candidat a bien été supprimé', 'success')
+                    else:
                         flash(r[0], r[1])
                         logging.warning(r[0])
             elif form.get('modif_button') is not None:
@@ -144,6 +146,7 @@ def candidats():
                             flash(result[0], result[1])
                             logging.warning(result[0])
                         else:
+                            logging.info('choix_matiere')
                             if 'matiere1' in form and 'matiere2' in form:
                                 if form['matiere1'] or form['matiere2']:
                                     second_result = main_database.add_choix_matiere(
@@ -346,7 +349,7 @@ def professeurs():
                         flash(r[0], r[1])
                         logging.warning(r[0])
             elif form.get('modify_button') is not None:
-                if 'user' in form and 'prof_id' in form and 'name' in form and 'surname' in form and 'salle' in form:
+                if 'prof_id' in form and 'name' in form and 'surname' in form and 'salle' in form:
                     # result = main_database.delete_professeur(form['prof_id'])
                     result = main_database.update_professeur_wep(form['prof_id'],
                                                                  form['name'], form['surname'], form['salle'],
@@ -438,8 +441,7 @@ def series():
             if form.get('submit_button') is not None:
                 if 'serie' in form:
                     result = main_database.add_serie(
-                        form['serie'], form['specialite1'] if 'specialite1' in form else 'null',
-                        form['specialite2'] if 'specialite2' in form else "null", True)
+                        form['serie'], form['specialite1'] if 'specialite1' in form else 'null', True)
                     flash(result[0][0], result[0][1])
                     logging.warning(result[0][0])
                     if result[0][1] == 'success':
@@ -477,8 +479,7 @@ def series():
             elif form.get('modify_button') is not None:
                 if 'id' in form and 'serie' in form:
                     if r := main_database.update_serie(form['id'], form['serie'],
-                                                       form['specialite1'] if 'specialite1' in form else 'null',
-                                                       form['specialite2'] if 'specialite2' in form else "null"):
+                                                       form['specialite1'] if 'specialite1' in form else 'null'):
                         flash(r[0], r[1])
                         logging.warning(r[0])
             elif form.get('delete_button') is not None:
@@ -664,7 +665,7 @@ def creneau():
                         result = main_database.add_creneau(
                             form['candidat'], form['matiere'], form['salle'], form['debut'], form["fin_prepa"],
                             form['fin'])
-                        flash(result[0], result[1])
+                        flash('Le créneau a correctement été modifiée', 'success')
                         logging.warning(result[0])
                     else:
                         flash(res[0], res[1])
@@ -675,8 +676,8 @@ def creneau():
                         flash(res[0], res[1])
                         logging.warning(res[0])
                     else:
-                        flash("Le créneau à bien été supprimé", "success")
-                        logging.warning("Le créneau à bien été supprimé")
+                        flash("Le créneau a bien été supprimé", "success")
+                        logging.warning("Le créneau a bien été supprimé")
             elif form.get('delete_all_button') is not None:
                 result = main_database.delete_all_creneaux()
                 flash(result[0], result[1])
