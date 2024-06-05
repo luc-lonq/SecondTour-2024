@@ -306,43 +306,43 @@ values (108,'ZAIM','Ilyass',1,0,0,0,1);
 
 
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (1,1,'SES',20,27,30,40,null);
+values (1,1,'SES',20,30,30,40,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (2,1,'Mathématiques',20,27,20,27,null);
+values (2,1,'Mathématiques',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (3,1,'Philosophie',20,27,20,27,null);
+values (3,1,'Philosophie',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (4,1,'HLP',20,27,20,27,null);
+values (4,1,'HLP',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (5,1,'HGGSP',20,27,20,27,null);
+values (5,1,'HGGSP',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (6,1,'SVT',20,27,20,27,null);
+values (6,1,'SVT',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (7,1,'Physique-Chimie',20,27,20,27,null);
+values (7,1,'Physique-Chimie',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (8,1,'SI',60,80,20,27,40);
+values (8,1,'SI',60,80,20,30,40);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (9,1,'NSI',20,27,20,27,null);
+values (9,1,'NSI',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (10,1,'Anglais',20,27,20,27,null);
+values (10,1,'Anglais',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (11,1,'AMC',20,27,20,27,null);
+values (11,1,'AMC',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (12,1,'Français',20,27,30,40,null);
+values (12,1,'Français',20,30,30,40,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (13,1,'Espagnol',20,27,20,27,null);
+values (13,1,'Espagnol',20,30,20,30,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (14,2,'SIN',60,80,20,27,40);
+values (14,2,'SIN',60,80,20,30,40);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (15,2,'ITEC',60,80,20,27,40);
+values (15,2,'ITEC',60,80,20,30,40);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (16,2,'EE',60,80,20,27,40);
+values (16,2,'EE',60,80,20,30,40);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (17,2,'AC',60,80,20,27,40);
+values (17,2,'AC',60,80,20,30,40);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
 values (18,2,'Mathématiques-Physiques',30,40,30,40,null);
 insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge)
-values (19,2,'Philosophie',20,27,20,27,null);
+values (19,2,'Philosophie',20,30,20,30,null);
 
 
 insert into professeur (id_professeur, nom, prenom, salle, matiere)
