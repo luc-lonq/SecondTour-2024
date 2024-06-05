@@ -1,7 +1,7 @@
 {% extends "admin/base_admin.html" %}
 {% block title %}Administration{% endblock %}
 {% block sub_content %}
-<div class="main-div-admin" style="margin: 20px 0 0 0;" onload = "prefill()">
+<div class="main-div-admin" style="margin: 3em 0 0 0;">
     {%- for category, message in get_flashed_messages(with_categories = true) %}
         <div class="alert alert-{{category}}  alert-dismissible fade show" role="alert">
             {{ message }}
