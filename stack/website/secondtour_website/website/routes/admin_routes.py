@@ -574,65 +574,6 @@ def matieres():
         return redirect(url_for('main_routes.connexion'))
 
 
-@admin_routes.route('/comptes', methods=['POST', 'GET'])
-def comptes():
-    if (os.getenv("NETWORK_VISU") == "true"):
-        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
-            "type": "trigger",
-            "name": "website:website-admin",
-            "data": {
-                "target": "website:website-admin"
-            }
-        })
-        requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
-            "type": "trigger",
-            "name": "website-admin:website-admin-account",
-            "data": {
-                "target": "website-admin:website-admin-account"
-            }
-        })
-
-    if main_security.test_session_connected(session, True):
-        if request.method == 'POST':
-            form = request.form
-            if form.get('submit_button') is not None:
-                if 'email' in form and 'type' in form and 'prof' in form:
-                    response = ask_api("data/token", {})
-                    if response.status_code != 200:
-                        logging.warning("Erreur lors de la creation du token")
-                        flash("Erreur lors de la creation du token", "danger")
-                    else:
-                        token = response.json()['token']
-                        result = main_database.add_account_token(
-                            form['email'], token, form['type'], form['prof'])
-                        flash(result[0], result[1])
-                        logging.warning(result[0])
-            elif form.get('delete_button') is not None:
-                if 'id' in form:
-                    if r := main_database.delete_account(form['id']):
-                        flash(r[0], r[1])
-                        logging.warning(r[0])
-            elif form.get('delete_button_token') is not None:
-                if 'token' in form:
-                    if r := main_database.delete_token(form['token']):
-                        flash(r[0], r[1])
-                        logging.warning(r[0])
-
-        response = ask_api("data/fetchmulti",
-                           ["utilisateur", "token", "professeur"])
-        if response.status_code != 200:
-            flash("Une erreur est survenue lors de la récupération des données", "danger")
-        all_users, all_tokens, all_professeurs = response.json()
-
-        # all_users = UTILISATEURS.query.all()
-        # all_tokens = TOKEN.query.all()
-        # all_professeurs = PROFESSEUR.query.all()
-        return render_template('admin/comptes.html', all_users=all_users, all_tokens=all_tokens,
-                               all_professeurs=all_professeurs)
-    else:
-        return redirect(url_for('main_routes.connexion'))
-
-
 @admin_routes.route('/creneau', methods=['POST', 'GET'])
 def creneau():
     if (os.getenv("NETWORK_VISU") == "true"):

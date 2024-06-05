@@ -67,13 +67,6 @@
             </a>
         </li>
         <li>
-            <a href="{{url_for('admin_routes.comptes')}}" {% if request.url_rule.endpoint=="admin_routes.comptes"
-                %}class="nav-link active" aria-current="page" {% else %}class="nav-link text-white" {% endif %}>
-                <i class="fas fa-user-circle"></i>
-                <span class="ms-2">Comptes</span>
-            </a>
-        </li>
-        <li>
             <a href="{{url_for('admin_routes.parametres')}}" {% if request.url_rule.endpoint=="admin_routes.parametres"
                 %}class="nav-link active" aria-current="page" {% else %}class="nav-link text-white" {% endif %}>
                 <i class="bi bi-gear"></i>
