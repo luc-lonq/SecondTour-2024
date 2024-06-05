@@ -19,10 +19,20 @@
             <table class="table table-light table-striped table-hover" id="calendar">
                 <thead>
                     <tr>
-                        <th scope="col">Série</th>
-                        <th scope="col">Spécialité</th>
-                        <th scope="col" class="modifier">Modifier</th>
-                        <th scope="col" class="supprimer">Supprimer</th>
+                        <th scope="col">
+                            <div class="th-inner">Série</div>
+                            <div class="filter-control">
+                                <select class="form-select finder break-doublons" v-on:change="finder(1, 0)">
+                                    <option select></option>
+                                    {% for an_serie in all_series %}
+                                    <option>{{an_serie.nom}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </th>
+                        <th scope="col" class="align-text-top">Spécialité</th>
+                        <th scope="col" class="modifier align-text-top">Modifier</th>
+                        <th scope="col" class="supprimer align-text-top">Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,7 +54,8 @@
                             <form method="post" action="{{url_for('admin_routes.series')}}"
                                 id="deleteSerieForm{{an_serie.id_serie}}">
                                 <input type="hidden" name="id" value="{{an_serie.id_serie}}">
-                                <button type="submit" name="delete_button" id="{{an_serie.id_serie}}"
+                                <button type="button" id="{{an_serie.id_serie}}" data-bs-toggle="modal"
+                                    data-bs-target="#confirmDeleteModal"
                                     class="deleteRow btn btn-outline-danger">Supprimer</button>
                             </form>
                         </td>

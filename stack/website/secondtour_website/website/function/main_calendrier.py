@@ -1,122 +1,105 @@
-import datetime
-from datetime import timedelta
+from ctypes import create_string_buffer, create_unicode_buffer
+import logging
+from threading import local
+from time import strftime
+import traceback
+from datetime import date, datetime, timedelta
 from flask.helpers import flash
 from copy import deepcopy
+import requests
+import os
+import flask
 
 from . import main_database
 from ..database.main_database import *
 
 
 def generation_calendrier():
-    (all_candidats, all_professeurs, all_choix_matieres, all_matieres, all_salles, all_creneau, parametres) = get_data()
-    parametres = parametres[0]
-
-    list_candidats = order_candidats_list(all_candidats)
-    local_creneau = []
-
-    for candidat in list_candidats:
-        if candidat["absent"]:
-            continue
-        start, end = get_horaires(candidat, parametres)
-        passage_m1, passage_m2 = get_infos_about_candidat(candidat, all_choix_matieres, all_matieres,
-                                                          all_professeurs, all_salles)
-        passages = [passage_m1, passage_m2]
-        creneaux_candidat = []
-        break_time = None
-
-        for _ in range(3):
-
-            for passage in passages:
-                creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, candidat["jour"], start,
-                                                                       end, parametres["date_premier_jour"])
-                heure_debut_preparation_voulue = start
-                while (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
-                       <= end):
-                    aucune_collision = True
-                    chosed_salle = None
-
-                    for creneau in creneaux_from_half_day:
-                        if not is_candidat_available(passage, candidat, creneau,
-                                                    heure_debut_preparation_voulue, parametres):
-                            aucune_collision = False
-                            break
-
-                    if aucune_collision:
-                        chosed_salle = is_a_salle_available(passage, creneaux_from_half_day,
-                                                            heure_debut_preparation_voulue)
-                        if not chosed_salle:
-                            aucune_collision = False
-
-                    if chosed_salle:
-                        if is_prof_owerhelmed(passage, chosed_salle, creneaux_from_half_day,
-                                              heure_debut_preparation_voulue + passage["temps_preparation"],
-                                              parametres["prof_max_passage_sans_pause"]):
-                            aucune_collision = False
-
-                    if len(creneaux_from_half_day) == 0:
-                        chosed_salle = passage["salle"][0]
-
-                    if aucune_collision:
-                        local_creneau, creneau_created = create_creneau_in_local(candidat["jour"],
-                                                                                 heure_debut_preparation_voulue,
-                                                                                 candidat, passage,
-                                                                                 local_creneau, chosed_salle,
-                                                                                 datetime.strptime(parametres["date_premier_jour"], '%a %b %d %H:%M:%S %Y'))
-                        creneaux_candidat.append(creneau_created)
-                        break
-
-                    heure_debut_preparation_voulue += timedelta(minutes=parametres["intervalle"])
-
-            if len(creneaux_candidat) == 2:
-                if creneaux_candidat[0]["debut_preparation"] > creneaux_candidat[1]["debut_preparation"]:
-                    creneaux_candidat_temp = creneaux_candidat[0]
-                    creneaux_candidat[0] = creneaux_candidat[1]
-                    creneaux_candidat[1] = creneaux_candidat_temp
-
-                if (creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
-                        == timedelta(minutes=parametres["temps_pause_eleve"])):
-                    break
-                if not break_time:
-                    break_time = creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
-                    swap_passage(passages)
-                    local_creneau = delete_creneaux(candidat["id_candidat"], local_creneau)
-                    creneaux_candidat.clear()
-
-                else:
-                    if (creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
-                            <= break_time):
-                        break
-                    else:
-                        break_time = creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
-                        swap_passage(passages)
-                        local_creneau = delete_creneaux(candidat["id_candidat"], local_creneau)
-                        creneaux_candidat.clear()
-
-            else:
-                local_creneau = delete_creneaux(candidat["id_candidat"], local_creneau)
-                creneaux_candidat.clear()
-
-        if len(creneaux_candidat) == 2:
-            for creneau in creneaux_candidat:
-                create_creneau(creneau, datetime.strptime(parametres["date_premier_jour"], '%a %b %d %H:%M:%S %Y'),
-                               candidat["jour"])
-
-    result = test_calendar_complete()
-    flash(result[0], result[1])
-
-
-def get_data():
     logging.info('main_calendrier')
 
     response = ask_api("data/delete/creneau", {})
     if response.status_code != 202:
         flash("Une erreur est survenue lors de la suppression des données", "danger")
 
-    response = ask_api("data/fetchmulti", ["candidat", "professeur", "choix_matiere",
-                                           "matiere", "salle", "creneau", "parametres"])
+    response = ask_api("data/fetchmulti", ["candidat", "professeur", "liste_matiere",
+                                           "choix_matiere", "matiere", "serie", "salle", "creneau", "horaire"])
     if response.status_code != 200:
         flash("Une erreur est survenue lors de la récupération des données", "danger")
-    return response.json()
+    all_candidats, all_professeurs, all_liste_matiere, all_choix_matieres, all_matieres, all_series, all_salles, all_creneau, all_horaires = response.json()
+
+    list_candidats = order_candidats_list(all_candidats)
+
+    local_creneau = []
+
+    # Create the creneau for each candidate
+    for list_candidat_half_day in list_candidats:
+        for candidat in list_candidat_half_day:
+
+            start = 8
+            end = 13
+
+            if not candidat["matin"]:
+                start = 14
+                end = 19
+
+            passage_m1, passage_m2 = get_infos_about_candidat(candidat, all_choix_matieres, all_matieres,
+                                                              all_professeurs, all_liste_matiere, all_salles)
+            passages = [passage_m1, passage_m2]
+
+            creneau_created = 0
+            # For the 3 days of interogation
+            for jour_passage in range(1, 4):
+
+                for passage in passages:
+
+                    creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, jour_passage, start, end)
+                    creneau_created = False
+
+                    heure_debut_preparation_voulue = timedelta(hours=start)
+                    while heure_debut_preparation_voulue + passage["temps_preparation"] + passage[
+                        "temps_passage"] <= timedelta(hours=end):
+                        aucune_collision = True
+                        chosed_salle = None
+                        logging.info(candidat)
+                        for creneau in creneaux_from_half_day:
+
+                            if not is_candidat_available(passage, candidat, creneau, heure_debut_preparation_voulue):
+                                aucune_collision = False
+                                break
+
+                            chosed_salle = None
+                            for salle in passage["salle"]:
+                                if is_salle_available(passage, salle, creneau, heure_debut_preparation_voulue):
+                                    chosed_salle = salle
+                                    break
+                            logging.info(chosed_salle)
+
+                            if not chosed_salle:
+                                aucune_collision = False
+                                break
+
+                        if chosed_salle:
+                            if is_prof_owerhelmed(passage, chosed_salle, creneaux_from_half_day,
+                                                  heure_debut_preparation_voulue + passage["temps_preparation"]):
+                                aucune_collision = False
+
+                        if len(creneaux_from_half_day) == 0:
+                            chosed_salle = passage["salle"][0]
+
+                        if aucune_collision and not candidat["absent"]:
+                            local_creneau = create_creneau(jour_passage, heure_debut_preparation_voulue, candidat,
+                                                           passage, local_creneau, chosed_salle)
+                            logging.info(local_creneau)
+                            creneau_created += 1
+                            break
+
+                        heure_debut_preparation_voulue += timedelta(minutes=10)
+
+                    if creneau_created == 2:
+                        break
+
+    result = test_calendar_complete()
+    flash(result[0], result[1])
 
 
 def order_candidats_list(all_candidats):
@@ -124,31 +107,36 @@ def order_candidats_list(all_candidats):
     for candidat in all_candidats:
         list_candidats.append(candidat)
 
-    list_candidats_ordered = []
+    # Order by morning/afternoon
+    list_candidats_morning = []
+    list_candidats_afternoon = []
     for candidat in list_candidats:
-        if not candidat["tiers_temps"]:
-            list_candidats_ordered.insert(0, candidat)
+        if candidat["matin"]:
+            list_candidats_morning.append(candidat)
         else:
-            list_candidats_ordered.append(candidat)
+            list_candidats_afternoon.append(candidat)
 
-    return list_candidats_ordered
+    list_candidats = [list_candidats_morning, list_candidats_afternoon]
+
+    list_candidats_morning_ordered = []
+    list_candidats_afternoon_ordered = []
+    for list_candidats_i in list_candidats:
+        for candidat in list_candidats_i:
+            if not candidat["tiers_temps"]:
+                if candidat["matin"]:
+                    list_candidats_morning_ordered.append(candidat)
+                else:
+                    list_candidats_afternoon_ordered.append(candidat)
+            else:
+                if candidat["matin"]:
+                    list_candidats_morning_ordered.insert(0, candidat)
+                else:
+                    list_candidats_afternoon_ordered.insert(0, candidat)
+
+    return [list_candidats_morning_ordered, list_candidats_afternoon_ordered]
 
 
-def get_horaires(candidat, parametres):
-    if candidat["matin"]:
-        t = datetime.strptime(parametres["heure_debut_matin"], "%H:%M:%S")
-        start = timedelta(hours=t.hour, minutes=t.minute)
-        t = datetime.strptime(parametres["heure_fin_matin"], "%H:%M:%S")
-        end = timedelta(hours=t.hour, minutes=t.minute)
-    else:
-        t = datetime.strptime(parametres["heure_debut_apres_midi"], "%H:%M:%S")
-        start = timedelta(hours=t.hour, minutes=t.minute)
-        t = datetime.strptime(parametres["heure_fin_apres_midi"], "%H:%M:%S")
-        end = timedelta(hours=t.hour, minutes=t.minute)
-    return start, end
-
-
-def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_professeurs,
+def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_professeurs, all_liste_matiere,
                              all_salles):
     # Find the choix matiere correspondant
     choix_matiere = None
@@ -167,12 +155,14 @@ def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_pro
     # Get prof for each matiere
     professeur_m1, professeur_m2 = [], []
     for professeur in all_professeurs:
-        if matiere1 is not None:
-            if professeur["matiere"] == matiere1["id_matiere"]:
-                professeur_m1.append(professeur)
-        if matiere2 is not None:
-            if professeur["matiere"] == matiere2["id_matiere"]:
-                professeur_m2.append(professeur)
+        for liste_matiere in all_liste_matiere:
+            if liste_matiere["id_professeur"] == professeur["id_professeur"]:
+                if matiere1 is not None:
+                    if liste_matiere["id_matiere"] == matiere1["id_matiere"]:
+                        professeur_m1.append(professeur)
+                if matiere2 is not None:
+                    if liste_matiere["id_matiere"] == matiere2["id_matiere"]:
+                        professeur_m2.append(professeur)
 
     # salle for each matiere
     salle_m1, salle_m2 = [], []
@@ -202,12 +192,12 @@ def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_pro
             "temps_preparation_tiers_temps"])
 
     return {"salle": salle_m1, "matiere": matiere1, "professeur": professeur_m1, "temps_passage": temps_passage_m1,
-            "temps_preparation": temps_preparation_m1}, \
+            "temps_preparation": temps_preparation_m1, "valide": False}, \
         {"salle": salle_m2, "matiere": matiere2, "professeur": professeur_m2, "temps_passage": temps_passage_m2,
-         "temps_preparation": temps_preparation_m2}
+         "temps_preparation": temps_preparation_m2, "valide": False}
 
 
-def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end, date_premier_jour):
+def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end):
     for creneau in local_creneau:
         creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
             creneau["debut_preparation"]) == str else creneau["debut_preparation"]
@@ -215,56 +205,43 @@ def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end, date_
             creneau["fin_preparation"]) == str else creneau["fin_preparation"]
         creneau["fin"] = datetime.strptime(creneau["fin"], '%a %b %d %H:%M:%S %Y') if type(
             creneau["fin"]) == str else creneau["fin"]
-    date_premier_jour = datetime.strptime(date_premier_jour, '%a %b %d %H:%M:%S %Y')
 
     all_creneaux = local_creneau
     creneaux_from_half_day = []
 
     for creneau in all_creneaux:
-        if creneau["debut_preparation"].year == date_premier_jour.year \
-                and creneau["debut_preparation"].month == date_premier_jour.month \
-                and creneau["debut_preparation"].day == date_premier_jour.day + jour_passage - 1:
-            if timedelta(hours=creneau["debut_preparation"].hour) >= start and timedelta(
-                    hours=creneau["fin"].hour) <= end:
+        if creneau["debut_preparation"].day == jour_passage:
+            if timedelta(hours=creneau["debut_preparation"].hour) >= timedelta(hours=start) and timedelta(
+                    hours=creneau["fin"].hour) <= timedelta(hours=end):
                 creneaux_from_half_day.append(creneau)
 
     return creneaux_from_half_day
 
 
-def is_a_salle_available(passage, creneaux_from_half_day, heure_debut_preparation_voulue):
-    for salle in passage["salle"]:
-        salle_available = True
-        for creneau in creneaux_from_half_day:
-            if creneau["id_salle"] == salle["id_salle"] \
-                    and not ((heure_debut_preparation_voulue + passage["temps_preparation"]
-                              >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
-                             or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage[
-                        "temps_passage"]
-                                 <= timedelta(hours=creneau["fin_preparation"].hour,
+def is_salle_available(passage, salle, creneau, heure_debut_preparation_voulue):
+    if creneau["id_salle"] == salle["id_salle"] \
+            and not ((heure_debut_preparation_voulue + passage["temps_preparation"] >= timedelta(
+        hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
+                     or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage[
+                "temps_passage"] <= timedelta(hours=creneau["fin_preparation"].hour,
                                               minutes=creneau["fin_preparation"].minute))):
-                salle_available = False
-                break
-        if salle_available:
-            return salle
-
-    return None
+        return False
+    return True
 
 
-def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_voulue, parametres):
+def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_voulue):
     if creneau["id_candidat"] == candidat["id_candidat"] \
             and not ((heure_debut_preparation_voulue
-                      >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute) + timedelta(
-                minutes=parametres["temps_pause_eleve"]))
-                     or (heure_debut_preparation_voulue + passage["temps_preparation"] +
-                         passage["temps_passage"] + timedelta(minutes=parametres["temps_pause_eleve"])
+                      >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute) + timedelta(minutes=30))
+                     or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
                          <= timedelta(hours=creneau["debut_preparation"].hour,
-                                      minutes=creneau["debut_preparation"].minute))):
+                                      minutes=creneau["debut_preparation"].minute) + timedelta(minutes=30))):
         return False
 
     return True
 
 
-def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue, max_passage_sans_pause):
+def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue):
     prof_in_salle = []
 
     for prof in passage["professeur"]:
@@ -281,76 +258,57 @@ def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue,
         creneau_all_prof.append(creneau_from_a_prof)
 
     for creneau_prof in creneau_all_prof:
-        if len(creneau_prof) < max_passage_sans_pause:
+        if len(creneau_prof) < 5:
             continue
 
         passage_sans_pause = 0
         debut_passage = heure_debut_passage_voulue
-        for i in range(max_passage_sans_pause):
+        for i in range(5):
             for creneau in creneau_prof:
                 if debut_passage == timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute):
                     passage_sans_pause += 1
-                    debut_passage = timedelta(hours=creneau["fin_preparation"].hour,
-                                              minutes=creneau["fin_preparation"].minute)
+                    debut_passage = timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute)
                     break
 
             if passage_sans_pause == i:
                 break
 
-        if passage_sans_pause == max_passage_sans_pause:
+        if passage_sans_pause == 5:
             return True
 
     return False
 
 
-def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candidat, passage, local_creneau, salle, date_debut):
+def create_creneau(jour_passage, heure_debut_preparation_voulue, candidat, passage, local_creneau, salle):
     heure_debut_preparation_voulue_datetime = datetime.strptime(
-        f'{date_debut.day + jour_passage - 1}/{date_debut.month}/{date_debut.year} ' + str(heure_debut_preparation_voulue),
-        '%d/%m/%Y %H:%M:%S')
+        f'{jour_passage}/{datetime.now().month}/{datetime.now().year} ' + str(heure_debut_preparation_voulue),
+        '%d/%m/%Y %H:%M:%f')
     fin_preparation_matiere_datetime = datetime.strptime(
-        f'{date_debut.day + jour_passage - 1}/{date_debut.month}/{date_debut.year} ' + str((
-                heure_debut_preparation_voulue + passage["temps_preparation"])), '%d/%m/%Y %H:%M:%S')
+        f'{jour_passage}/{datetime.now().month}/{datetime.now().year} ' + str((
+                heure_debut_preparation_voulue + passage["temps_preparation"])), '%d/%m/%Y %H:%M:%f')
     fin_passage_matiere_datetime = datetime.strptime(
-        f'{date_debut.day + jour_passage - 1}/{date_debut.month}/{date_debut.year} ' + str((
+        f'{jour_passage}/{datetime.now().month}/{datetime.now().year} ' + str((
                 heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"])),
-        '%d/%m/%Y %H:%M:%S')
+        '%d/%m/%Y %H:%M:%f')
 
-    creneau = {"id_creneau": "null", "id_candidat": candidat["id_candidat"],
-               "id_matiere": passage["matiere"]["id_matiere"], "id_salle": salle["id_salle"],
-               "debut_preparation": heure_debut_preparation_voulue_datetime,
-               "fin_preparation": fin_preparation_matiere_datetime, "fin": fin_passage_matiere_datetime}
-
-    local_creneau.append(creneau)
-
-    return local_creneau, creneau
-
-
-def create_creneau(creneau, date_debut, jour_candidat):
-    creneau["debut_preparation"] = datetime.strptime(
-        f'{date_debut.day + jour_candidat - 1}/{date_debut.month}/{date_debut.year} {creneau["debut_preparation"].hour}:{creneau["debut_preparation"].minute}:{creneau["debut_preparation"].second}',
-        '%d/%m/%Y %H:%M:%S')
-    creneau["fin_preparation"] = datetime.strptime(
-        f'{date_debut.day + jour_candidat - 1}/{date_debut.month}/{date_debut.year} {creneau["fin_preparation"].hour}:{creneau["fin_preparation"].minute}:{creneau["fin_preparation"].second}',
-        '%d/%m/%Y %H:%M:%S')
-    creneau["fin"] = datetime.strptime(
-        f'{date_debut.day + jour_candidat - 1}/{date_debut.month}/{date_debut.year} {creneau["fin"].hour}:{creneau["fin"].minute}:{creneau["fin"].second}',
-        '%d/%m/%Y %H:%M:%S')
-
-    res = main_database.add_creneau(creneau["id_candidat"], creneau["id_matiere"], creneau["id_salle"],
-                                    creneau["debut_preparation"], creneau["fin_preparation"], creneau["fin"],
-                                    auto_commit=False, ret=True)
+    res = main_database.add_creneau(candidat["id_candidat"], passage["matiere"]["id_matiere"], salle["id_salle"],
+                                    heure_debut_preparation_voulue_datetime, fin_preparation_matiere_datetime,
+                                    fin_passage_matiere_datetime, auto_commit=False, ret=True)
     if res[1][1] == 'danger':
         logging.warning(res[1][0])
-    return
+    else:
+        local_creneau.append(res[0])
+    return local_creneau
 
 
-def delete_creneaux(id_candidat, local_creneau):
-    new_local_creneau = []
-    for i in range(len(local_creneau)):
-        if local_creneau[i]["id_candidat"] != id_candidat:
-            new_local_creneau.append(local_creneau[i])
+def delete_creneau(id_creneau1, id_creneau2, local_creneau):
+    if id_creneau1:
+        local_creneau = main_database.delete_creneau(id_creneau1)
 
-    return new_local_creneau
+    if id_creneau2:
+        local_creneau = main_database.delete_creneau(id_creneau2)
+
+    return local_creneau
 
 
 def swap_passage(passage):
@@ -361,6 +319,29 @@ def swap_passage(passage):
     return passage
 
 
+def convert_from_decimal_time(decimal):
+    hours = int(decimal)
+    minutes = (decimal * 60) % 60
+    res = "%02d:%02d" % (hours, minutes)
+    return res
+
+
+def convert_to_decimal_time(time):
+    h, m = time.split(':')
+    r = int(h) + float(m) / 60
+    r = round(r, 2)
+    return r
+
+
+def convert_minute_to_string(time):
+    h, m = int(time / 60), int(time % 60)
+    return f"{h}:{m}"
+
+
+def order_by(e):
+    return e["debut_preparation"]
+
+
 def test_calendar_complete():
     response = ask_api("data/fetchmulti",
                        ["creneau", "candidat", "choix_matiere"])
@@ -368,11 +349,12 @@ def test_calendar_complete():
         flash("Une erreur est survenue lors de la récupération des données", "danger")
     all_creneaux, all_candidats, all_choix_matiere = response.json()
 
-    if len(all_choix_matiere) == 0:
-        return None
-
-
+    # all_choix_matiere = CHOIX_MATIERE.query.all()
+    # Because all_choix_matiere is immutable
     all_choix_matiere_left = deepcopy(all_choix_matiere)
+
+    # all_creneaux = CRENEAU.query.all()
+    # all_candidats = CANDIDATS.query.all()
 
     matiere_left = 0
     for _ in all_choix_matiere:

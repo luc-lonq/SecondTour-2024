@@ -27,32 +27,19 @@
                         <th scope="col">
                             <div class="th-inner">Nom</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
+                                <input type="text" class="form-control finder" v-on:keyup="finder(1, 0)" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Prénom</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
-                            </div>
-                        </th>
-                        <th scope="col">
-                            <div class="th-inner">Série</div>
-                            <div class="filter-control">
-                                <select class="form-select finder break-doublons" v-on:change="finder">
-                                    <option select></option>
-                                    {% for a_serie in all_series %}
-                                    <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}{%
-                                    if a_serie.specialite1%} - {{a_serie.specialite1}}{% endif %}
-                                    </option>
-                                {% endfor %}
-                                </select>
+                                <input type="text" class="form-control finder" v-on:keyup="finder(2, 1)" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Matière</div>
                             <div class="filter-control">
-                                <select class="form-select finder break-doublons" v-on:change="finder">
+                                <select class="form-select finder break-doublons" v-on:change="finder(3, 2, false)">
                                     <option select></option>
                                     {% for matiere in all_matieres %}
                                     <option>{{matiere.nom}}</option>
@@ -63,7 +50,7 @@
                         <th scope="col">
                             <div class="th-inner">Salle</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder">
+                                <select class="form-select finder" v-on:change="finder(4, 3)">
                                     <option select></option>
                                     {% for salle in all_salles %}
                                     <option>{{salle.numero}}</option>
@@ -71,35 +58,54 @@
                                 </select>
                             </div>
                         </th>
+                        <th scope="col" class="supprimer align-text-top">Horaire</th>
                         <th scope="col" class="supprimer align-text-top">Modifier</th>
                         <th scope="col" class="supprimer align-text-top">Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for a_prof in all_profs %}
-                    <tr class="trfilter clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{a_prof.id_professeur}}">
+                    <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{a_prof.id_professeur}}">
                         <td scope="row">{{a_prof.nom}}</td>
                         <td scope="row">{{a_prof.prenom}}</td>
                         <td scope="row">
                             {% for a_matiere in all_matieres %}
-                            {% for a_serie in all_series %}
-                            {% if a_matiere.id_matiere == a_prof.matiere and a_matiere.id_serie == a_serie.id_serie%}
-                            {{a_serie.nom}}{%if a_serie.specialite1%} - {{a_serie.specialite1}}{% endif %}
-                            {% endif %}
-                            {% endfor %}
-                            {% endfor %}
-                        </td>
-                        <td scope="row">
-                            {% for a_matiere in all_matieres %}
-                            {% if a_matiere.id_matiere == a_prof.matiere %}
+                            {% for lmatiere in all_liste_matiere %}
+                            {% if a_matiere.id_matiere == lmatiere.id_matiere and lmatiere.id_professeur ==
+                            a_prof.id_professeur %}
                             {{a_matiere.nom}}<br>
                             {% endif %}
+                            {% endfor %}
                             {% endfor %}
                         </td>
                         <td scope="row">
                             {% for a_salle in all_salles %}
                             {% if a_salle.id_salle == a_prof.salle %}
                             {{a_salle.numero}}
+                            {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for a_horaire in all_horaires %}
+                            {% if a_horaire.id_professeur == a_prof.id_professeur %}
+                            {% if a_horaire.horaire_arr1.strftime('%Hh%M') != '08h00' or
+                            a_horaire.horaire_dep1.strftime('%Hh%M') != '20h00' %}
+                            <div>{{a_horaire.horaire_arr1.strftime('%d')}} :
+                                {{a_horaire.horaire_arr1.strftime('%Hh%M')}}-{{a_horaire.horaire_dep1.strftime('%Hh%M')}}
+                            </div>
+                            {% endif %}
+                            {% if a_horaire.horaire_arr2.strftime('%Hh%M') != '08h00' or
+                            a_horaire.horaire_dep2.strftime('%Hh%M') != '20h00' %}
+                            <div>{{a_horaire.horaire_arr2.strftime('%d')}} :
+                                {{a_horaire.horaire_arr2.strftime('%Hh%M')}}-{{a_horaire.horaire_dep2.strftime('%Hh%M')}}
+                            </div>
+                            {% endif %}
+                            {% if a_horaire.horaire_arr3.strftime('%Hh%M') != '08h00' or
+                            a_horaire.horaire_dep3.strftime('%Hh%M') != '20h00' %}
+                            <div>{{a_horaire.horaire_arr3.strftime('%d')}} :
+                                {{a_horaire.horaire_arr3.strftime('%Hh%M')}}-{{a_horaire.horaire_dep3.strftime('%Hh%M')}}
+                            </div>
+                            {% endif %}
                             {% endif %}
                             {% endfor %}
                         </td>
@@ -116,7 +122,8 @@
                             <form method="post" action="{{url_for('admin_routes.professeurs')}}"
                                 id="deleteProfForm{{a_prof.id_professeur}}">
                                 <input type="hidden" name="id" value="{{a_prof.id_professeur}}">
-                                <button type="submit" name="delete_button" id="{{a_prof.id_professeur}}"
+                                <button type="button" id="{{a_prof.id_professeur}}" data-bs-toggle="modal"
+                                    data-bs-target="#confirmDeleteModal"
                                     class="deleteRow btn btn-outline-danger">Supprimer</button>
                             </form>
                         </td>
@@ -138,7 +145,9 @@
                                         </thead>
                                         <tbody>
                                             {% for creneau in all_creneaux %}
-                                            {% if creneau.id_matiere == a_prof.matiere and creneau.id_salle ==
+                                            {% for liste_matiere in all_liste_matiere %}
+                                            {% if liste_matiere.id_professeur == a_prof.id_professeur %}
+                                            {% if creneau.id_matiere == liste_matiere.id_matiere and creneau.id_salle ==
                                             a_prof.salle %}
                                             <tr class="not-null">
                                                 {% for candidat in all_candidats %}
@@ -155,6 +164,8 @@
                                                 <td scope="row" class="hide"></td>
                                             </tr>
                                             {% endif %}
+                                            {% endif %}
+                                            {% endfor %}
                                             {% endfor %}
                                         </tbody>
                                     </table>
@@ -183,23 +194,28 @@
                     <!-- Add user form -->
                     <form method="post" action="{{url_for('admin_routes.professeurs')}}" id="addProfForm">
                         <div class="form-group">
-                            <label for="nameAdd" class="col-form-label">Nom</label>
+                            <label for="accountEmail">Adresse email</label>
+                            <input type="email" class="form-control" id="accountEmail" name="email"
+                                aria-describedby="emailHelp" placeholder="Entrez un email" required="required">
+                        </div>
+                        <div class="form-group">
+                            <label for="nameAdd">Nom</label>
                             <div class="d-flex">
                                 <input type="text" class="form-control" id="nameAdd" name="name"
                                     placeholder="Entrez un nom" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="surnameAdd" class="col-form-label">Prénom</label>
+                            <label for="surnameAdd">Prénom</label>
                             <div class="d-flex">
                                 <input type="text" class="form-control" id="surnameAdd" name="surname"
                                     placeholder="Entrez un prénom" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="selectMatiere" class="col-form-label">Matière</label>
-                            <select class="form-control" id="selectMatiere" name="matiere">
-                                <option selected></option>
+                            <label for="selectMatiere">Matière</label>
+                            <select class="form-control chosen-select matiere-choice-multiselect1" id="selectMatiere"
+                                name="matieres[]" multiple="multiple" style="width:100%;">
                                 {% for a_matiere in all_matieres %}
                                 <option id="matiere{{a_matiere.id_matiere}}" value="{{a_matiere.id_matiere}}">
                                     {{a_matiere.nom}}</option>
@@ -207,7 +223,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="selectSalle" class="col-form-label">Salle</label>
+                            <label for="selectSalle">Salle</label>
                             <select class="form-control" id="selectSalle" name="salle">
                                 <option selected></option>
                                 {% for a_salle in all_salles %}
@@ -215,6 +231,37 @@
                                 </option>
                                 {% endfor %}
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="arrivee" class="col-form-label">Horaires</label>
+                            <div>
+                                <div class="d-flex justify-content-around" style="margin-top: 5px;">
+                                    <div style="margin: 0 5px;">
+                                        <p>jour 1 :</p>
+                                        <input type="text" class="form-control" id="heure_arrivee1"
+                                            name="heure_arrivee1" aria-describedby="heure_arrivee1_Help" value="08:00"
+                                            style="margin-bottom: 5px;">
+                                        <input type="text" class="form-control" id="heure_depart1" name="heure_depart1"
+                                            aria-describedby="heure_depart1_Help" value="20:00">
+                                    </div>
+                                    <div style="margin: 0 5px;">
+                                        <p>jour 2 :</p>
+                                        <input type="text" class="form-control" id="heure_arrivee2"
+                                            name="heure_arrivee2" aria-describedby="heure_arrivee2_Help" value="08:00"
+                                            style="margin-bottom: 5px;">
+                                        <input type="text" class="form-control" id="heure_depart2" name="heure_depart2"
+                                            aria-describedby="heure_depart2_Help" value="20:00">
+                                    </div>
+                                    <div style="margin: 0 5px;">
+                                        <p>jour 3 :</p>
+                                        <input type="text" class="form-control" id="heure_arrivee3"
+                                            name="heure_arrivee3" aria-describedby="heure_arrivee3_Help" value="08:00"
+                                            style="margin-bottom: 5px;">
+                                        <input type="text" class="form-control" id="heure_depart3" name="heure_depart3"
+                                            aria-describedby="heure_depart3_Help" value="20:00">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -227,6 +274,27 @@
         </div>
     </div>
 
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Attention</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Êtes vous sûr de vouloir supprimer ce professeur ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" name="delete_button" id="ModalSubmitButton" value="" form="deleteProfForm"
+                        class="btn btn-danger">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Modal modification d'1 row professeur-->
     <div class="modal fade" id="modifyModal" role="dialog" aria-labelledby="modifyModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -241,23 +309,24 @@
                     <p style="color: orange;">[!] Si le prof est assigné à aucune salle, il n'aura aucun créneau.</p>
                     <form method="post" action="{{url_for('admin_routes.professeurs')}}" id="modifyProfesseurForm">
                         <input id="id_professeur_modify" name="prof_id" value="" hidden>
+                        <input id="id_utilisateur_modify" name="user" value="" hidden>
 
                         <div class="form-group">
-                            <label for="name" class="col-form-label">Nom</label>
+                            <label for="name">Nom</label>
                             <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
                                 placeholder="Entrez un nom" required>
                         </div>
                         <div class="form-group">
-                            <label for="surname" class="col-form-label">Prenom</label>
+                            <label for="surname">Prenom</label>
                             <input type="text" class="form-control" id="surname" name="surname"
                                 aria-describedby="surnameHelp" placeholder="Entrez un prénom" required>
                         </div>
                         <div class="form-group">
-                            <label for="selectMatiere" class="col-form-label">Matière</label>
-                            <select class="form-control" id="selectMatiere" name="matiere">
-                                <option selected></option>
+                            <label for="matiere" class="col-form-label">Matière</label>
+                            <select class="form-select matiere-choice-multiselect2" name="matieres[]"
+                                id="matiere-select-modif" multiple style="width:100%;">
                                 {% for matiere in all_matieres %}
-                                <option id="matiere{{matiere.id_matiere}}" value="{{matiere.id_matiere}}">
+                                <option id="matiere_{{matiere.id_matiere}}" value="{{matiere.id_matiere}}">
                                     {{matiere.nom}}</option>
                                 {% endfor %}
                             </select>
@@ -272,6 +341,37 @@
                                 </option>
                                 {% endfor %}
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="arrivee" class="col-form-label">Horaires</label>
+                            <div>
+                                <div class="d-flex justify-content-around" style="margin-top: 5px;">
+                                    <div style="margin: 0 5px;">
+                                        <p>jour 1 :</p>
+                                        <input type="text" class="form-control" id="heure_arrivee1"
+                                            name="heure_arrivee1" aria-describedby="heure_arrivee1_Help" value="08:00"
+                                            style="margin-bottom: 5px;">
+                                        <input type="text" class="form-control" id="heure_depart1" name="heure_depart1"
+                                            aria-describedby="heure_depart1_Help" value="20:00">
+                                    </div>
+                                    <div style="margin: 0 5px;">
+                                        <p>jour 2 :</p>
+                                        <input type="text" class="form-control" id="heure_arrivee2"
+                                            name="heure_arrivee2" aria-describedby="heure_arrivee2_Help" value="08:00"
+                                            style="margin-bottom: 5px;">
+                                        <input type="text" class="form-control" id="heure_depart2" name="heure_depart2"
+                                            aria-describedby="heure_depart2_Help" value="20:00">
+                                    </div>
+                                    <div style="margin: 0 5px;">
+                                        <p>jour 3 :</p>
+                                        <input type="text" class="form-control" id="heure_arrivee3"
+                                            name="heure_arrivee3" aria-describedby="heure_arrivee3_Help" value="08:00"
+                                            style="margin-bottom: 5px;">
+                                        <input type="text" class="form-control" id="heure_depart3" name="heure_depart3"
+                                            aria-describedby="heure_depart3_Help" value="20:00">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -317,6 +417,8 @@
         var all_matieres = JSON.parse(myvar_matieres);
         myvar_profs = '{{all_profs|tojson}}';
         var all_professeurs = JSON.parse(myvar_profs);
+        myvar_liste_matiere = '{{all_liste_matiere|tojson}}';
+        var all_liste_matiere = JSON.parse(myvar_liste_matiere);
         myvar_salles = '{{all_salles|tojson}}';
         all_salles = JSON.parse(myvar_salles);
 
@@ -327,45 +429,52 @@
             }
         }
 
-        var id_matiere = null;
-        if (professeur.matiere) {
-            for (var i = 0; i < all_matieres.length; i++) {
-                if (all_matieres[i]['id_matiere'] == professeur.matiere) {
-                    id_matiere = professeur.matiere;
-                    break;
-                }
+        var matieres = [];
+        for (var i = 0; i < all_liste_matiere.length; i++) {
+            if (all_liste_matiere[i]['id_professeur'] == professeur.id_professeur) {
+                matieres.push(all_matieres[i]);
             }
         }
 
-        var id_salle = null;
-        if (professeur.salle) {
-            for (var i = 0; i < all_salles.length; i++) {
-                if (all_salles[i]['id_salle'] == professeur.salle) {
-                    id_salle = professeur.salle;
-                    break;
-                }
+        var id_salle;
+        for (var i = 0; i < all_salles.length; i++) {
+            if (all_salles[i]['id_salle'] == professeur.salle) {
+                id_salle = professeur.salle;
+                break;
             }
         }
+
 
 
         //Set the user
         //$("#id_utilisateur_modify").attr('value', professeur.id_utilisateur);
 
         //Set the name surname
-        form_elements[1].value = professeur['nom'];
-        form_elements[2].value = professeur['prenom'];
+        form_elements[2].value = professeur['nom'];
+        form_elements[3].value = professeur['prenom'];
 
         //Set the matiere
-        
-        select = form_elements[3];
-        for (var i = 0; i < select.length; i++) {
-            select.options[i].selected = select.options[i].id == "matiere" + id_matiere;
+        if (matieres != null) {
+            for (let y = 0; y < matieres.length; y++) {
+                let matiere = matieres[y];
+                id_matiere = matiere['id_matiere'];
+                select = form_elements[4];
+                for (var i = 0; i < select.length; i++) {
+                    if (select.options[i].id == "matiere_" + id_matiere) {
+                        select.options[i].selected = true;
+                    }
+                } 
+
+            }
         }
 
         //set the salle
-        select = form_elements[4];
+        select = form_elements[6];
         for (var i = 0; i < select.length; i++) {
-            select.options[i].selected = select.options[i].id == 'salle' + id_salle;
+            if (select.options[i].id == 'salle' + id_salle) {
+                select.options[i].selected = true;
+                break;
+            }
         }
     });
 </script>

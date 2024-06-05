@@ -28,21 +28,21 @@
                         <th scope="col">
                             <div class="th-inner">Nom</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder"
+                                <input type="text" class="form-control finder" v-on:keyup="finder(1, 0)"
                                     style="width: 100px;" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Prénom</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder"
+                                <input type="text" class="form-control finder" v-on:keyup="finder(2, 1)"
                                 style="width: 100px;" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Série</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder">
+                                <select class="form-select finder" v-on:change="finder(3, 2)">
                                     <option selected></option>
                                     {% for a_serie in all_series %}
                                     <option>{{a_serie.nom}}{% if a_serie.specialite1 %} - {{a_serie.specialite1}}{%
@@ -54,13 +54,13 @@
                         <th scope="col">
                             <div class="th-inner">Matières</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
+                                <input type="text" class="form-control finder" v-on:keyup="finder(4, 3)" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Tiers temps</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder">
+                                <select class="form-select finder" v-on:change="finder(5, 4)">
                                     <option selected></option>
                                     <option>Oui</option>
                                     <option>Non</option>
@@ -68,20 +68,9 @@
                             </div>
                         </th>
                         <th scope="col">
-                            <div class="th-inner">Jour</div>
-                            <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder">
-                                    <option selected></option>
-                                    {% for jour in max_jour %}
-                                        <option>{{ jour }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </th>
-                        <th scope="col">
                             <div class="th-inner">Matin</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder">
+                                <select class="form-select finder" v-on:change="finder(6, 5)">
                                     <option selected></option>
                                     <option>Oui</option>
                                     <option>Non</option>
@@ -94,7 +83,7 @@
                 </thead>
                 <tbody>
                     {% for candidat in all_candidats %}
-                    <tr class="trfilter clickable {% if candidat.absent == False %}table-success{% else %}table-danger{% endif %}"
+                    <tr class="clickable {% if candidat.absent == False %}table-success{% else %}table-danger{% endif %}"
                         data-bs-target="#accordion{{candidat.id_candidat}}" data-bs-toggle="collapse">
                         <td scope="row">{{candidat.nom}}</td>
                         <td scope="row">{{candidat.prenom}}</td>
@@ -129,9 +118,6 @@
                             {% if candidat.tiers_temps %}Oui{% else %}Non{% endif %}
                         </td>
                         <td scope="row">
-                            {{ candidat.jour }}
-                        </td>
-                        <td scope="row">
                             {% if candidat.matin %}Oui{% else %}Non{% endif %}
                         </td>
                         <td>
@@ -146,7 +132,8 @@
                             <form method="post" action="{{url_for('admin_routes.candidats')}}"
                                 id="deleteCandidatsForm{{candidat.id_candidat}}">
                                 <input type="hidden" name="id" value="{{candidat.id_candidat}}">
-                                <button type="submit" name="delete_button" id="{{candidat.id_candidat}}"
+                                <button type="button" id="{{candidat.id_candidat}}" data-bs-toggle="modal"
+                                    data-bs-target="#confirmDeleteModal"
                                     class="deleteRow btn btn-outline-danger">Supprimer</button>
                             </form>
                         </td>
@@ -258,14 +245,6 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="jourSelect">Jour</label>
-                            <select class="form-control" name="jour" id="jourSelect" required>
-                                {% for jour in max_jour %}
-                                <option {% if loop.first %}selected{% endif %} value="{{ jour }}">{{ jour }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <label for="matinSelect">Matin</label>
                             <select class="form-control" name="matin" id="matinSelect" required>
                                 <option selected value="True">Oui</option>
@@ -345,14 +324,6 @@
                             <select class="form-control" name="tiers_temps" id="tierstempsSelect" required>
                                 <option selected value="False">Non</option>
                                 <option value="True">Oui</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="jourSelect">Jour</label>
-                            <select class="form-control" name="jour" id="jourSelect" required>
-                                {% for jour in max_jour %}
-                                <option {% if loop.first %}selected{% endif %} value="{{ jour }}">{{ jour }}</option>
-                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">
@@ -441,11 +412,14 @@
         myvar = '{{all_matieres|tojson}}';
         let all_matieres = JSON.parse(myvar);
 
+
         let selectMatiereObject1 = document.getElementById('matiere1Select');
         let selectMatiereObject2 = document.getElementById('matiere2Select');
         let selectSerieObject = document.getElementById('serieSelect');
         let id_serie = selectSerieObject.value;
         manage_option(selectMatiereObject1, selectMatiereObject2, id_serie, all_matieres);
+
+
 
         let selectMatiereModifObject1 = document.getElementById('matiere1SelectModif');
         let selectMatiereModifObject2 = document.getElementById('matiere2SelectModif');
@@ -522,7 +496,6 @@
 
 <script>
     $('.modifRow').click(function () {
-
         var $myRowId = $(this).get(0).id;
         name = document.getElementById("ModalSubmitModifButton").getAttribute("form");
         $("#hiddenIdModif").attr('value', $myRowId);
@@ -586,21 +559,27 @@
         }
         //Set the tiers temps
         if (candidat['tiers_temps'] == true) {
+            form_elements[5].options[0].selected = false;
             form_elements[5].options[1].selected = true;
         } else {
             form_elements[5].options[0].selected = true;
+            form_elements[5].options[1].selected = false;
         }
         //Set matin
         if (candidat['matin'] == true) {
             form_elements[6].options[0].selected = true;
+            form_elements[6].options[1].selected = false;
         } else {
+            form_elements[6].options[0].selected = false;
             form_elements[6].options[1].selected = true;
         }
         //Set absent
         if (candidat['absent'] == true) {
+            form_elements[7].options[0].selected = false;
             form_elements[7].options[1].selected = true;
         } else {
             form_elements[7].options[0].selected = true;
+            form_elements[7].options[1].selected = false;
         }
 
         testMatiereCompatible();
@@ -609,7 +588,6 @@
         if (matiere1 != null) {
             id_matiere1 = matiere1['id_matiere'];
             select = form_elements[3];
-            console.log(id_matiere1);
             for (var i = 0; i < select.length; i++) {
                 if (select.options[i].id == "matiere1_" + id_matiere1) {
                     select.options[i].selected = true;

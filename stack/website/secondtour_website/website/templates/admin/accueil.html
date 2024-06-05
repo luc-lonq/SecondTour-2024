@@ -1,7 +1,7 @@
 {% extends "admin/base_admin.html" %}
 {% block title %}Administration{% endblock %}
 {% block sub_content %}
-<div class="main-div-admin" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<div class="main-div-admin">
     <h1 class="text-white text-decoration-none" style="margin-bottom: 10px;">Accueil</h1>
     <div class="d-flex" style="width: 100%; justify-content:space-between;">
         <form method="post">
@@ -9,126 +9,122 @@
                 data-bs-target="#generateCalendarModal">Générer le calendrier</button>
         </form>
         <div class="d-flex flex-row">
-            <button class="btn btn-primary" data-bs-toggle="modal" style="background-color:blue;"
-                    data-bs-target="#downloadCalendar">Télécharger les calendriers
+            <button class="btn btn-primary" v-on:click="downloadCalendar('calendarG', 'calendrierSerieGenerale')"
+                style="width: max-content; white-space:nowrap; background-color:blue;">
+                Télécharger Générale
                 <i class=" fas fa-print ml-s"></i>
             </button>
+            <button class="btn btn-primary" v-on:click="downloadCalendar('calendarT', 'calendrierSerieTechnologique')"
+                style="width: max-content; white-space:nowrap; background-color:blue;">
+                Télécharger Technologique
+                <i class=" fas fa-print ml-s"></i>
+            </button>
+            <form method="post">
+                <button class="btn btn-success" type="submit"
+                    style="background-color: green; width: max-content;white-space:nowrap;" name="excel_button">
+                    Exporter au format XLSX
+                    <i class="fas fa-file-excel ml-s"></i>
+                </button>
+            </form>
         </div>
     </div>
     <div class="main-table-admin" style="margin: 20px 0 0 0;">
-        {%- for category, message in get_flashed_messages(with_categories = true) %}
+        {% for category, message in get_flashed_messages(with_categories = true) %}
         <div class="alert alert-{{category}}  alert-dismissible fade show" role="alert">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        {%- endfor %}
+        {% endfor %}
         <div class="table-responsive thumbnail">
-            <table class="table table-light table-striped table-hover" id="calendarSerie">
+            {% for serie in all_series %}
+            <table class="table table-light table-striped calendar" id="calendar{% if serie.nom == 'Générale' %}G{% else %}T{% endif %}">
                 <thead>
                     <tr>
-                        <th scope="col">Série</th>
+                        <th scope="col">
+                            <div class="th-inner">Nom</div>
+                            <div class="filter-control">
+                                <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="th-inner">Prénom</div>
+                            <div class="filter-control">
+                                <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="th-inner">Série</div>
+                            <div class="filter-control">
+                                <select class="form-select finder" v-on:change="finder()" style="width: 200px;">
+                                    <option selected></option>
+                                    {% for a_serie in all_series %}
+                                    <option>{{a_serie.nom}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="th-inner">Epreuve 1</div>
+                            <div class="filter-control">
+                                <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="th-inner">Epreuve 2</div>
+                            <div class="filter-control">
+                                <input type="text" class="form-control finder" v-on:keyup="finder()" placeholder="">
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for serie in all_series %}
-                    <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordionSerie{{serie.id_serie}}">
-                        <td scope="row">{{serie.nom}}{% if serie.specialite1 %} - {{serie.specialite1}}{% endif %}</td>
-                    </tr>
-                    <tr style="--bs-table-hover-bg: transparent; --bs-table-accent-bg: transparent;" class="not-null">
-                        <td colspan="100%" style="padding: 0; background: transparent; --bs-table-accent-bg: transparent;">
-                            <div class="collapse" id="accordionSerie{{serie.id_serie}}" style="margin: 15px 10px;">
-                                <div class="table-responsive thumbnail">
-                                    <table class="table table-light table-striped table-hover" id="calendarDemiJournee">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Demi-journée</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for j in range(0,jour) %}
-                                            {% set n_jour = date.strftime('%d')|int + j %}
-                                            {% for m in range(2) %}
-                                            <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordionDemiJournee{{serie.id_serie}}{{j}}{{m}}">
-                                                <td scope="row">{% if n_jour < 10 %}0{% endif %}{{n_jour}}{{date.strftime('-%m-%Y')}}{% if m != 1 %} Matin{% else %} Après-midi{% endif %}</td>
-                                            </tr>
-                                            <tr style="--bs-table-hover-bg: transparent; --bs-table-accent-bg: transparent;" class="not-null">
-                                                <td colspan="100%" style="padding: 0; background: transparent; --bs-table-accent-bg: transparent;">
-                                                    <div class="collapse" id="accordionDemiJournee{{serie.id_serie}}{{j}}{{m}}" style="margin: 15px 10px;">
-                                                        <div class="table-responsive thumbnail">
-                                                            <table class="table table-light table-striped table-hover" id="calendar{{serie.id_serie}}{{j}}{{m}}">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th scope="col" style="max-width: 8rem">
-                                                                            <div class="th-inner">Nom</div>
-                                                                        </th>
-                                                                        <th scope="col" style="max-width: 8rem">
-                                                                            <div class="th-inner">Prénom</div>
-                                                                        </th>
-                                                                        <th scope="col" style="max-width: 16rem">
-                                                                            <div class="th-inner">Epreuve 1</div>
-                                                                        </th>
-                                                                        <th scope="col" style="max-width: 16rem">
-                                                                            <div class="th-inner">Epreuve 2</div>
-                                                                        </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {% for candidat in all_candidats %}
-                                                                    {% if candidat.id_serie == serie.id_serie %}
-                                                                    {% if not candidat.absent %}
-                                                                    {% if candidat.jour == j+1 %}
-                                                                    {% if candidat.matin != m %}
-                                                                    <tr>
-                                                                        <td scope="row" style="max-width: 8rem">{{candidat.nom}}</td>
-                                                                        <td scope="row" style="max-width: 8rem">{{candidat.prenom}}</td>
-                                                                        {% for creneau in all_creneaux %}
-                                                                        {% if creneau.id_candidat == candidat.id_candidat %}
-                                                                        <td scope="row" style="max-width: 16rem">
-                                                                            <div class="calendar-subject">
-                                                                                {% for matiere in all_matieres %}
-                                                                                {% if matiere.id_matiere == creneau.id_matiere %}
-                                                                                {{creneau.debut_preparation.strftime('%d-%m-%Y | %Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}}
-                                                                                {% for salle in all_salles %}
-                                                                                {% if salle.id_salle == creneau.id_salle %}
-                                                                                <br>
-                                                                                {{salle.numero}}
-                                                                                {% endif %}
-                                                                                {% endfor %}
-                                                                                {% if matiere.loge %}{% for salle in all_salles %}{% if
-                                                                                matiere.loge == salle.id_salle %}({{salle.numero}}){% endif %}{% endfor %}
-                                                                                {% endif %}
-                                                                                 | {{matiere.nom}}
-                                                                                {% endif %}
-                                                                                {% endfor %}
-                                                                            </div>
-                                                                        </td>
-                                                                        {% endif %}
-                                                                        {% endfor %}
-                                                                    </tr>
-                                                                    {% endif %}
-                                                                    {% endif %}
-                                                                    {% endif %}
-                                                                    {% endif %}
-                                                                    {% endfor %}
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                    {% for candidat in all_candidats %}
+                    {% if candidat.id_serie == serie.id_serie %}
+                    <tr>
+                        <td scope="row">{{candidat.nom}}</td>
+                        <td scope="row">{{candidat.prenom}}</td>
+
+                        <td scope="row">
+                            {% for serie in all_series %}
+                            {% if serie.id_serie == candidat.id_serie %}
+                            {{serie.nom}}{% if serie.specialite1 %} - {{serie.specialite1}}{% endif %}{% if
+                            serie.specialite2 %}/{{serie.specialite2}}{% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        </td>
+                        {% for creneau in all_creneaux %}
+                        {% if creneau.id_candidat == candidat.id_candidat %}
+                        <td scope="row">
+                            <div class="calendar-subject">
+                                {% for matiere in all_matieres %}
+
+                                {% if matiere.id_matiere == creneau.id_matiere %}
+                                <div>{{matiere.nom}} - {% for salle in all_salles %}
+                                    {% if salle.id_salle == creneau.id_salle %}
+                                    {{salle.numero}}
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% if matiere.loge %} - Loge {% for salle in all_salles %}{% if
+                                    matiere.loge == salle.id_salle %}{{salle.numero}}{% endif %}{% endfor %}
+                                    {% endif %}</div>
+                                <div>{{creneau.debut_preparation.strftime('%d')}} |
+                                    {{creneau.debut_preparation.strftime('%Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}}
                                 </div>
+                                {% endif %}
+                                {% endfor %}
                             </div>
                         </td>
+                        {% endif %}
+                        {% endfor %}
                     </tr>
-                    <tr class="no-border not-null"></tr>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
+            <br>
+            {% endfor %}
         </div>
+        
     </div>
 
     <!-- Modal -->
@@ -175,46 +171,11 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="downloadCalendar" tabindex="-1" role="dialog"
-        aria-labelledby="downloadCalendar" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Télécharger les calendriers</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    {% for serie in all_series %}
-                    <p style="margin-top: 2em">{{ serie.nom }}{% if serie.specialite1 %} - {{serie.specialite1}}{% endif %} :</p>
-                    <div>
-                        {% for j in range(0,jour) %}
-                        {% set n_jour = date.strftime('%d')|int + j %}
-                        <div class="d-flex" style="margin-bottom: 1em">
-                            {% for m in range(2) %}
-                            <button class="btn btn-primary"
-                                    v-on:click="downloadCalendar(
-                                                'calendar{{serie.id_serie}}{{j}}{{m}}',
-                                                'Calendrier Serie {{ serie.nom }}{% if serie.specialite1 %}{{serie.specialite1}}{% endif %} {% if n_jour < 10 %}0{% endif %}{{n_jour}}{{date.strftime('-%m-%Y')}}{% if m != 1 %} Matin{% else %} Après-midi{% endif %}',
-                                                'calendrier{{ serie.nom }}{% if serie.specialite1 %}{{serie.specialite1}}{% endif %}{% if n_jour < 10 %}0{% endif %}{{n_jour}}{{date.strftime('-%m-%Y')}}{% if m != 1 %}Matin{% else %}ApresMidi{% endif %}'
-                                                )"
-                                    style="margin-right: 1em">
-                                {% if n_jour < 10 %}0{% endif %}{{n_jour}}{{date.strftime('-%m-%Y')}}{% if m != 1 %} Matin{% else %} Après-midi{% endif %}
-                                <i class=" fas fa-print ml-s"></i>
-                            </button>
-                            {% endfor %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
+{% endblock %}
+
+{% block sub_script %}
+<script>
+
+</script>
 {% endblock %}
