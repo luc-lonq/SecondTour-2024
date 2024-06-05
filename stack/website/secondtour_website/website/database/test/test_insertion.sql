@@ -1,232 +1,232 @@
--- INSERTION DES salleS--
-INSERT INTO salle
-VALUES (1, 'D100');
-INSERT INTO salle
-VALUES (2, 'D101');
-INSERT INTO salle
-VALUES (3, 'D003');
-INSERT INTO salle
-VALUES (4, 'D004');
-INSERT INTO salle
-VALUES (5, 'D005');
-INSERT INTO salle
-VALUES (6, 'D006');
-INSERT INTO salle
-VALUES (7, 'D007');
-INSERT INTO salle
-VALUES (8, 'D008');
-INSERT INTO salle
-VALUES (9, 'D009');
-INSERT INTO salle
-VALUES (10, 'D010');
-INSERT INTO salle
-VALUES (11, 'D011');
-INSERT INTO salle
-VALUES (12, 'D012');
+-- INSERTION DES SALLES--
+INSERT INTO SALLE
+VALUES (NULL, 'D100');
+INSERT INTO SALLE
+VALUES (NULL, 'D101');
+INSERT INTO SALLE
+VALUES (NULL, 'D003');
+INSERT INTO SALLE
+VALUES (NULL, 'D004');
+INSERT INTO SALLE
+VALUES (NULL, 'D005');
+INSERT INTO SALLE
+VALUES (NULL, 'D006');
+INSERT INTO SALLE
+VALUES (NULL, 'D007');
+INSERT INTO SALLE
+VALUES (NULL, 'D008');
+INSERT INTO SALLE
+VALUES (NULL, 'D009');
+INSERT INTO SALLE
+VALUES (NULL, 'D010');
+INSERT INTO SALLE
+VALUES (NULL, 'D011');
+INSERT INTO SALLE
+VALUES (NULL, 'D012');
 
--- INSERTION DES serieS--
-INSERT INTO serie
-VALUES (1, 'Générale', 'Mathématiques', 'SVT');
-INSERT INTO serie
-VALUES (2, 'Générale', 'Physique', 'SI');
-INSERT INTO serie
-VALUES (3, 'Technologique', 'STI2D', NULL);
+-- INSERTION DES SERIES--
+INSERT INTO SERIE
+VALUES (NULL, 'Générale', 'Mathématiques', 'SVT');
+INSERT INTO SERIE
+VALUES (NULL, 'Générale', 'Physique', 'SI');
+INSERT INTO SERIE
+VALUES (NULL, 'Technologique', 'STI2D', NULL);
 
--- INSERTION DES matiere--
-INSERT INTO matiere
-VALUES (1, 1, 'Mathématiques', 'Mathématiques - Mathématiques/SVT', 30, 40, 30, 40, NULL);
-INSERT INTO matiere
-VALUES (2, 1, 'SVT', 'SVT - Mathématiques/SVT', 30, 40, 30, 40, NULL);
-INSERT INTO matiere
-VALUES (3, 1, 'Français', 'Français - Mathématiques/SVT', 30, 40, 30, 40, NULL);
-INSERT INTO matiere
-VALUES (4, 1, 'Philosophie', 'Philosophie - Mathématiques/SVT', 30, 40, 30, 40, NULL);
+-- INSERTION DES MATIERES--
+INSERT INTO MATIERES
+VALUES (NULL, 1, 'Mathématiques', 'Mathématiques - Mathématiques/SVT', 30, 40, 30, 40, NULL);
+INSERT INTO MATIERES
+VALUES (NULL, 1, 'SVT', 'SVT - Mathématiques/SVT', 30, 40, 30, 40, NULL);
+INSERT INTO MATIERES
+VALUES (NULL, 1, 'Français', 'Français - Mathématiques/SVT', 30, 40, 30, 40, NULL);
+INSERT INTO MATIERES
+VALUES (NULL, 1, 'Philosophie', 'Philosophie - Mathématiques/SVT', 30, 40, 30, 40, NULL);
 
-INSERT INTO matiere
-VALUES (5, 2, 'Physique', 'Physique - Physique/SI', 30, 40, 30, 40, NULL);
-INSERT INTO matiere
-VALUES (6, 2, 'SI', 'SI - Physique/SI', 60, 60, 30, 40, 1);
-INSERT INTO matiere
-VALUES (7, 2, 'Français', 'Français - Physique/SI', 30, 40, 30, 40, NULL);
-INSERT INTO matiere
-VALUES (8, 2, 'Philosophie', 'Philosophie - Physique/SI', 30, 40, 30, 40, NULL);
+INSERT INTO MATIERES
+VALUES (NULL, 2, 'Physique', 'Physique - Physique/SI', 30, 40, 30, 40, NULL);
+INSERT INTO MATIERES
+VALUES (NULL, 2, 'SI', 'SI - Physique/SI', 60, 60, 30, 40, 1);
+INSERT INTO MATIERES
+VALUES (NULL, 2, 'Français', 'Français - Physique/SI', 30, 40, 30, 40, NULL);
+INSERT INTO MATIERES
+VALUES (NULL, 2, 'Philosophie', 'Philosophie - Physique/SI', 30, 40, 30, 40, NULL);
 
-INSERT INTO matiere
-VALUES (9, 3, '2I2D', '2I2D - STI2D', 60, 60, 30, 40, 2);
-INSERT INTO matiere
-VALUES (10, 3, 'Mathématiques/Physique', 'Mathématiques/Physique - STI2D', 30, 40, 30, 40, NULL);
-INSERT INTO matiere
-VALUES (11, 3, 'Français', 'Français - STI2D', 30, 40, 30, 40, NULL);
-INSERT INTO matiere
-VALUES (12, 3, 'Philosophie', 'Philosophie - STI2D', 30, 40, 30, 40, NULL);
+INSERT INTO MATIERES
+VALUES (NULL, 3, '2I2D', '2I2D - STI2D', 60, 60, 30, 40, 2);
+INSERT INTO MATIERES
+VALUES (NULL, 3, 'Mathématiques/Physique', 'Mathématiques/Physique - STI2D', 30, 40, 30, 40, NULL);
+INSERT INTO MATIERES
+VALUES (NULL, 3, 'Français', 'Français - STI2D', 30, 40, 30, 40, NULL);
+INSERT INTO MATIERES
+VALUES (NULL, 3, 'Philosophie', 'Philosophie - STI2D', 30, 40, 30, 40, NULL);
 
--- INSERTION DES candidat--
-INSERT INTO candidat
-VALUES (1, 'Oumiri', 'Hakim', 1, true, false);
-INSERT INTO choix_matiere
-VALUES (1, 1, 1, 2);
+-- INSERTION DES CANDIDATS--
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Oumiri', 'Hakim', 1, true, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 1, 1, 2);
 
-INSERT INTO candidat
-VALUES (2, 'Garland', 'Gamelin', 1, true, false);
-INSERT INTO choix_matiere
-VALUES (2, 2, 1, 3);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Garland', 'Gamelin', 1, true, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 2, 1, 3);
 
-INSERT INTO candidat
-VALUES (3, 'Huon', 'Guimond', 2, false, false);
-INSERT INTO choix_matiere
-VALUES (3, 3, 5, 6);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Huon', 'Guimond', 2, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 3, 5, 6);
 
-INSERT INTO candidat
-VALUES (4, 'Pinette', 'Agathe', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (4, 4, 9, 10);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Pinette', 'Agathe', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 4, 9, 10);
 
-INSERT INTO candidat
-VALUES (5, 'Allain', 'Clothilde', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (5, 5, 9, 10);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Allain', 'Clothilde', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 5, 9, 10);
 
-INSERT INTO candidat
-VALUES (6, 'Jalbert', 'Arienne', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (6, 6, 9, 10);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Jalbert', 'Arienne', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 6, 9, 10);
 
-INSERT INTO candidat
-VALUES (7, 'Bernard', 'Noémie', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (7, 7, 9, 11);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Bernard', 'Noémie', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 7, 9, 11);
 
-INSERT INTO candidat
-VALUES (8, 'Gousse', 'Maurice', 1, false, false);
-INSERT INTO choix_matiere
-VALUES (8, 8, 1, 3);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Gousse', 'Maurice', 1, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 8, 1, 3);
 
-INSERT INTO candidat
-VALUES (9, 'Le mendes', 'Isaac', 1, false, false);
-INSERT INTO choix_matiere
-VALUES (9, 9, 2, 3);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Le mendes', 'Isaac', 1, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 9, 2, 3);
 
-INSERT INTO candidat
-VALUES (10, 'Guillot', 'Henri', 1, false, false);
-INSERT INTO choix_matiere
-VALUES (10, 10, 1, 2);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Guillot', 'Henri', 1, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 10, 1, 2);
 
-INSERT INTO candidat
-VALUES (11, 'Foucher', 'Charlotte', 2, false, false);
-INSERT INTO choix_matiere
-VALUES (11, 11, 5, 6);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Foucher', 'Charlotte', 2, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 11, 5, 6);
 
-INSERT INTO candidat
-VALUES (12, 'Duhamel', 'Claire', 2, false, false);
-INSERT INTO choix_matiere
-VALUES (12, 12, 5, 6);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Duhamel', 'Claire', 2, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 12, 5, 6);
 
-INSERT INTO candidat
-VALUES (13, 'Pons', 'Sebastien', 2, false, false);
-INSERT INTO choix_matiere
-VALUES (13, 13, 5, 6);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Pons', 'Sebastien', 2, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 13, 5, 6);
 
-INSERT INTO candidat
-VALUES (14, 'Vincent', 'Noémie', 2, false, false);
-INSERT INTO choix_matiere
-VALUES (14, 14, 5, 7);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Vincent', 'Noémie', 2, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 14, 5, 7);
 
-INSERT INTO candidat
-VALUES (15, 'Lefebvre', 'Gilles', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (15, 15, 9, 10);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Lefebvre', 'Gilles', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 15, 9, 10);
 
-INSERT INTO candidat
-VALUES (16, 'Devaux', 'Marine', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (16, 16, 9, 10);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Devaux', 'Marine', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 16, 9, 10);
 
-INSERT INTO candidat
-VALUES (17, 'Labbe', 'David', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (17, 17, 9, 10);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Labbe', 'David', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 17, 9, 10);
 
-INSERT INTO candidat
-VALUES (18, 'Gomes', 'Aimé', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (18, 18, 9, 10);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Gomes', 'Aimé', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 18, 9, 10);
 
-INSERT INTO candidat
-VALUES (19, 'Ribeiro', 'Alfred', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (19, 19, 9, 10);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Ribeiro', 'Alfred', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 19, 9, 10);
 
-INSERT INTO candidat
-VALUES (20, 'Romero', 'Julio', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (20, 20, 9, 12);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Romero', 'Julio', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 20, 9, 12);
 
-INSERT INTO candidat
-VALUES (21, 'Leroy', 'Benoît', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (21, 21, 10, 11);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Leroy', 'Benoît', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 21, 10, 11);
 
-INSERT INTO candidat
-VALUES (22, 'Dias', 'Gilles', 3, false, false);
-INSERT INTO choix_matiere
-VALUES (22, 22, 10, 11);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Dias', 'Gilles', 3, false, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 22, 10, 11);
 
-INSERT INTO candidat
-VALUES (23, 'Lemaire', 'Alain', 3, true, false);
-INSERT INTO choix_matiere
-VALUES (23, 23, 10, 9);
+INSERT INTO CANDIDATS
+VALUES (NULL, 'Lemaire', 'Alain', 3, true, false);
+INSERT INTO CHOIX_MATIERE
+VALUES (NULL, 23, 10, 9);
 
--- INSERTION DES professeurS--
--- INSERT INTO professeur
+-- INSERTION DES PROFESSEURS--
+-- INSERT INTO PROFESSEUR
 -- VALUES (NULL, 1, 'Hubert', 'Jean', 1, 2); --PROF WITH ACCOUNT ALREADY MADE MANUALLY
 -- MATHS G
-INSERT INTO professeur
-VALUES (1, 'De Renaud', 'Julien', 3);
-INSERT INTO liste_matiere
-VALUES (1, 1, 1);
+INSERT INTO PROFESSEUR
+VALUES (NULL, 'De Renaud', 'Julien', 3);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 1, 1);
 -- SVT G
-INSERT INTO professeur
-VALUES (2, 'Pelletier-aubert', 'Aimé', 4);
-INSERT INTO liste_matiere
-VALUES (2, 2, 2);
+INSERT INTO PROFESSEUR
+VALUES (NULL, 'Pelletier-aubert', 'Aimé', 4);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 2, 2);
 -- FRANCAIS G
-INSERT INTO professeur
-VALUES (3, 'Langlois', 'Marie-Charlotte', 5);
-INSERT INTO liste_matiere
-VALUES (3, 3, 3);
-INSERT INTO liste_matiere
-VALUES (4, 3, 7);
+INSERT INTO PROFESSEUR
+VALUES (NULL, 'Langlois', 'Marie-Charlotte', 5);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 3, 3);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 3, 7);
 -- PHILO G
-INSERT INTO professeur
-VALUES (4, 'Lacroix', 'Daisy', 6);
-INSERT INTO liste_matiere
-VALUES (5, 4, 4);
-INSERT INTO liste_matiere
-VALUES (6, 4, 8);
+INSERT INTO PROFESSEUR
+VALUES (NULL, 'Lacroix', 'Daisy', 6);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 4, 4);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 4, 8);
 -- PYSIQUE G
-INSERT INTO professeur
-VALUES (5, 'Goncalves', 'Denis', 7);
-INSERT INTO liste_matiere
-VALUES (7, 5, 5);
+INSERT INTO PROFESSEUR
+VALUES (NULL, 'Goncalves', 'Denis', 7);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 5, 5);
 -- SI G
-INSERT INTO professeur
-VALUES (6, 'Renault', 'Thomas', 8);
-INSERT INTO liste_matiere
-VALUES (8, 6, 6);
+INSERT INTO PROFESSEUR
+VALUES (NULL, 'Renault', 'Thomas', 8);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 6, 6);
 -- 2I2D STI2D
-INSERT INTO professeur
-VALUES (7, 'Legendre', 'Rémy', 9);
-INSERT INTO liste_matiere
-VALUES (9, 7, 9);
+INSERT INTO PROFESSEUR
+VALUES (NULL, 'Legendre', 'Rémy', 9);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 7, 9);
 -- MATHS/PHYSIQUE 2I2D
-INSERT INTO professeur
-VALUES (8, 'Adam', 'Paul', 10);
-INSERT INTO professeur
-VALUES (9, 'Périer', 'Valérie', 10);
-INSERT INTO liste_matiere
-VALUES (10, 8, 10);
-INSERT INTO liste_matiere
-VALUES (11, 9, 10);
+INSERT INTO PROFESSEUR
+VALUES (NULL, 'Adam', 'Paul', 10);
+INSERT INTO PROFESSEUR
+VALUES (NULL, 'Périer', 'Valérie', 10);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 8, 10);
+INSERT INTO LISTE_MATIERE
+VALUES (NULL, 9, 10);
 
 --INSERTION DES HORAIRES--
 --  INSERT INTO HORAIRES

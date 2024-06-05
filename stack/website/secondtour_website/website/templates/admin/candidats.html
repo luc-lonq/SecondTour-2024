@@ -36,41 +36,50 @@
                             <div class="th-inner">Prénom</div>
                             <div class="filter-control">
                                 <input type="text" class="form-control finder" v-on:keyup="finder(2, 1)"
-                                style="width: 100px;" placeholder="">
+                                    style="width: 100px;" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Série</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(3, 2)">
+                                <select class="form-select finder" v-on:change="finder(3, 2)" style="width: 200px;">
                                     <option selected></option>
                                     {% for a_serie in all_series %}
-                                    <option>{{a_serie.nom}}{% if a_serie.specialite1 %} - {{a_serie.specialite1}}{%
-                                        endif %}</option>
+                                    <option>{{a_serie.nom}} - {% if a_serie.specialite1 %}{{a_serie.specialite1}}{%
+                                        endif %}{% if
+                                        a_serie.specialite2 %}/{{a_serie.specialite2}}{% endif %}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </th>
                         <th scope="col">
-                            <div class="th-inner">Matières</div>
+                            <div class="th-inner">Matière1</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder(4, 3)" placeholder="">
+                                <select class="form-select finder break-doublons" v-on:change="finder(4, 3, false)"
+                                    style="width: 200px;">
+                                    <option selected></option>
+                                    {% for matiere in all_matieres %}
+                                    <option>{{matiere.nom}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="th-inner">Matière2</div>
+                            <div class="filter-control">
+                                <select class="form-select finder break-doublons" v-on:change="finder(5, 4, false)"
+                                    style="width: 200px;">
+                                    <option selected></option>
+                                    {% for matiere in all_matieres %}
+                                    <option>{{matiere.nom}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </th>
                         <th scope="col">
                             <div class="th-inner">Tiers temps</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(5, 4)">
-                                    <option selected></option>
-                                    <option>Oui</option>
-                                    <option>Non</option>
-                                </select>
-                            </div>
-                        </th>
-                        <th scope="col">
-                            <div class="th-inner">Matin</div>
-                            <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder(6, 5)">
+                                <select class="form-select finder" v-on:change="finder(6, 5)" style="width: 80px;">
                                     <option selected></option>
                                     <option>Oui</option>
                                     <option>Non</option>
@@ -104,11 +113,13 @@
                             {% endfor %}
                             {% endif %}
                             {% endfor %}
+                        </td>
+                        <td scope="row">
                             {% for a_choix_matiere in all_choix_matieres %}
                             {% if a_choix_matiere.id_candidat == candidat.id_candidat %}
                             {% for a_matiere in all_matieres %}
                             {% if a_matiere.id_matiere == a_choix_matiere.matiere2 %}
-                             - {{a_matiere.nom}}
+                            {{a_matiere.nom}}
                             {% endif %}
                             {% endfor %}
                             {% endif %}
@@ -116,9 +127,6 @@
                         </td>
                         <td scope="row">
                             {% if candidat.tiers_temps %}Oui{% else %}Non{% endif %}
-                        </td>
-                        <td scope="row">
-                            {% if candidat.matin %}Oui{% else %}Non{% endif %}
                         </td>
                         <td>
                             <form method="post" action="{{url_for('admin_routes.candidats')}}"
@@ -216,9 +224,10 @@
                             <select class="form-control" id="serieSelect" name="serie"
                                 onchange="testMatiereCompatible()">
                                 {% for a_serie in all_series %}
-                                <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}{%
+                                <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}} - {%
                                     if a_serie.specialite1
-                                    %} - {{a_serie.specialite1}}{% endif %}
+                                    %}{{a_serie.specialite1}}{% endif %}{% if a_serie.specialite2
+                                    %}/{{a_serie.specialite2}}{% endif %}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -242,13 +251,6 @@
                             <select class="form-control" name="tiers_temps" id="tierstempsSelect" required>
                                 <option selected value="False">Non</option>
                                 <option value="True">Oui</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="matinSelect">Matin</label>
-                            <select class="form-control" name="matin" id="matinSelect" required>
-                                <option selected value="True">Oui</option>
-                                <option value="False">Non</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -299,8 +301,10 @@
                                 onchange="testMatiereCompatible()">
                                 {% for a_serie in all_series %}
                                 <option id="serieModif{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}
-                                    {% if a_serie.specialite1
-                                    %} - {{a_serie.specialite1}}{% endif %}
+                                    - {%
+                                    if a_serie.specialite1
+                                    %}{{a_serie.specialite1}}{% endif %}{% if a_serie.specialite2
+                                    %}/{{a_serie.specialite2}}{% endif %}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -324,13 +328,6 @@
                             <select class="form-control" name="tiers_temps" id="tierstempsSelect" required>
                                 <option selected value="False">Non</option>
                                 <option value="True">Oui</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="matinSelect">Matin</label>
-                            <select class="form-control" name="matin" id="matinSelect" required>
-                                <option selected value="True">Oui</option>
-                                <option value="False">Non</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -496,6 +493,7 @@
 
 <script>
     $('.modifRow').click(function () {
+
         var $myRowId = $(this).get(0).id;
         name = document.getElementById("ModalSubmitModifButton").getAttribute("form");
         $("#hiddenIdModif").attr('value', $myRowId);
@@ -565,21 +563,13 @@
             form_elements[5].options[0].selected = true;
             form_elements[5].options[1].selected = false;
         }
-        //Set matin
-        if (candidat['matin'] == true) {
-            form_elements[6].options[0].selected = true;
-            form_elements[6].options[1].selected = false;
-        } else {
-            form_elements[6].options[0].selected = false;
-            form_elements[6].options[1].selected = true;
-        }
         //Set absent
         if (candidat['absent'] == true) {
-            form_elements[7].options[0].selected = false;
-            form_elements[7].options[1].selected = true;
+            form_elements[6].options[0].selected = false;
+            form_elements[6].options[1].selected = true;
         } else {
-            form_elements[7].options[0].selected = true;
-            form_elements[7].options[1].selected = false;
+            form_elements[6].options[0].selected = true;
+            form_elements[6].options[1].selected = false;
         }
 
         testMatiereCompatible();

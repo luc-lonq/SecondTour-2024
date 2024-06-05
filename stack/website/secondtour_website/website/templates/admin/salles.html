@@ -42,8 +42,7 @@
                     {% for a_salle in all_salles %}
                     <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{a_salle.id_salle}}">
                         <td scope="row">{{a_salle.numero}}{% for a_matiere in all_matieres %}{% if a_matiere.loge ==
-                            a_salle.id_salle %} - Loge {{a_matiere.nom}} {% for serie in all_series %}{% if serie.id_serie ==
-                            a_matiere.id_serie %}{{ serie.nom }}{% endif%}{% endfor %}{% endif %}{% endfor %}</td>
+                            a_salle.id_salle %} - Loge{% endif %}{% endfor %}</td>
                         <td scope="row">
                             <div class="align-items-end">
                                 <button class="btn btn-primary"
@@ -98,7 +97,7 @@
                                                     {% for liste_matiere in all_liste_matiere %}
                                                     {% if liste_matiere.id_professeur == a_prof.id_professeur %}
                                                     {% if a_matiere.id_matiere == liste_matiere.id_matiere %}
-                                                    {{a_matiere.nom}}
+                                                    {{a_matiere.nom_complet}}
                                                     {% endif %}
                                                     {% endif %}
                                                     {% endfor %}
@@ -192,11 +191,9 @@
                                             {% set i = namespace(total = 0) %}
                                             {% for a_matiere_o in all_matieres %}
                                             {% if a_matiere_o.loge == a_salle.id_salle %}
-
                                             <tr class="clickable not-null" data-bs-toggle="collapse"
-                                                data-bs-target="#accordionLoge{{a_salle.id_salle}}{{a_matiere_o.id_matiere}}">
-                                                <td scope="row">Loge {{a_matiere_o.nom}} {% for serie in all_series %}{% if serie.id_serie ==
-                                                    a_matiere_o.id_serie %}{{ serie.nom }}{% endif%}{% endfor %}</td>
+                                                data-bs-target="#accordionLoge{{a_salle.id_salle}}">
+                                                <td scope="row">Loge</td>
                                                 <td scope="row"> </td>
                                                 <td scope="row"> </td>
                                             </tr>
@@ -204,7 +201,7 @@
                                                 class="not-null">
                                                 <td colspan="100%"
                                                     style="padding: 0; background: transparent; --bs-table-accent-bg: transparent;">
-                                                    <div class="collapse" id="accordionLoge{{a_salle.id_salle}}{{a_matiere_o.id_matiere}}"
+                                                    <div class="collapse" id="accordionLoge{{a_salle.id_salle}}"
                                                         style="margin: 15px 10px;">
                                                         <div class="table-responsive thumbnail">
                                                             <table
@@ -223,9 +220,9 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                
                                                                     {% for creneau in all_creneaux %}
-                                                                    {% if creneau.id_matiere == a_matiere_o.id_matiere %}
+                                                                    {% if creneau.id_matiere == a_matiere_o.id_matiere
+                                                                    %}
 
 
                                                                     <tr class="not-null">

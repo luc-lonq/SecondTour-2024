@@ -5,6 +5,7 @@ import traceback
 import logging
 
 from ..database.main_database import *
+ 
 
 def hash_password(password):
     key = crypt(password, iterations=1000)

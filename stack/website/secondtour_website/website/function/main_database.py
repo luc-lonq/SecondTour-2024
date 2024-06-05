@@ -3,12 +3,12 @@ import traceback
 import logging
 from urllib import response
 
-
 from flask.helpers import flash
 from itsdangerous import json
 
 from . import main_security
 from ..database.main_database import *
+
 from . import main_email
 
 
@@ -243,13 +243,17 @@ def add_matiere(name, serie_id, temps_preparation, temps_preparation_tiers_temps
                 return ("Erreur lors de la récupération des series", "danger")
             return "Erreur lors de la récupération des series", "danger"
         serie = response.json()[0]
-        if not serie:
+        if serie:
+            serie_name = serie["specialite1"] if serie["specialite2"] is None else serie["specialite1"] + \
+                "/" + serie["specialite2"]
+        else:
             logging.warning(f"Erreur : No serie found at this id ({serie_id})")
             if ret:
                 return ("Erreur lors de la récupération de la serie correspondantes", "danger")
             return "Erreur lors de la récupération de la serie correspondantes", "danger"
+        name_complete = f"{name} - {serie_name}"
 
-        matiere = {"id_matiere": "null", "id_serie": serie['id_serie'], "nom": name, "temps_preparation": temps_preparation,
+        matiere = {"id_matiere": "null", "id_serie": serie['id_serie'], "nom": name, "nom_complet": name_complete, "temps_preparation": temps_preparation,
                    "temps_preparation_tiers_temps": temps_preparation_tiers_temps, "temps_passage": temps_passage, "temps_passage_tiers_temps": temps_passage_tiers_temps, "loge": loge if loge else "null"}
         response = ask_api("data/insert/matiere", matiere)
         if response.status_code != 201:
@@ -830,12 +834,10 @@ def delete_professeur(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_candidat(nom, prenom, id_serie, tiers_temps, absent, matin, output=False):
+def add_candidat(nom, prenom, id_serie, tiers_temps, absent, output=False):
     try:
         candidat = {"id_candidat": "null", "nom": nom, "prenom": prenom, "id_serie": id_serie,
-                    "tiers_temps": "true" if tiers_temps == "True" else "false",
-                    "absent": "true" if absent == "True" else "false",
-                    "matin": "true" if matin == "True" else "false"}
+                    "tiers_temps": "true" if tiers_temps == "True" else "false", "absent": "true" if absent == "True" else "false"}
         response = ask_api("data/insert/candidat", candidat)
         if response.status_code != 201:
             logging.warning("Erreur lors de la creation du candidat")

@@ -44,7 +44,7 @@
                                 <select class="form-select finder" v-on:change="finder()">
                                     <option selected></option>
                                     {% for matiere in all_matieres %}
-                                    <option>{{matiere.nom}}</option>
+                                    <option>{{matiere.nom_complet}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -123,7 +123,7 @@
                         {% endfor %}
                         {% for matiere in all_matieres %}
                         {% if matiere.id_matiere == a_creneau.id_matiere %}
-                        <td scope="row">{{matiere.nom}}</td>
+                        <td scope="row">{{matiere.nom_complet}}</td>
                         {% endif %}
                         {% endfor %}
                         {% for salle in all_salles %}

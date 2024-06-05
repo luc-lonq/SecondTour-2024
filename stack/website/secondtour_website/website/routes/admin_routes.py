@@ -118,9 +118,9 @@ def candidats():
         if request.method == 'POST':
             form = request.form
             if form.get('submit_button') is not None:
-                if 'name' in form and 'surname' in form and 'serie' in form and 'tiers_temps' in form and 'matin' in form and 'absent' in form:
+                if 'name' in form and 'surname' in form and 'serie' in form and 'tiers_temps' in form and 'absent' in form:
                     result = main_database.add_candidat(
-                        form['name'], form['surname'], form['serie'], form['tiers_temps'], form['absent'], form['matin'], output=True)
+                        form['name'], form['surname'], form['serie'], form['tiers_temps'], form['absent'], output=True)
                     if result[1][1] == 'danger':
                         flash(result[0], result[1])
                         logging.warning(result[0])
@@ -144,13 +144,13 @@ def candidats():
                         flash(r[0], r[1])
                         logging.warning(r[0])
             elif form.get('modif_button') is not None:
-                if 'name' in form and 'surname' in form and 'serie' in form and 'id' in form and 'tiers_temps' in form and 'matin' in form and 'absent' in form:
+                if 'name' in form and 'surname' in form and 'serie' in form and 'id' in form and 'tiers_temps' in form and 'absent' in form:
                     if r := main_database.delete_candidat(form['id']):
                         flash(r[0], r[1])
                         logging.warning(r[0])
                     else:
                         result = main_database.add_candidat(
-                            form['name'], form['surname'], form['serie'], form['tiers_temps'], form['absent'], form['matin'], output=True)
+                            form['name'], form['surname'], form['serie'], form['tiers_temps'], form['absent'], output=True)
                         if result[1][1] == 'danger':
                             flash(result[0], result[1])
                             logging.warning(result[0])
@@ -374,7 +374,7 @@ def professeurs():
                                                "horaire_arr1", "horaire_dep1", "horaire_arr2", "horaire_dep2", "horaire_arr3", "horaire_dep3"])
         all_matieres_filtered = []
         for matiere in all_matieres:
-            matiere["nom"] = matiere["nom"].replace(" - None", "")
+            matiere["nom_complet"] = matiere["nom_complet"].replace(" - None", "")
             all_matieres_filtered.append(matiere)
         all_matieres = all_matieres_filtered
         # all_horaires = []
@@ -543,10 +543,10 @@ def matieres():
                         logging.warning(r[0])
 
         response = ask_api(
-            "data/fetchmulti", ["candidat", "serie", "matiere", "salle", "choix_matiere", "professeur", "liste_matiere"])
+            "data/fetchmulti", ["candidat", "serie", "matiere", "salle", "choix_matiere"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
-        all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_profs, all_liste_matiere = response.json()
+        all_candidats, all_series, all_matieres, all_salles, all_choix_matieres = response.json()
         all_candidats.sort(key=lambda candidat: candidat['nom'])
         all_matieres.sort(key=lambda matiere: matiere['nom'])
 
@@ -555,7 +555,7 @@ def matieres():
         # all_salles = SALLE.query.all()
         # all_candidats = CANDIDATS.query.order_by(CANDIDATS.nom).all()
         # all_choix_matieres = CHOIX_MATIERE.query.all()
-        return render_template('admin/matieres.html', all_matieres=all_matieres, all_series=all_series, all_salles=all_salles, all_candidats=all_candidats, all_choix_matieres=all_choix_matieres, all_profs=all_profs, all_liste_matiere=all_liste_matiere)
+        return render_template('admin/matieres.html', all_matieres=all_matieres, all_series=all_series, all_salles=all_salles, all_candidats=all_candidats, all_choix_matieres=all_choix_matieres)
     else:
         return redirect(url_for('main_routes.connexion'))
 

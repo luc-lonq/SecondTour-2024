@@ -73,7 +73,7 @@
                             {% for lmatiere in all_liste_matiere %}
                             {% if a_matiere.id_matiere == lmatiere.id_matiere and lmatiere.id_professeur ==
                             a_prof.id_professeur %}
-                            {{a_matiere.nom}}<br>
+                            {{a_matiere.nom_complet}}<br>
                             {% endif %}
                             {% endfor %}
                             {% endfor %}
@@ -218,7 +218,7 @@
                                 name="matieres[]" multiple="multiple" style="width:100%;">
                                 {% for a_matiere in all_matieres %}
                                 <option id="matiere{{a_matiere.id_matiere}}" value="{{a_matiere.id_matiere}}">
-                                    {{a_matiere.nom}}</option>
+                                    {{a_matiere.nom_complet}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -324,10 +324,10 @@
                         <div class="form-group">
                             <label for="matiere" class="col-form-label">Matière</label>
                             <select class="form-select matiere-choice-multiselect2" name="matieres[]"
-                                id="matiere-select-modif" multiple style="width:100%;">
+                                id="matiere-select-modif" multiple="multiple" style="width:100%;">
                                 {% for matiere in all_matieres %}
                                 <option id="matiere_{{matiere.id_matiere}}" value="{{matiere.id_matiere}}">
-                                    {{matiere.nom}}</option>
+                                    {{matiere.nom_complet}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -390,6 +390,7 @@
 {% block sub_script %}
 <script>
 
+
     $('.matiere-choice-multiselect1').select2({
         dropdownParent: $('#addProfModal'),
         width: 'resolve'
@@ -419,8 +420,6 @@
         var all_professeurs = JSON.parse(myvar_profs);
         myvar_liste_matiere = '{{all_liste_matiere|tojson}}';
         var all_liste_matiere = JSON.parse(myvar_liste_matiere);
-        myvar_salles = '{{all_salles|tojson}}';
-        all_salles = JSON.parse(myvar_salles);
 
         var professeur;
         for (var i = 0; i < all_professeurs.length; i++) {
@@ -436,18 +435,10 @@
             }
         }
 
-        var id_salle;
-        for (var i = 0; i < all_salles.length; i++) {
-            if (all_salles[i]['id_salle'] == professeur.salle) {
-                id_salle = professeur.salle;
-                break;
-            }
-        }
-
 
 
         //Set the user
-        //$("#id_utilisateur_modify").attr('value', professeur.id_utilisateur);
+        $("#id_utilisateur_modify").attr('value', professeur.id_utilisateur);
 
         //Set the name surname
         form_elements[2].value = professeur['nom'];
@@ -459,21 +450,14 @@
                 let matiere = matieres[y];
                 id_matiere = matiere['id_matiere'];
                 select = form_elements[4];
-                for (var i = 0; i < select.length; i++) {
+                /* for (var i = 0; i < select.length; i++) {
+                    console.log(id_matiere, select.options[i].id)
                     if (select.options[i].id == "matiere_" + id_matiere) {
                         select.options[i].selected = true;
+                        console.log(select.options[i])
                     }
-                } 
+                } */
 
-            }
-        }
-
-        //set the salle
-        select = form_elements[6];
-        for (var i = 0; i < select.length; i++) {
-            if (select.options[i].id == 'salle' + id_salle) {
-                select.options[i].selected = true;
-                break;
             }
         }
     });

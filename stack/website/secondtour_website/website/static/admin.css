@@ -74,6 +74,14 @@ main {
   width: 25%;
 }
 
+th.supprimer {
+  width: 10%;
+}
+
+th.modifier {
+  width: 10%;
+}
+
 tr.no-border {
   border-style: hidden;
 }
