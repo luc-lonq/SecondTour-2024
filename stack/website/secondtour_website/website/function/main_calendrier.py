@@ -368,6 +368,10 @@ def test_calendar_complete():
         flash("Une erreur est survenue lors de la récupération des données", "danger")
     all_creneaux, all_candidats, all_choix_matiere = response.json()
 
+    if len(all_choix_matiere) == 0:
+        return None
+
+
     all_choix_matiere_left = deepcopy(all_choix_matiere)
 
     matiere_left = 0

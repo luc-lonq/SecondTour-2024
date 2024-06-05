@@ -41,10 +41,11 @@ def accueil():
                 main_calendrier.generation_calendrier()
         else:
             result = main_calendrier.test_calendar_complete()
-            flash(result[0], result[1]) if result[1] == "danger" else flash(
-                "Le calendrier est complet !", result[1])
-            logging.warning(result[0] if result[1] ==
-                                         "danger" else "Le calendrier est complet")
+            if result:
+                flash(result[0], result[1]) if result[1] == "danger" else flash(
+                    "Le calendrier est complet !", result[1])
+                logging.warning(result[0] if result[1] ==
+                                             "danger" else "Le calendrier est complet")
         response = ask_api(
             "data/fetchmulti", ["candidat", "creneau", "serie", "matiere", "professeur", "salle", "parametres"])
         if response.status_code != 200:
