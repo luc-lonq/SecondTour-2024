@@ -7,7 +7,7 @@ FROM ubuntu
 
 
 # Update & install nginx & python
-RUN apt-get update && apt-get upgrade && sudo apt-get autoremove
+RUN apt-get update && apt-get upgrade && Y &&sudo apt-get autoremove
 RUN apt-get install -y nginx
 RUN apt-get install nano
 RUN dpkg --configure -a
