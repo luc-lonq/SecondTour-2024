@@ -18,7 +18,7 @@ FROM ubuntu
 RUN apt-get update
 RUN apt-get install -y nginx
 RUN apt-get install nano
-RUN apt-get install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
+RUN apt-get install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools python3-venv
 RUN rm /etc/nginx/sites-enabled/default
 
 RUN mkdir -p /app/website/secondtour_website 
