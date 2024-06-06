@@ -1,6 +1,6 @@
 FROM node:20-alpine
 
-RUN cd /api/secondtour_api_v2
+WORKDIR /app/api/secondtour_api_v2
 
 
 RUN npm i
