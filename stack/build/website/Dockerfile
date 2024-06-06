@@ -26,9 +26,9 @@ RUN mkdir -p /app/website/secondtour_website
 COPY ./website/secondtour_website/requirements.txt /app/website/secondtour_website/requirements.txt
 COPY ./build/website/start.sh /app/scripts/start.sh
 
-RUN mkdir /venv
-RUN python3 -m venv /venv
-RUN source /venv/bin/activate
+RUN mkdir .venv
+RUN python3 -m venv .venv
+RUN source .venv/bin/activate
 RUN pip install -r /app/website/secondtour_website/requirements.txt
 
 # Copy nginx config
