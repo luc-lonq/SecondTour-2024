@@ -18,7 +18,7 @@ FROM ubuntu
 RUN apt-get update
 RUN apt-get install -y nginx
 RUN apt-get install nano
-RUN apt-get install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools python3-venv
+RUN apt-get install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
 RUN rm /etc/nginx/sites-enabled/default
 
 RUN mkdir -p /app/website/secondtour_website 
@@ -26,10 +26,7 @@ RUN mkdir -p /app/website/secondtour_website
 COPY ./website/secondtour_website/requirements.txt /app/website/secondtour_website/requirements.txt
 COPY ./build/website/start.sh /app/scripts/start.sh
 
-RUN mkdir .venv
-RUN python3 -m venv .venv
-RUN . .venv/bin/activate
-RUN pip install -r /app/website/secondtour_website/requirements.txt
+RUN pip install -r /app/website/secondtour_website/requirements.txt --break-system-packages
 
 # Copy nginx config
 COPY ./build/website/uwsgi.conf /etc/nginx/uwsgi_params
