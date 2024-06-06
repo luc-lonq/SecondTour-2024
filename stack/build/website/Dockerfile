@@ -26,7 +26,8 @@ RUN mkdir -p /app/website/secondtour_website
 COPY ./website/secondtour_website/requirements.txt /app/website/secondtour_website/requirements.txt
 COPY ./build/website/start.sh /app/scripts/start.sh
 
-RUN pip install -r /app/website/secondtour_website/requirements.txt --break-system-packages
+RUN pip install -r /app/website/secondtour_website/requirements.txt
+    #--break-system-packages
 
 # Copy nginx config
 COPY ./build/website/uwsgi.conf /etc/nginx/uwsgi_params
