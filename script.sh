@@ -16,6 +16,6 @@ echo \
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 mkdir -p stack/api/secondtour_api_v2/logs
-mkdir -p stack/website/secondtour_website/website
+mkdir -p stack/website/secondtour_website/website/logs
 cd stack
 docker compose up --build
