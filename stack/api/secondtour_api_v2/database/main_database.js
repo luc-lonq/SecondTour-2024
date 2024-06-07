@@ -1,4 +1,4 @@
-const mysql = require('mysql')
+const mysql = require('mysql2')
 const axios = require('axios')
 
 class MySQLDatabase {
@@ -8,70 +8,48 @@ class MySQLDatabase {
 
   async connect (_host, _user, _password, _database, _it = 0) {
     try {
-      this.db = mysql.createConnection({
+      this.db = await mysql.createConnection({
         host: _host,
         user: _user,
         password: _password,
-        database: _database,
-        autocommit: true
-      })
-      let t = this
-      this.db.on('error', function (err) {
-        console.log('db error', err)
+        database: _database
+      });
+      console.log('Connected !');
+      this.db.on('error', (err) => {
+        console.log('db error', err);
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-          t.connect(_host, _user, _password, _database, 0)
+          this.connect(_host, _user, _password, _database, 0);
         } else {
-          throw err
+          throw err;
         }
-      })
-      let result = await new Promise((resolve, reject) => {
-        this.db.connect(err => {
-          if (err) {
-            resolve(false)
-          } else {
-            resolve(true)
-          }
-        })
-      })
-      if (result) {
-        console.log('Connected !')
-        if (process.env.NETWORK_VISU == 'true') {
-        axios
-          .post('http://' + process.env.LOCAL_IP + ':3000/add', {
-            type: 'node',
+      });
+
+      if (process.env.NETWORK_VISU == 'true') {
+        axios.post('http://' + process.env.LOCAL_IP + ':3000/add', {
+          type: 'node',
+          name: 'mysql',
+          data: {
             name: 'mysql',
-            data: {
-              name: 'mysql',
-              id: 'mysql',
-              size: 123,
-              fsize: 50
-            },
-            position: {
-              x: 680,
-              y: 90
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      }
-      } else {
-        throw 'Error in the connection with the db'
+            id: 'mysql',
+            size: 123,
+            fsize: 50
+          },
+          position: {
+            x: 680,
+            y: 90
+          }
+        }).catch(err => {
+          console.log(err);
+        });
       }
     } catch (e) {
       if (_it < 10) {
-        console.log(
-          "Can't connect to database, retry in 10seconds...",
-          _host,
-          _user,
-          _password,
-          _database
-        )
-        await new Promise(r => setTimeout(r, 10000))
-        this.connect(_host, _user, _password, _database, _it)
+        console.log("Can't connect to database, retry in 10 seconds...", _host, _user, _password, _database);
+        await new Promise(r => setTimeout(r, 10000));
+        this.connect(_host, _user, _password, _database, _it + 1);
       } else {
-        console.log('Exiting!')
-        return
+        console.log('Exiting!');
+        return;
       }
     }
   }
