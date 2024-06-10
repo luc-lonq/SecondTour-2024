@@ -948,7 +948,7 @@ def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, loge_apresm
         debut_matin = json.loads(json.dumps(debut_matin, default=myconverter))
         fin_matin = json.loads(json.dumps(fin_matin, default=myconverter))
         debut_apresmidi = json.loads(json.dumps(debut_apresmidi, default=myconverter))
-        loge_apresmidi = json.loads(json.dumps(debut_apresmidi, default=myconverter))
+        loge_apresmidi = json.loads(json.dumps(loge_apresmidi, default=myconverter))
         fin_apresmidi = json.loads(json.dumps(fin_apresmidi, default=myconverter))
         parametres = {"max_jour": jour, "heure_debut_matin": debut_matin, "heure_fin_matin": fin_matin,
                       "heure_debut_apres_midi": debut_apresmidi, "heure_loge_apres_midi": loge_apresmidi,

@@ -20,7 +20,7 @@
         <div class="form-group" style="margin-top: 1em">
             <label for="selectDebutMatin" class="text-white text-decoration-none">Heure de début le matin</label>
             <select class="form-control" id="selectDebutMatin" name="debut_matin">
-                {% for horaire in horaire_matin %}
+                {% for horaire in horaire %}
                 <option value="{{ horaire.strftime("%H:%M") }}" {% if parametres.heure_debut_matin.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
                 {% endfor %}
             </select>
@@ -28,7 +28,7 @@
         <div class="form-group" style="margin-top: 1em">
             <label for="selectFinMatin" class="text-white text-decoration-none">Heure de fin le matin</label>
             <select class="form-control" id="selectFinMatin" name="fin_matin">
-                {% for horaire in horaire_matin %}
+                {% for horaire in horaire %}
                 <option value="{{ horaire.strftime("%H:%M") }}" {% if parametres.heure_fin_matin.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
                 {% endfor %}
             </select>
@@ -36,7 +36,7 @@
         <div class="form-group" style="margin-top: 1em">
             <label for="selectDebutApresMidi" class="text-white text-decoration-none">Heure de début l'après-midi</label>
             <select class="form-control" id="selectDebutApresMidi" name="debut_apresmidi">
-                {% for horaire in horaire_apresmidi %}
+                {% for horaire in horaire %}
                 <option value="{{ horaire.strftime("%H:%M") }}" {% if parametres.heure_debut_apres_midi.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
                 {% endfor %}
             </select>
@@ -44,15 +44,15 @@
         <div class="form-group" style="margin-top: 1em">
             <label for="selectLogeApresMidi" class="text-white text-decoration-none">Heure de début de loge l'après-midi</label>
             <select class="form-control" id="selectLogeApresMidi" name="loge_apresmidi">
-                {% for horaire in horaire_apresmidi %}
-                <option value="{{ horaire.strftime("%H:%M") }}" {% if parametres.heure_debut_apres_midi.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
+                {% for horaire in horaire %}
+                <option value="{{ horaire.strftime("%H:%M") }}" {% if parametres.heure_loge_apres_midi.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="form-group" style="margin-top: 1em">
             <label for="selectFinApresMidi" class="text-white text-decoration-none">Heure de fin l'après-midi</label>
             <select class="form-control" id="selectFinApresMidi" name="fin_apresmidi">
-                {% for horaire in horaire_apresmidi %}
+                {% for horaire in horaire %}
                 <option value=" {{ horaire.strftime("%H:%M") }}" {% if parametres.heure_fin_apres_midi.strftime("%H:%M") == horaire.strftime("%H:%M") %}selected{% endif %}>{{ horaire.strftime("%H:%M") }}</option>
                 {% endfor %}
             </select>

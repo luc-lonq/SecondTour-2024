@@ -725,22 +725,20 @@ def parametres():
         parametres["heure_fin_matin"]) == str else parametres["heure_fin_matin"]
     parametres["heure_debut_apres_midi"] = datetime.strptime(parametres["heure_debut_apres_midi"], '%H:%M:%S') if type(
         parametres["heure_debut_apres_midi"]) == str else parametres["heure_debut_apres_midi"]
+    parametres["heure_loge_apres_midi"] = datetime.strptime(parametres["heure_loge_apres_midi"], '%H:%M:%S') if type(
+        parametres["heure_loge_apres_midi"]) == str else parametres["heure_loge_apres_midi"]
     parametres["heure_fin_apres_midi"] = datetime.strptime(parametres["heure_fin_apres_midi"], '%H:%M:%S') if type(
         parametres["heure_fin_apres_midi"]) == str else parametres["heure_fin_apres_midi"]
 
-    horaire_matin = []
-    for h in range(6, 14):
+    horaire_list = []
+    for h in range(7, 20):
         for m in range(0, 60, 10):
-            horaire = str(h) + ":" + str(m)
-            horaire_matin.append(datetime.strptime(horaire, "%H:%M"))
+            horaire = str(h) + "h" + str(m)
+            horaire_list.append(datetime.strptime(horaire, "%Hh%M"))
+    horaire_list.append(datetime.strptime('20h00', "%Hh%M"))
+    logging.info(horaire_list)
 
-    horaire_apresmidi = []
-    for h in range(14, 21):
-        for m in range(0, 60, 10):
-            horaire = str(h) + ":" + str(m)
-            horaire_apresmidi.append(datetime.strptime(horaire, "%H:%M"))
-
-    return render_template('admin/parametres.html', parametres=parametres, horaire_matin=horaire_matin, horaire_apresmidi=horaire_apresmidi)
+    return render_template('admin/parametres.html', parametres=parametres, horaire=horaire_list)
 
 
 @admin_routes.route('/deconnexion')
