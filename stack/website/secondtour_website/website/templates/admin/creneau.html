@@ -676,12 +676,9 @@
         let option = document.createElement("option");
         option.value = candidat.id_candidat;
         option.id = "candidatModif" + candidat.id_candidat.toString();
-        option.text = candidat.nom + " " + candidat.prenom + " | " + serie.nom + " - ";
+        option.text = candidat.nom + " " + candidat.prenom + " | " + serie.nom ;
         if (serie.specialite1) {
-            option.text += serie.specialite1;
-        }
-        if (serie.specialite2) {
-            option.text += "/" + serie.specialite2;
+            option.text += " - " + serie.specialite1;
         }
         candidatSelect.append(option);
 
