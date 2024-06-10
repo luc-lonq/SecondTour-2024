@@ -270,6 +270,7 @@
         let htmlstring = '';
         let tempVarToCheckPageHeight = 0;
         let pageHeight = 0;
+        let page_n = 0;
         let demi_journee_string
         if (demi_journee == 0) {
             demi_journee_string = 'Matin';
@@ -330,6 +331,32 @@
         let zip = new JSZip();
         let all_salles = JSON.parse('{{all_salles|tojson}}');
 
+
+        let doc = new jsPDF('p', 'pt', 'a4');
+        let htmlstring = '';
+        let tempVarToCheckPageHeight = 0;
+        let pageHeight = 0;
+        let demi_journee_string
+
+
+        pageHeight = doc.internal.pageSize.height;
+        specialElementHandlers = {
+          // element with id of "bypass" - jQuery style selector
+          '#bypassme': function (element, renderer) {
+            // true = "handled elsewhere, bypass text extraction"
+            return true
+          }
+        };
+        margins = {
+          top: 150,
+          bottom: 60,
+          left: 40,
+          right: 40,
+          width: 600
+        };
+
+
+        let page_n = 1;
         for (let i = 0; i < all_salles.length; i++) {
             let salle = all_salles[i];
             for (let jour = 1; jour <= jour_debut; jour++) {
@@ -339,53 +366,60 @@
                 let date_month
                 if (date_it.getDate() < 10) {
                     date_jour = '0' + date_it.getDate().toString()
-                }
-                else {
+                } else {
                     date_jour = date_it.getDate().toString()
                 }
                 if (date_it.getMonth() + 1 < 10) {
                     date_month = '0' + (date_it.getMonth() + 1).toString()
-                }
-                else {
+                } else {
                     date_month = date_it.getMonth().toString()
                 }
+
+
                 for (let matin = 0; matin < 2; matin++) {
+                    let name = 'tableEmargement' + salle.id_salle + jour + matin;
+                    let num_salle = salle.numero;
+                    let date_st = date_jour + '-' + date_month + '-' + date_it.getFullYear();
+
                     let tr = document.getElementsByClassName('creneauRow' + all_salles[i]['id_salle'].toString() + jour.toString() + matin.toString())
                     if (tr.length > 0) {
-                        let doc = downloadPDFEmargement('tableEmargement' + salle.id_salle + jour + matin,
-                            salle.numero, matin, date_jour + '-' + date_month + '-' + date_it.getFullYear(), true);
-                        try {
-                            let demi_journee;
-                            if (matin == 0) {
-                                demi_journee = 'matin';
-                            }
-                            else {
-                                demi_journee = 'apresmidi';
-                            }
-                            zip.file(salle.numero + 'emargement' + date_jour + '-' + date_month + '-' + date_it.getFullYear() + demi_journee + '.pdf', doc.output('blob'));
-                        } catch {
-                            console.error('Something went wrong!');
+
+                        if (matin == 0) {
+                            demi_journee_string = 'Matin';
+                        } else {
+                            demi_journee_string = "Après Midi"
                         }
+
+                        doc.setFontSize(17);
+                        doc.setLineWidth(4);
+                        doc.text(20, 20, num_salle + ' ' + date_st + ' ' + demi_journee_string);
+                        //doc.text(200, y = y + 30, "Liste d'émargement");
+                        doc.setFontSize(20);
+                        centered_text("Liste d'émargement", 45, doc);
+                        if (document.getElementById(name)) {
+                            doc.autoTable({
+                                html: '#' + name,
+                                startY: 70,
+                                theme: 'grid',
+                                styles: {
+                                    minCellHeight: 40
+                                },
+                                didParseCell: function (table) {
+                                    if (table.section === 'head') {
+                                        table.cell.styles.fillColor = '#4c5cff';
+                                    }
+                                }
+                            });
+                        }
+                        doc.addPage()
+                        page_n += 1
+
                     }
                 }
             }
         }
-        zip.generateAsync({ type: 'blob' }).then(function (content) {
-            saveAs(content, 'listesEmargement.zip');
-        });
-
-
-        /* let salle = all_salles[all_salles.length-1];
-        let doc = downloadPDFWithBrowserPrint('tableAccordion' + salle.id_salle.toString(), salle.numero, true);
-        try {
-            zip.file(salle.numero.toString() + '_listeDEmargement.pdf', doc.output('blob'));
-        }
-        catch {
-            console.error('Something went wrong!');
-        }
-        zip.generateAsync({ type: 'blob' }).then(function (content) {
-            saveAs(content, 'listesDEmargement.zip');
-        }); */
+        doc.deletePage(page_n)
+        doc.save("Emargement Second Groupe")
     }
 
     $('.modifRow').click(function () {
