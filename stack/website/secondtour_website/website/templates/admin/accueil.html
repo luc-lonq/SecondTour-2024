@@ -31,7 +31,7 @@
                 </thead>
                 <tbody>
                     {% for serie in all_series %}
-                    <tr class="clickable serieRow" data-bs-toggle="collapse" data-bs-target="#accordionSerie{{serie.id_serie}}">
+                    <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordionSerie{{serie.id_serie}}">
                         <td scope="row">{{serie.nom}}{% if serie.specialite1 %} - {{serie.specialite1}}{% endif %}</td>
                     </tr>
                     <tr style="--bs-table-hover-bg: transparent; --bs-table-accent-bg: transparent;" class="not-null">
@@ -194,7 +194,7 @@
                         {% set n_jour = date.strftime('%d')|int + j %}
                         <div class="d-flex" style="margin-bottom: 1em">
                             {% for m in range(2) %}
-                            <button class="btn btn-primary"
+                            <button class="btn btn-primary" id="emargementDl{{serie.id_serie}}{{j}}{{m}}"
                                     v-on:click="downloadCalendar(
                                                 'calendar{{serie.id_serie}}{{j}}{{m}}',
                                                 'Calendrier Serie {{ serie.nom }}{% if serie.specialite1 %}{{serie.specialite1}}{% endif %} {% if n_jour < 10 %}0{% endif %}{{n_jour}}{{date.strftime('-%m-%Y')}}{% if m != 1 %} Matin{% else %} Après-midi{% endif %}',
@@ -221,7 +221,11 @@
 
 {% block sub_script %}
 <script>
-    $('.serieRow').click(function () {
+
+
+    window.onload = hide_calendar()
+
+    function hide_calendar () {
         myvar_series = '{{all_series|tojson}}';
         var all_series = JSON.parse(myvar_series);
 
@@ -232,11 +236,13 @@
                     if (tr.length === 0) {
                         let demiJourneeRow = document.getElementById('demiJourneeRow' + all_series[serie]['id_serie'].toString() + jour.toString() + matin.toString())
                         demiJourneeRow.hidden = true;
+                        let emargementDl = document.getElementById('emargementDl' + all_series[serie]['id_serie'].toString() + jour.toString() + matin.toString())
+                        emargementDl.hidden = true;
                     }
                 }
             }
         }
 
-    })
+    }
 </script>
 {% endblock %}
