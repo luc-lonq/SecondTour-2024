@@ -505,13 +505,11 @@
                         let datetime_debut_creneau = new Date(remove_GMT_in_date(all_creneaux[i].debut_preparation))
                         let datetime_debut_creneau_offset = new Date(datetime_debut_creneau)
                         datetime_debut_creneau_offset.setMinutes(datetime_debut_creneau.getMinutes() - temps_pas + parseInt('{{parametres.intervalle}}'))
-                        console.log(datetime_debut_creneau_offset)
 
                         let datetime_fin_creneau = new Date(remove_GMT_in_date(all_creneaux[i].fin))
 
                         let datetime_it = new Date(datetime_debut_creneau_offset)
                         while (datetime_it < datetime_fin_creneau) {
-                            console.log(datetime_it)
                             times_to_disable.push(new Date(datetime_it))
                             datetime_it = new Date(datetime_it.setMinutes(datetime_it.getMinutes()+parseInt('{{parametres.intervalle}}')))
                         }
@@ -528,7 +526,6 @@
 
                     let datetime_it = new Date(datetime_debut_creneau_offset)
                     while (datetime_it < datetime_fin_creneau) {
-                        console.log(datetime_it)
                         times_to_disable.push(new Date(datetime_it))
                         datetime_it = new Date(datetime_it.setMinutes(datetime_it.getMinutes()+parseInt('{{parametres.intervalle}}')))
                     }
@@ -579,7 +576,21 @@
         }
         select_fin_prep.append(option_fin_prep)
         select_fin.append(option_fin)
+
+        break_doublons(opt)
     }
+
+     function break_doublons(opt = "") {
+        let all = ["matiere-select" + opt, "salle-select" + opt, "debut-select" + opt, "fin_prepa_select" + opt, "fin-select" + opt];
+        for (let i = 0; i < all.length; i++) {
+            let options = []
+            document.querySelectorAll('#' + all[i] + ' > option').forEach((option) => {
+                if (options.includes(option.value)) option.remove()
+                else options.push(option.value)
+            })
+        }
+    }
+
 
 
     function cleanUp(selects) {
@@ -594,7 +605,6 @@
 
     function remove_GMT_in_date(date) {
         let new_date = date.replace(' GMT', '')
-        console.log(new_date)
         return new_date
     }
 
