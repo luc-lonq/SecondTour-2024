@@ -31,7 +31,7 @@
                 </thead>
                 <tbody>
                     {% for serie in all_series %}
-                    <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordionSerie{{serie.id_serie}}">
+                    <tr class="clickable serieRow" data-bs-toggle="collapse" data-bs-target="#accordionSerie{{serie.id_serie}}">
                         <td scope="row">{{serie.nom}}{% if serie.specialite1 %} - {{serie.specialite1}}{% endif %}</td>
                     </tr>
                     <tr style="--bs-table-hover-bg: transparent; --bs-table-accent-bg: transparent;" class="not-null">
@@ -48,10 +48,10 @@
                                             {% for j in range(0,jour) %}
                                             {% set n_jour = date.strftime('%d')|int + j %}
                                             {% for m in range(2) %}
-                                            <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordionDemiJournee{{serie.id_serie}}{{j}}{{m}}">
+                                            <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordionDemiJournee{{serie.id_serie}}{{j}}{{m}}" id="demiJourneeRow{{serie.id_serie}}{{j}}{{m}}">
                                                 <td scope="row">{% if n_jour < 10 %}0{% endif %}{{n_jour}}{{date.strftime('-%m-%Y')}}{% if m != 1 %} Matin{% else %} Après-midi{% endif %}</td>
                                             </tr>
-                                            <tr style="--bs-table-hover-bg: transparent; --bs-table-accent-bg: transparent;" class="not-null">
+                                            <tr style="--bs-table-hover-bg: transparent; --bs-table-accent-bg: transparent;" class="not-null" id="">
                                                 <td colspan="100%" style="padding: 0; background: transparent; --bs-table-accent-bg: transparent;">
                                                     <div class="collapse" id="accordionDemiJournee{{serie.id_serie}}{{j}}{{m}}" style="margin: 15px 10px;">
                                                         <div class="table-responsive thumbnail">
@@ -78,7 +78,7 @@
                                                                     {% if not candidat.absent %}
                                                                     {% if candidat.jour == j+1 %}
                                                                     {% if candidat.matin != m %}
-                                                                    <tr>
+                                                                    <tr class="serieRow{{serie.id_serie}}{{j}}{{m}}">
                                                                         <td scope="row" style="max-width: 8rem">{{candidat.nom}}</td>
                                                                         <td scope="row" style="max-width: 8rem">{{candidat.prenom}}</td>
                                                                         {% for creneau in all_creneaux %}
@@ -217,4 +217,26 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block sub_script %}
+<script>
+    $('.serieRow').click(function () {
+        myvar_series = '{{all_series|tojson}}';
+        var all_series = JSON.parse(myvar_series);
+
+        for (let serie = 0; serie < all_series.length; serie++) {
+            for (let jour = 0; jour < '{{jour}}'; jour++) {
+                for (let matin = 0; matin < 2; matin++) {
+                    let tr = document.getElementsByClassName('serieRow' + all_series[serie]['id_serie'].toString() + jour.toString() + matin.toString())
+                    if (tr.length === 0) {
+                        let demiJourneeRow = document.getElementById('demiJourneeRow' + all_series[serie]['id_serie'].toString() + jour.toString() + matin.toString())
+                        demiJourneeRow.hidden = true;
+                    }
+                }
+            }
+        }
+
+    })
+</script>
 {% endblock %}
