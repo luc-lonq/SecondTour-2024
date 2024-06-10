@@ -161,7 +161,9 @@
                                             <tr>
                                                 <th scope="col">Matière</th>
                                                 <th scope="col">Salle</th>
+                                                <th scope="col">Date</th>
                                                 <th scope="col">Heure de début</th>
+                                                <th scope="col">Heure de début d'oral</th>
                                                 <th scope="col">Heure de fin</th>
                                             </tr>
                                         </thead>
@@ -179,11 +181,17 @@
                                                 <td scope="row">{{salle.numero}}</td>
                                                 {% endif %}
                                                 {% endfor %}
-                                                <td scope="row">Jour
-                                                    {{creneau.debut_preparation.strftime("%d")}} |
-                                                    {{creneau.debut_preparation.strftime("%H:%M")}}</td>
-                                                <td scope="row">{{creneau.fin.strftime("%d")}} |
-                                                    {{creneau.fin.strftime("%H:%M")}}</td>
+                                                <td scope="row">
+                                                    {{creneau.debut_preparation.strftime("%d-%m-%Y")}}
+                                                </td>
+                                                <td scope="row">
+                                                    {{creneau.debut_preparation.strftime("%Hh%M")}}
+                                                </td>
+                                                <td scope="row">
+                                                    {{creneau.fin_preparation.strftime("%Hh%M")}}
+                                                </td>
+                                                <td scope="row">
+                                                    {{creneau.fin.strftime("%Hh%M")}}</td>
                                             </tr>
                                             {% endif %}
                                             {% endfor %}
