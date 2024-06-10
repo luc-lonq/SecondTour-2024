@@ -17,14 +17,18 @@ def generation_calendrier():
     for candidat in list_candidats:
         if candidat["absent"]:
             continue
-        start, end = get_horaires(candidat, parametres)
         passage_m1, passage_m2 = get_infos_about_candidat(candidat, all_choix_matieres, all_matieres,
                                                           all_professeurs, all_salles)
         passages = [passage_m1, passage_m2]
+        start, end = get_horaires(candidat, parametres, passages)
         creneaux_candidat = []
         break_time = None
 
         for _ in range(3):
+
+            if passages[1]["matiere"]["loge"] is not None and passages[0]["matiere"]["loge"] is None:
+                swap_passage(passages)
+                continue
 
             for passage in passages:
                 creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, candidat["jour"], start,
@@ -37,7 +41,7 @@ def generation_calendrier():
 
                     for creneau in creneaux_from_half_day:
                         if not is_candidat_available(passage, candidat, creneau,
-                                                    heure_debut_preparation_voulue, parametres):
+                                                     heure_debut_preparation_voulue, parametres):
                             aucune_collision = False
                             break
 
@@ -61,7 +65,9 @@ def generation_calendrier():
                                                                                  heure_debut_preparation_voulue,
                                                                                  candidat, passage,
                                                                                  local_creneau, chosed_salle,
-                                                                                 datetime.strptime(parametres["date_premier_jour"], '%a %b %d %H:%M:%S %Y'))
+                                                                                 datetime.strptime(
+                                                                                     parametres["date_premier_jour"],
+                                                                                     '%a %b %d %H:%M:%S %Y'))
                         creneaux_candidat.append(creneau_created)
                         break
 
@@ -134,15 +140,26 @@ def order_candidats_list(all_candidats):
     return list_candidats_ordered
 
 
-def get_horaires(candidat, parametres):
+def get_horaires(candidat, parametres, passages):
     if candidat["matin"]:
         t = datetime.strptime(parametres["heure_debut_matin"], "%H:%M:%S")
         start = timedelta(hours=t.hour, minutes=t.minute)
         t = datetime.strptime(parametres["heure_fin_matin"], "%H:%M:%S")
         end = timedelta(hours=t.hour, minutes=t.minute)
     else:
-        t = datetime.strptime(parametres["heure_debut_apres_midi"], "%H:%M:%S")
-        start = timedelta(hours=t.hour, minutes=t.minute)
+
+        loge = False
+        for passage in passages:
+            if passage["matiere"]["loge"] is not None:
+                loge = True
+
+        if loge:
+            t = datetime.strptime(parametres["heure_loge_apres_midi"], "%H:%M:%S")
+            start = timedelta(hours=t.hour, minutes=t.minute)
+        else:
+            t = datetime.strptime(parametres["heure_debut_apres_midi"], "%H:%M:%S")
+            start = timedelta(hours=t.hour, minutes=t.minute)
+
         t = datetime.strptime(parametres["heure_fin_apres_midi"], "%H:%M:%S")
         end = timedelta(hours=t.hour, minutes=t.minute)
     return start, end
@@ -303,9 +320,11 @@ def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue,
     return False
 
 
-def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candidat, passage, local_creneau, salle, date_debut):
+def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candidat, passage, local_creneau, salle,
+                            date_debut):
     heure_debut_preparation_voulue_datetime = datetime.strptime(
-        f'{date_debut.day + jour_passage - 1}/{date_debut.month}/{date_debut.year} ' + str(heure_debut_preparation_voulue),
+        f'{date_debut.day + jour_passage - 1}/{date_debut.month}/{date_debut.year} ' + str(
+            heure_debut_preparation_voulue),
         '%d/%m/%Y %H:%M:%S')
     fin_preparation_matiere_datetime = datetime.strptime(
         f'{date_debut.day + jour_passage - 1}/{date_debut.month}/{date_debut.year} ' + str((
@@ -370,7 +389,6 @@ def test_calendar_complete():
 
     if len(all_choix_matiere) == 0:
         return None
-
 
     all_choix_matiere_left = deepcopy(all_choix_matiere)
 
