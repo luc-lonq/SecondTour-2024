@@ -131,7 +131,9 @@
                                             <tr>
                                                 <th scope="col">Nom</th>
                                                 <th scope="col">Prénom</th>
+                                                <th scope="col">Date</th>
                                                 <th scope="col">Heure de début préparation</th>
+                                                <th scope="col">Heure de début de passage</th>
                                                 <th scope="col">Heure de fin</th>
                                                 <th scope="col" class="hide">Emargement</th>
                                             </tr>
@@ -147,10 +149,16 @@
                                                 <td scope="row">{{candidat.prenom}}</td>
                                                 {% endif %}
                                                 {% endfor %}
-                                                <td scope="row">Jour
-                                                    {{creneau.debut_preparation.strftime("%d")}} |
-                                                    {{creneau.debut_preparation.strftime("%H:%M")}}</td>
-                                                <td scope="row">{{creneau.fin.strftime("%d")}} |
+                                                <td scope="row">
+                                                    {{creneau.debut_preparation.strftime("%d-%m-%Y")}}
+                                                </td>
+                                                <td scope="row">
+                                                    {{creneau.debut_preparation.strftime("%H:%M")}}
+                                                </td>
+                                                <td scope="row">
+                                                    {{creneau.fin_preparation.strftime("%H:%M")}}
+                                                </td>
+                                                <td scope="row">
                                                     {{creneau.fin.strftime("%H:%M")}}</td>
                                                 <td scope="row" class="hide"></td>
                                             </tr>
