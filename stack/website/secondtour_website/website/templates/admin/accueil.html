@@ -87,7 +87,7 @@
                                                                             <div class="calendar-subject">
                                                                                 {% for matiere in all_matieres %}
                                                                                 {% if matiere.id_matiere == creneau.id_matiere %}
-                                                                                {{creneau.debut_preparation.strftime('%d-%m-%Y | %Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}}
+                                                                                {{creneau.debut_preparation.strftime('%Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}}
                                                                                 {% for salle in all_salles %}
                                                                                 {% if salle.id_salle == creneau.id_salle %}
                                                                                 <br>
