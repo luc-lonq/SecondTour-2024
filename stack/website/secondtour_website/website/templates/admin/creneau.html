@@ -582,12 +582,12 @@
     }
 
 
-    function cleanUp(elements) {
+    function cleanUp(selects) {
         //Delete all before
-        for (let i = 0; i < elements.length; i++) {
-            let element = document.getElementById(elements[i]);
-            while (element.length > 0) {
-                element.remove(0);
+        for (let i = 0; i < selects.length; i++) {
+            let select = document.getElementById(selects[i]);
+            while (select.options.length > 0) {
+                select.options[0].remove()
             }
         }
     }
