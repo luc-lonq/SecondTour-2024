@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, session, request, redirect, url_fo
 from flask.helpers import flash
 from zipfile import ZipFile
 import os
-
+import pandas as pd
 from ..function import main_security, main_sessions, main_database, main_calendrier
 from ..database.main_database import *
 from ..main_website import app
@@ -13,6 +13,8 @@ admin_routes = Blueprint('admin_routes', __name__,
                          template_folder='templates',
                          static_folder='static')
 
+UPLOAD_FOLDER = '/app/website/secondtour_website/website/static'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @admin_routes.route('/', methods=['POST', 'GET'])
 @admin_routes.route('/accueil', methods=['POST', 'GET'])
@@ -174,6 +176,93 @@ def candidats():
             elif form.get('delete_all_button') is not None:
                 result = main_database.delete_all_candidats()
                 flash(result[0], result[1])
+
+            elif request.files:
+                uploaded_file = request.files['file']
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+                uploaded_file.save(file_path)
+
+                response = ask_api("data/fetchmulti", ["serie", "matiere", "parametres"])
+                all_series, all_matieres, all_parametres = response.json()
+                col_names = ['nom', 'prenom', 'serie', 'matiere1', 'matiere2', 'tiers_temps', 'jour', 'matin']
+                data = pd.read_csv(file_path, names=col_names, header=None)
+                all_candidats = []
+                all_choix_matieres = []
+                err = False
+                # Loop through the Rows
+                for i, row in data.iterrows():
+                    if i == 0:
+                        continue
+                    id_serie = None
+                    id_matiere1 = None
+                    id_matiere2 = None
+
+                    for serie in all_series:
+                        if row["serie"] == serie["nom"]:
+                            id_serie = serie["id_serie"]
+                            break
+                    if id_serie is None:
+                        flash("Ligne " + str(i + 1) + ": Erreur sur la série", "danger")
+                        err = True
+                    for matiere in all_matieres:
+                        if matiere["id_serie"] == id_serie or id_serie is None:
+                            if row["matiere1"] == matiere["nom"]:
+                                id_matiere1 = matiere["id_matiere"]
+                            if row["matiere2"] == matiere["nom"]:
+                                id_matiere2 = matiere["id_matiere"]
+                    if id_matiere1 is None:
+                        flash("Ligne " + str(i + 1) + ": Erreur sur la matière 1", "danger")
+                        err = True
+                    if id_matiere2 is None:
+                        flash("Ligne " + str(i + 1) + ": Erreur sur la matière 2", "danger")
+                        err = True
+                    try:
+                        if int(row["tiers_temps"]) != 0 and int(row["tiers_temps"]) != 1:
+                            flash("Ligne " + str(i + 1) + ": Erreur sur le tiers temps", "danger")
+                            err = True
+                    except Exception:
+                        flash("Ligne " + str(i + 1) + ": Erreur sur le tiers temps", "danger")
+                        err = True
+                    try:
+                        if int(row["matin"]) != 0 and int(row["matin"]) != 1:
+                            flash("Ligne " + str(i + 1) + ": Erreur sur le matin", "danger")
+                            err = True
+                    except Exception:
+                        flash("Ligne " + str(i + 1) + ": Erreur sur le matin", "danger")
+                        err = True
+                    try:
+                        if int(row["jour"]) > int(all_parametres[0]["max_jour"]):
+                            flash("Ligne " + str(i + 1) + ": Erreur sur le jour", "danger")
+                            err = True
+                    except Exception:
+                        flash("Ligne " + str(i + 1) + ": Erreur sur le jour", "danger")
+                        err = True
+
+                    if err is False:
+                        all_candidats.append({"id_candidat": i, "nom": row["nom"], "prenom": row["prenom"],
+                                              "id_serie": id_serie,
+                                              "tiers_temps": "True" if int(row["tiers_temps"]) == 1 else "False",
+                                              "absent": 0,
+                                              "matin": "True" if int(row["matin"]) == 1 else "False",
+                                              "jour": int(row["jour"])})
+                        logging.info(all_candidats)
+                        all_choix_matieres.append({"id_candidat": i, "matiere1": id_matiere1,
+                                                   "matiere2": id_matiere2})
+                        logging.info(all_choix_matieres)
+
+                if err is False:
+                    main_database.delete_all_candidats()
+                    for candidat in all_candidats:
+                        main_database.add_candidat_with_id(candidat["id_candidat"], candidat["nom"], candidat["prenom"],
+                                                           candidat["id_serie"], candidat["tiers_temps"],
+                                                           candidat["jour"], candidat["absent"], candidat["matin"])
+                    for choix_matiere in all_choix_matieres:
+                        main_database.add_choix_matiere(choix_matiere["id_candidat"], choix_matiere["matiere1"],
+                                                        choix_matiere["matiere2"])
+                    flash("Les candidats ont été ajouté", "success")
+
+
+
 
         response = ask_api(
             "data/fetchmulti",

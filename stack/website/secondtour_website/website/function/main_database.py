@@ -230,7 +230,6 @@ def delete_serie(id):
                 "Impossible de supprimer les matieres correspondantes")
             return ['Impossible de supprimer les matieres correspondantes', 'danger']
         matieres = response.json()
-        logging.info(matieres)
 
         for matiere in matieres:
             professeur_filter = {"matiere": matiere["id_matiere"]}
@@ -584,7 +583,6 @@ def update_professeur_wep(id, nom, prenom, salle, matiere):
         professeur = {"filter": {"id_professeur": id}, "data": {
             "nom": nom, "prenom": prenom, "salle": salle if salle else "null",
             "matiere": matiere if matiere else "null"}}
-        logging.info(professeur)
         response = ask_api("data/updatefilter/professeur", professeur)
         if response.status_code != 202:
             logging.warning(
@@ -687,7 +685,6 @@ def add_candidat(nom, prenom, id_serie, tiers_temps, jour, absent, matin, output
                     "tiers_temps": "true" if tiers_temps == "True" else "false",
                     "absent": "true" if absent == "True" else "false",
                     "matin": "true" if matin == "True" else "false", "jour": jour}
-        logging.info(candidat)
         response = ask_api("data/insert/candidat", candidat)
         if response.status_code != 201:
             logging.warning("Erreur lors de la creation du candidat")
@@ -719,6 +716,22 @@ def add_candidat(nom, prenom, id_serie, tiers_temps, jour, absent, matin, output
             return [candidat, 'Erreur : ' + traceback.format_exc(), 'danger']
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
+
+def add_candidat_with_id(id, nom, prenom, id_serie, tiers_temps, jour, absent, matin):
+    try:
+        candidat = {"id_candidat": id, "nom": nom, "prenom": prenom, "id_serie": id_serie,
+                    "tiers_temps": "true" if tiers_temps == "True" else "false",
+                    "absent": "true" if absent == "True" else "false",
+                    "matin": "true" if matin == "True" else "false", "jour": jour}
+        response = ask_api("data/insert/candidat", candidat)
+        if response.status_code != 201:
+            logging.warning("Erreur lors de la creation du candidat")
+        else:
+            logging.warning('Le candidat a bien été crée')
+        return
+    except Exception:
+        logging.warning('Erreur : ' + traceback.format_exc())
+        return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 def delete_candidat(id):
     try:
@@ -956,7 +969,6 @@ def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, loge_apresm
                       "temps_pause_eleve": pause, "prof_max_passage_sans_pause": passage,
                       "date_premier_jour": date_debut}
 
-        logging.info(parametres)
 
         response = ask_api("data/insert/parametres", parametres)
         if response.status_code != 201:

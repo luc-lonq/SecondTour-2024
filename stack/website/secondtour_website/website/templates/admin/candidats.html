@@ -8,10 +8,15 @@
             Supprimer tous les candidats
             <i class="fas fa-trash ml-s"></i>
         </button>
-        <button href="#" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCandidatModal"
+        <button href="#" type="button" class="btn btn-success me-3" data-bs-toggle="modal" data-bs-target="#addCandidatModal"
             id="buttonAdd">
             Ajouter
             <i class="fas fa-plus ml-s"></i>
+        </button>
+        <button href="#" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#importCandidatModal"
+            id="buttonImport">
+            Importer
+            <i class="fas bi-table ml-s"></i>
         </button>
     </div>
     <div class="main-table-admin">
@@ -385,6 +390,42 @@
                     <button class="btn btn-primary" name="modif_button" type="submit" id="ModalSubmitModifButton"
                         form="modifCandidatsForm">Sauvegarder
                         les changements</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="importCandidatModal" tabindex="-1" role="dialog" aria-labelledby="importCandidatModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Importer</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p style="color: orange;">Attention, l'importation depuis un fichier n'ajoute pas plusieurs candidats, mais écrase la liste actuelle</p>
+                    <p>Votre fichier csv doit contenir les colonnes suivantes :</p>
+                    <ul>
+                        <li>Le nom du candidat</li>
+                        <li>Le prénom du candidat</li>
+                        <li>Le nom de la série du candidat</li>
+                        <li>Le nom de la matière n°1 du candidat</li>
+                        <li>Le nom de la matière n°2 du candidat</li>
+                        <li>Si le candidat dispose d'un tiers temps (0=non, 1=oui)</li>
+                        <li>Le jour de passage du candidat (1 étant le jour établi dans les paramètres)</li>
+                        <li>Si le condidat passe le matin ou l'après-midi (0=après-midi, 1=matin)</li>
+                    </ul>
+                    <form method="post" id="importCandidatsForm" enctype="multipart/form-data">
+                        <input class="form-control" type="file" id="formFile" name="file">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" name="import_button" id="ModalImportButton" value=""
+                        form="importCandidatsForm" class="btn btn-success">Importer</button>
                 </div>
             </div>
         </div>
