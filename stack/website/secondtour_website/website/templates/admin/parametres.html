@@ -1,7 +1,7 @@
 {% extends "admin/base_admin.html" %}
 {% block title %}Administration{% endblock %}
 {% block sub_content %}
-<div class="main-div-admin" style="margin: 3em 0 0 0;">
+<div class="main-div-admin" style="margin: 2em 0 0 0;">
     {%- for category, message in get_flashed_messages(with_categories = true) %}
         <div class="alert alert-{{category}}  alert-dismissible fade show" role="alert">
             {{ message }}
@@ -17,7 +17,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group" style="margin-top: 1em">
+        <div class="form-group" style="margin-top: 0.5em">
             <label for="selectDebutMatin" class="text-white text-decoration-none">Heure de début le matin</label>
             <select class="form-control" id="selectDebutMatin" name="debut_matin">
                 {% for horaire in horaire %}
@@ -25,7 +25,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group" style="margin-top: 1em">
+        <div class="form-group" style="margin-top: 0.5em">
             <label for="selectFinMatin" class="text-white text-decoration-none">Heure de fin le matin</label>
             <select class="form-control" id="selectFinMatin" name="fin_matin">
                 {% for horaire in horaire %}
@@ -33,7 +33,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group" style="margin-top: 1em">
+        <div class="form-group" style="margin-top: 0.5em">
             <label for="selectDebutApresMidi" class="text-white text-decoration-none">Heure de début l'après-midi</label>
             <select class="form-control" id="selectDebutApresMidi" name="debut_apresmidi">
                 {% for horaire in horaire %}
@@ -41,7 +41,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group" style="margin-top: 1em">
+        <div class="form-group" style="margin-top: 0.5em">
             <label for="selectLogeApresMidi" class="text-white text-decoration-none">Heure de début de loge l'après-midi</label>
             <select class="form-control" id="selectLogeApresMidi" name="loge_apresmidi">
                 {% for horaire in horaire %}
@@ -49,7 +49,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group" style="margin-top: 1em">
+        <div class="form-group" style="margin-top: 0.5em">
             <label for="selectFinApresMidi" class="text-white text-decoration-none">Heure de fin l'après-midi</label>
             <select class="form-control" id="selectFinApresMidi" name="fin_apresmidi">
                 {% for horaire in horaire %}
@@ -57,7 +57,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group" style="margin-top: 1em">
+        <div class="form-group" style="margin-top: 0.5em">
             <label for="selectIntervalle" class="text-white text-decoration-none">Intervalle de précision de l'algorithme</label>
             <select class="form-control" id="selectIntervalle" name="intervalle">
                 {% for i in range(1, 31) %}
@@ -65,7 +65,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group" style="margin-top: 1em">
+        <div class="form-group" style="margin-top: 0.5em">
             <label for="selectPause" class="text-white text-decoration-none">Temps de pause min pour les élèves entre les oraux</label>
             <select class="form-control" id="selectPause" name="pause">
                 {% for i in range(0, 70, 10) %}
@@ -73,7 +73,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group" style="margin-top: 1em">
+        <div class="form-group" style="margin-top: 0.5em">
             <label for="selectPassage" class="text-white text-decoration-none">Nombre d'oraux max que les professeurs peuvent faire sans pause</label>
             <select class="form-control" id="selectPassage" name="passage">
                 {% for i in range(1, 6) %}
@@ -81,7 +81,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group" style="margin-top: 1em">
+        <div class="form-group" style="margin-top: 0.5em">
             <label for="selectDateDebut" class="text-white text-decoration-none">Date du début des épreuves du second groupe</label>
             <select class="form-control" id="selectDateDebut" name="date_debut">
                 {% for i in range(1, 32) %}
@@ -89,7 +89,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div style="margin-top: 1em">
+        <div style="margin-top: 0.5em">
             <button class="btn btn-primary" name="modify_button" type="submit" form="changeParametresForm"
                     style="background-color:blue;">Changer les paramètres</button>
         </div>
