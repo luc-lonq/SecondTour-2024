@@ -446,6 +446,48 @@ def professeurs():
                     flash(result[0], result[1])
                     logging.warning(result[0])
 
+            elif request.files:
+                uploaded_file = request.files['file']
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+                uploaded_file.save(file_path)
+
+                response = ask_api("data/fetchmulti", ["serie", "matiere"])
+                all_series, all_matieres = response.json()
+                col_names = ['nom', 'prenom', 'serie', 'matiere']
+                data = pd.read_csv(file_path, names=col_names, header=None)
+                all_professeurs = []
+                err = False
+                # Loop through the Rows
+                for i, row in data.iterrows():
+                    if i == 0:
+                        continue
+                    id_serie = None
+                    id_matiere = None
+
+                    for serie in all_series:
+                        if row["serie"] == serie["nom"]:
+                            id_serie = serie["id_serie"]
+                            break
+                    if id_serie is None:
+                        flash("Ligne " + str(i + 1) + ": Erreur sur la série", "danger")
+                        err = True
+                    for matiere in all_matieres:
+                        if matiere["id_serie"] == id_serie or id_serie is None:
+                            if row["matiere"] == matiere["nom"]:
+                                id_matiere = matiere["id_matiere"]
+                    if id_matiere is None:
+                        flash("Ligne " + str(i + 1) + ": Erreur sur la matière", "danger")
+                        err = True
+
+                    if err is False:
+                        all_professeurs.append({"nom": row["nom"], "prenom": row["prenom"], "matiere": id_matiere})
+
+                if err is False:
+                    main_database.delete_all_candidats()
+                    for professeur in all_professeurs:
+                        main_database.add_professeur(professeur["nom"], professeur["prenom"], None, professeur["matiere"])
+                    flash("Les professeurs ont été ajouté", "success")
+
         response = ask_api("data/fetchmulti", ["candidat", "matiere", "professeur", "salle",
                                                "creneau", "serie"])
         if response.status_code != 200:

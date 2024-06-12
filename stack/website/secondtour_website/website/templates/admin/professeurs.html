@@ -8,9 +8,14 @@
 {% block sub_content %}
 <div class="main-div-admin">
     <div class="name-finder" style="justify-content: end;">
-        <button href="#" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProfModal">
+        <button href="#" type="button" class="btn btn-success me-3" data-bs-toggle="modal" data-bs-target="#addProfModal">
             Ajouter
             <i class="fas fa-plus ml-s"></i>
+        </button>
+        <button href="#" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#importProfesseurModal"
+            id="buttonImport">
+            Importer
+            <i class="bi bi-file-earmark-spreadsheet-fill ml-s"></i>
         </button>
     </div>
     <div class="main-table-admin">
@@ -286,6 +291,38 @@
                     <button class="btn btn-warning" name="modify_button" type="submit" id="ModalSubmitModifButton"
                         form="modifyProfesseurForm">Modifier
                         le professeur</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="importProfesseurModal" tabindex="-1" role="dialog" aria-labelledby="importProfesseurModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Importer</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p style="color: orange;">Attention, l'importation depuis un fichier csv n'ajoute pas plusieurs professeurs, mais écrase la liste actuelle</p>
+                    <p>Votre fichier csv doit contenir les colonnes suivantes :</p>
+                    <ul>
+                        <li>Le nom du professeur</li>
+                        <li>Le prénom du professeur</li>
+                        <li>Le nom de la série du professeur</li>
+                        <li>Le nom de la matière du professeur</li>
+                    </ul>
+                    <form method="post" id="importProfesseursForm" enctype="multipart/form-data">
+                        <input class="form-control" type="file" id="formFile" name="file">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" name="import_button" id="ModalImportButton" value=""
+                        form="importProfesseursForm" class="btn btn-success">Importer</button>
                 </div>
             </div>
         </div>
