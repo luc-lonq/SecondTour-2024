@@ -18,12 +18,17 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 mkdir -p stack/api/secondtour_api_v2/logs
 mkdir -p stack/website/secondtour_website/website/logs
 cd stack
-docker compose up --build
 
-while getopts i:d: flag
+
+
+sleep 10
+
+while getopts i:r: flag
 do
     case "${flag}" in
         i)
+          docker compose up --build -d
+
           url="http://localhost:44300/utility/createtables"
           content_type_header="Content-Type: application/json"
           accept_header="accept: application/json"
@@ -37,29 +42,8 @@ do
           curl -s --request GET \
             --url "$url" \
             --header "$content_type_header" \
-            --header "$accept_header"
-        d) age=${OPTARG};;
+            --header "$accept_header";;
+        r)
+          docker compose up -d
     esac
 done
-
-sleep 10
-
-url="http://localhost:44300/utility/createtables"
-
-content_type_header="Content-Type: application/json"
-accept_header="accept: application/json"
-
-curl -s --request GET \
-  --url "$url" \
-  --header "$content_type_header" \
-  --header "$accept_header"
-
-url="http://localhost:44300/utility/init"
-
-content_type_header="Content-Type: application/json"
-accept_header="accept: application/json"
-
-curl -s --request GET \
-  --url "$url" \
-  --header "$content_type_header" \
-  --header "$accept_header"
