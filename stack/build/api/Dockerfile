@@ -16,6 +16,4 @@ COPY api/secondtour_api_v2 /app/api/secondtour_api_v2
 # Définir le répertoire de travail final pour votre application
 WORKDIR /app/api/secondtour_api_v2
 
-RUN sleep 5
-
 CMD ["npm", "run", "start"]

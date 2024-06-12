@@ -21,22 +21,24 @@ while getopts "ir:" flag; do
     case "${flag}" in
         i)
           docker compose up --build -d
-          sleep 10
+          sleep 2
           url="http://localhost:44300/utility/createtables"
           content_type_header="Content-Type: application/json"
           accept_header="accept: application/json"
-          curl -s --request GET \
+          response=$(curl -s --request GET \
             --url "$url" \
             --header "$content_type_header" \
-            --header "$accept_header"
+            --header "$accept_header")
+          echo $response
           url="http://localhost:44300/utility/init"
           content_type_header="Content-Type: application/json"
           accept_header="accept: application/json"
-          curl -s --request GET \
+          response=$(curl -s --request GET \
             --url "$url" \
             --header "$content_type_header" \
-            --header "$accept_header";;
+            --header "$accept_header")
+          echo $response;;
         r)
-          docker compose up -d
+          docker compose up -d;;
     esac
 done
