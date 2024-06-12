@@ -50,8 +50,7 @@
                                 <select class="form-select finder" v-on:change="finder">
                                     <option selected></option>
                                     {% for a_serie in all_series %}
-                                    <option>{{a_serie.nom}}{% if a_serie.specialite1 %} - {{a_serie.specialite1}}{%
-                                        endif %}</option>
+                                    <option>{{a_serie.nom}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -105,9 +104,7 @@
                         <td scope="row">{{candidat.prenom}}</td>
                         <td scope="row">{% for a_serie in all_series %}
                             {% if a_serie.id_serie == candidat.id_serie %}
-                            {{a_serie.nom}}{% if a_serie.specialite1 %} - {{a_serie.specialite1}}{% endif %}{% if
-                            a_serie.specialite2 %}/{{a_serie.specialite2}}{% endif %}
-                            {% endif %}
+                            {{a_serie.nom}}{% endif %}
                             {% endfor %}
                         </td>
                         <td scope="row">
@@ -242,9 +239,7 @@
                             <select class="form-control" id="serieSelect" name="serie"
                                 onchange="testMatiereCompatible()">
                                 {% for a_serie in all_series %}
-                                <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}{%
-                                    if a_serie.specialite1
-                                    %} - {{a_serie.specialite1}}{% endif %}
+                                <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -332,9 +327,7 @@
                             <select class="form-control" id="serieSelectModif" name="serie"
                                 onchange="testMatiereCompatible()">
                                 {% for a_serie in all_series %}
-                                <option id="serieModif{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}
-                                    {% if a_serie.specialite1
-                                    %} - {{a_serie.specialite1}}{% endif %}
+                                <option id="serieModif{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">
                                 </option>
                                 {% endfor %}
                             </select>

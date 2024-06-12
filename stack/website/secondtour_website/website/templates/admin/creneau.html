@@ -190,7 +190,7 @@
                                     %}{% if nbrCreneauForCandidat.value>= 2 or candidat.absent == True %}hidden{%
                                     endif %}>
                                     {{candidat.nom}} {{candidat.prenom}} |
-                                    {{serie.nom}}{% if serie.specialite1 %} - {{serie.specialite1}}{% endif %}
+                                    {{serie.nom}}
                                 </option>
                                 {% endif %}
                                 {% endfor %}
@@ -687,9 +687,6 @@
         option.value = candidat.id_candidat;
         option.id = "candidatModif" + candidat.id_candidat.toString();
         option.text = candidat.nom + " " + candidat.prenom + " | " + serie.nom ;
-        if (serie.specialite1) {
-            option.text += " - " + serie.specialite1;
-        }
         candidatSelect.append(option);
 
         //Add the Matiere

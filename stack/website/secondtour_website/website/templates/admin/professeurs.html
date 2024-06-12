@@ -47,9 +47,7 @@
                                 <select class="form-select finder break-doublons" v-on:change="finder">
                                     <option select></option>
                                     {% for a_serie in all_series %}
-                                    <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}{%
-                                    if a_serie.specialite1%} - {{a_serie.specialite1}}{% endif %}
-                                    </option>
+                                    <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}</option>
                                 {% endfor %}
                                 </select>
                             </div>
@@ -89,7 +87,7 @@
                             {% for a_matiere in all_matieres %}
                             {% for a_serie in all_series %}
                             {% if a_matiere.id_matiere == a_prof.matiere and a_matiere.id_serie == a_serie.id_serie%}
-                            {{a_serie.nom}}{%if a_serie.specialite1%} - {{a_serie.specialite1}}{% endif %}
+                            {{a_serie.nom}}
                             {% endif %}
                             {% endfor %}
                             {% endfor %}

@@ -143,9 +143,9 @@ def delete_account(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_serie(serie_choice, specialite1, ret=False):
+def add_serie(serie_choice, ret=False):
     try:
-        serie = {"id_serie": "null", "nom": serie_choice, "specialite1": specialite1 if specialite1 else "null"}
+        serie = {"id_serie": "null", "nom": serie_choice}
         response = ask_api("data/insert/serie", serie)
         if response.status_code != 201:
             logging.warning("Erreur lors de l'insertion d'une serie")
@@ -173,10 +173,10 @@ def add_serie(serie_choice, specialite1, ret=False):
         return [['Erreur : ' + traceback.format_exc(), 'danger']]
 
 
-def update_serie(id, nom, specialite1):
+def update_serie(id, nom):
     try:
         serie = {"filter": {"id_serie": id}, "data": {"id_serie": id,
-                                                      "nom": nom, "specialite1": specialite1}}
+                                                      "nom": nom}}
         response = ask_api("data/updatefilter/serie", serie)
         if response.status_code != 202:
             logging.warning("Erreur lors de l'insertion des séries")

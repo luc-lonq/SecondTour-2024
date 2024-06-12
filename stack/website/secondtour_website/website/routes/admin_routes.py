@@ -572,45 +572,12 @@ def series():
             if form.get('submit_button') is not None:
                 if 'serie' in form:
                     result = main_database.add_serie(
-                        form['serie'], form['specialite1'] if 'specialite1' in form else 'null', True)
+                        form['serie'], True)
                     flash(result[0][0], result[0][1])
                     logging.warning(result[0][0])
-                    if result[0][1] == 'success':
-                        result_s = main_database.add_matiere(
-                            'Français', result[1]['id_serie'], 30, 40, 20, 27, None)
-                        logging.warning(result_s[0])
-                        result_s = main_database.add_matiere(
-                            'Philosophie', result[1]['id_serie'], 20, 27, 20, 27, None)
-                        logging.warning(result_s[0])
-                    if form['serie'] == "Générale":
-                        result_s = main_database.add_matiere(
-                            'Anglais', result[1]['id_serie'], 20, 27, 20, 27, None)
-                        logging.warning(result_s[0])
-                        result_s = main_database.add_matiere(
-                            'Espagnol', result[1]['id_serie'], 20, 27, 20, 27, None)
-                        logging.warning(result_s[0])
-                        result_s = main_database.add_matiere(
-                            'HGGSP', result[1]['id_serie'], 20, 27, 20, 27, None)
-                        logging.warning(result_s[0])
-                        result_s = main_database.add_matiere(
-                            'Math-NSI', result[1]['id_serie'], 20, 27, 20, 27, None)
-                        logging.warning(result_s[0])
-                        result_s = main_database.add_matiere(
-                            'Mathématiques', result[1]['id_serie'], 20, 27, 20, 27, None)
-                        logging.warning(result_s[0])
-                        result_s = main_database.add_matiere(
-                            'Physique', result[1]['id_serie'], 20, 27, 20, 27, None)
-                        logging.warning(result_s[0])
-                        result_s = main_database.add_matiere(
-                            'SES', result[1]['id_serie'], 20, 27, 30, 40, None)
-                        logging.warning(result_s[0])
-                        result_s = main_database.add_matiere(
-                            'SVT', result[1]['id_serie'], 20, 27, 20, 27, None)
-                        logging.warning(result_s[0])
             elif form.get('modify_button') is not None:
                 if 'id' in form and 'serie' in form:
-                    if r := main_database.update_serie(form['id'], form['serie'],
-                                                       form['specialite1'] if 'specialite1' in form else 'null'):
+                    if r := main_database.update_serie(form['id'], form['serie']):
                         flash(r[0], r[1])
                         logging.warning(r[0])
             elif form.get('delete_button') is not None:

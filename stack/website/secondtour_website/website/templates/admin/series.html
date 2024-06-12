@@ -20,7 +20,6 @@
                 <thead>
                     <tr>
                         <th scope="col">Série</th>
-                        <th scope="col">Spécialité</th>
                         <th scope="col" class="modifier">Modifier</th>
                         <th scope="col" class="supprimer">Supprimer</th>
                     </tr>
@@ -29,13 +28,11 @@
                     {% for an_serie in all_series %}
                     <tr class="clickable" data-bs-toggle="collapse" data-bs-target="#accordion{{an_serie.id_serie}}">
                         <td scope="row">{{an_serie.nom}}</td>
-                        <td scope="row">{% if an_serie.specialite1: %}{{an_serie.specialite1}}{% endif %}
-                        </td>
                         <td scope="row">
                             <form method="post" action="{{url_for('admin_routes.series')}}"
                                 id="modifySerieForm{{an_serie.id_serie}}">
                                 <input type="hidden" name="id" value="{{an_serie.id_serie}}">
-                                <button type="button" id="{{an_serie.id_serie}}" data-bs-toggle="modal" onclick="testSpecialityModif()"
+                                <button type="button" id="{{an_serie.id_serie}}" data-bs-toggle="modal"
                                     data-bs-target="#modifySerieModal"
                                     class="modifRow btn btn-outline-warning">Modifier</button>
                             </form>
@@ -137,16 +134,10 @@
                     <!-- Add user form -->
                     <form method="post" action="{{url_for('admin_routes.series')}}" id="addSerieForm">
                         <div class="form-group">
-                            <label for="selectTypeUser">Nom de la fillière</label>
-                            <select class="form-control" id="selectTypeUser" name="serie" onchange="testSpeciality()">
-                                <option>Générale</option>
-                                <option>Technologique</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="specialite1">Spécialité</label>
-                            <input type="text" class="form-control" disabled="true" id="specialite1" name="specialite1"
-                                placeholder="Entrez la spécialité" required="required" onclick="testSpecialityModif()">
+                            <label for="serieNom">Nom de la série</label>
+                            <input type="text" class="form-control" id="serieNom" name="serie"
+                                aria-describedby="serieNomHelp" placeholder="Entrez un nom de série"
+                                required="required">
                         </div>
                     </form>
                 </div>
@@ -172,16 +163,10 @@
                 <div class="modal-body">
                     <form method="post" action="{{url_for('admin_routes.series')}}" id="modifySerieForm">
                         <div class="form-group">
-                            <label for="selectTypeUser">Nom de la fillière</label>
-                            <select class="form-control" id="selectTypeUsermodif" name="serie" onchange="testSpecialityModif()">
-                                <option>Générale</option>
-                                <option>Technologique</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="specialite1">Spécialité</label>
-                            <input type="text" class="form-control" id="specialite1-modif" name="specialite1"
-                                placeholder="Entrez la spécialité" required="required" onclick="testSpecialityModif()">
+                            <label for="serieNom">Nom de la série</label>
+                            <input type="text" class="form-control" id="serieNom" name="serie"
+                                aria-describedby="serieNomHelp" placeholder="Entrez un nom de série"
+                                required="required">
                         </div>
                         <input type="hidden" name="id" id="hiddenIdModif">
                     </form>
@@ -195,53 +180,32 @@
         </div>
     </div>
 
-                <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
-                    aria-labelledby="confirmDeleteModal" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Attention</h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Êtes vous sûr de vouloir supprimer cette série ?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                <button type="submit" name="delete_button" id="ModalSubmitButton" value=""
-                                    form="deleteSerieForm" class="btn btn-danger">Supprimer</button>
-                            </div>
-                        </div>
-                    </div>
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
+        aria-labelledby="confirmDeleteModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Attention</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Êtes vous sûr de vouloir supprimer cette série ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" name="delete_button" id="ModalSubmitButton" value=""
+                        form="deleteSerieForm" class="btn btn-danger">Supprimer</button>
                 </div>
             </div>
-            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block sub_script %}
 <script>
-    function testSpeciality(opt="") {
-        d = document.getElementById("selectTypeUser").value;
-        first = document.getElementById("specialite1");
-        if (d === "Générale") {
-            first.setAttribute('disabled', 'true');
-            first.value=null;
-        } else {
-            first.removeAttribute('disabled');
-        }
-    }
-
-    function testSpecialityModif(){
-        d=document.getElementById("selectTypeUsermodif").value;
-        first = document.getElementById("specialite1-modif");
-        if (d === "Générale") {
-            first.setAttribute('disabled', 'true');
-            first.value=null;
-        } else {
-            first.removeAttribute('disabled');
-        }
-    }
 
     $('.modifRow').click(function (){
 
@@ -262,19 +226,8 @@
             }
         }
 
-        select = form_elements[0];
-        for (var i=0; i<select.length; i++){
-            if(select.options[i].innerHTML == serie['nom']){
-                select.options[i].selected = true;
-            }
-        }
+        form_elements[0].value = serie.nom;
 
-        form_elements[1].value=null;
-
-
-        if(serie['specialite1']!=null){
-            form_elements[1].value=serie['specialite1'];
-        }
     })
 
 </script>

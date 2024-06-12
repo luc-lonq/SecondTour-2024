@@ -29,10 +29,9 @@ router.route('/createtables').get(async (red, res) => {
             (
                 id_serie    int auto_increment
                     primary key,
-                nom         varchar(40) not null,
-                specialite1 varchar(50) null,
-                constraint UNQ_NOM_SPE1_SPE2
-                    unique (nom, specialite1)
+                nom         varchar(50) not null,
+                constraint UNQ_NOM
+                    unique (nom)
             );`).catch(e => {
     res.status(500).send(e)
   })
@@ -162,12 +161,12 @@ router.route('/createtables').get(async (red, res) => {
 
 
 router.route('/init').get(async (req, res) => {
-    await db.query(`insert into serie (id_serie, nom, specialite1)
-                    values (1, 'Générale', null);`).catch(e => {
+    await db.query(`insert into serie (id_serie, nom)
+                    values (1, 'Générale');`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into serie (id_serie, nom, specialite1)
-                    values (2, 'Technologique', 'STI2D');`).catch(e => {
+    await db.query(`insert into serie (id_serie, nom)
+                    values (2, 'Technologique STI2D');`).catch(e => {
         res.status(500).send(e)
     })
 
@@ -286,12 +285,12 @@ router.route('/init').get(async (req, res) => {
 })
 
 router.route('/fixtures').get(async (req, res) => {
-    await db.query(`insert into serie (id_serie, nom, specialite1)
-                    values (1, 'Générale', null);`).catch(e => {
+    await db.query(`insert into serie (id_serie, nom)
+                    values (1, 'Générale');`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into serie (id_serie, nom, specialite1)
-                    values (2, 'Technologique', 'STI2D');`).catch(e => {
+    await db.query(`insert into serie (id_serie, nom)
+                    values (2, 'Technologique STI2D');`).catch(e => {
         res.status(500).send(e)
     })
 
@@ -1585,7 +1584,7 @@ router.route('/fixtures').get(async (req, res) => {
                                             heure_fin_apres_midi, intervalle, temps_pause_eleve,
                                             prof_max_passage_sans_pause,
                                             date_premier_jour)
-                    values (1, 1, '08:00', '13:00', '14:00', '20:00', 10, 30, 5, '2024-07-09');`).catch(e => {
+                    values (1, 1, '08:00', '13:00', '14:00', '13:00', '20:00', 10, 30, 5, '2024-07-09');`).catch(e => {
         res.status(500).send(e)
     })
 
