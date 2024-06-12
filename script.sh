@@ -43,6 +43,7 @@ while getopts "ir" flag; do
           echo $response;;
 
         r)
+          cd stack
           docker compose up -d;;
     esac
 done
