@@ -61,13 +61,13 @@
                             </div>
                         </th>
                         <th scope="col" style="width: 10%;">
-                            <div class="th-inner">Jour</div>
+                            <div class="th-inner">Date</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder"
                                     style="width: 70px;">
                                     <option selected></option>
                                     {% for creneau in all_creneau_deb %}
-                                    <option>{{creneau.debut_preparation.strftime('%d')}}</option>
+                                    <option>{{creneau.debut_preparation.strftime("%d-%m-%Y")}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -131,7 +131,7 @@
                         <td scope="row">{{salle.numero}}</td>
                         {% endif %}
                         {% endfor %}
-                        <td scope="row">{{a_creneau.debut_preparation.strftime('%d')}}</td>
+                        <td scope="row">{{a_creneau.debut_preparation.strftime("%d-%m-%Y")}}</td>
                         <td scope="row">{{a_creneau.debut_preparation.strftime('%Hh%M')}}</td>
                         <td scope="row">{{a_creneau.fin_preparation.strftime('%Hh%M')}}</td>
                         <td scope="row">{{a_creneau.fin.strftime('%Hh%M')}}</td>
