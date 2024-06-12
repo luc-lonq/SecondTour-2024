@@ -446,6 +446,10 @@ def professeurs():
                     flash(result[0], result[1])
                     logging.warning(result[0])
 
+            elif form.get('delete_all_button') is not None:
+                result = main_database.delete_all_professeurs()
+                flash(result[0], result[1])
+
             elif request.files:
                 uploaded_file = request.files['file']
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)

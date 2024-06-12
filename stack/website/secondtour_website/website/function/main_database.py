@@ -800,6 +800,19 @@ def delete_all_candidats():
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
+def delete_all_professeurs():
+    try:
+        response = ask_api("data/delete/professeur", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des professeurs")
+            return "Erreur lors de la suppression des professeurs", "danger"
+        return ['Tous les professeurs ont correctement été supprimés !', 'success']
+
+    except Exception:
+        logging.warning('Erreur : ' + traceback.format_exc())
+        return ['Erreur : ' + traceback.format_exc(), 'danger']
+
 
 def add_choix_matiere(id_candidat, matiere1, matiere2):
     try:
