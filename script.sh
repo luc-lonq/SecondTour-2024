@@ -20,6 +20,28 @@ mkdir -p stack/website/secondtour_website/website/logs
 cd stack
 docker compose up --build
 
+while getopts i:d: flag
+do
+    case "${flag}" in
+        i)
+          url="http://localhost:44300/utility/createtables"
+          content_type_header="Content-Type: application/json"
+          accept_header="accept: application/json"
+          curl -s --request GET \
+            --url "$url" \
+            --header "$content_type_header" \
+            --header "$accept_header"
+          url="http://localhost:44300/utility/init"
+          content_type_header="Content-Type: application/json"
+          accept_header="accept: application/json"
+          curl -s --request GET \
+            --url "$url" \
+            --header "$content_type_header" \
+            --header "$accept_header"
+        d) age=${OPTARG};;
+    esac
+done
+
 sleep 10
 
 url="http://localhost:44300/utility/createtables"
