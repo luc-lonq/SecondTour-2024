@@ -17,8 +17,7 @@ mkdir -p stack/api/secondtour_api_v2/logs
 mkdir -p stack/website/secondtour_website/website/logs
 cd stack
 
-while getopts i:r: flag
-do
+while getopts "ir:" flag; do
     case "${flag}" in
         i)
           docker compose up --build -d
