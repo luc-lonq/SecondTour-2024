@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts "ir:" flag; do
+while getopts "ir" flag; do
     case "${flag}" in
         i)
           for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
