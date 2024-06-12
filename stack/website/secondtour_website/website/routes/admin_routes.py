@@ -487,7 +487,7 @@ def professeurs():
                         all_professeurs.append({"nom": row["nom"], "prenom": row["prenom"], "matiere": id_matiere})
 
                 if err is False:
-                    main_database.delete_all_candidats()
+                    main_database.delete_all_professeurs()
                     for professeur in all_professeurs:
                         main_database.add_professeur(professeur["nom"], professeur["prenom"], None, professeur["matiere"])
                     flash("Les professeurs ont été ajouté", "success")
