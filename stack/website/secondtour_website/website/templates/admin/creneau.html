@@ -28,14 +28,14 @@
                             <div class="th-inner">Nom</div>
                             <div class="filter-control">
                                 <input type="text" class="form-control finder" v-on:keyup="finder"
-                                    style="width: 100px;" placeholder="">
+                                    style="width: 120px;" placeholder="">
                             </div>
                         </th>
                         <th scope="col" style="width: 10%;">
                             <div class="th-inner">Prénom</div>
                             <div class="filter-control">
                                 <input type="text" class="form-control finder" v-on:keyup="finder"
-                                    style="width: 100px;" placeholder="">
+                                    style="width: 120px;" placeholder="">
                             </div>
                         </th>
                         <th scope="col" style="width: 16%;">
@@ -52,7 +52,7 @@
                         <th scope="col" style="width: 10%;">
                             <div class="th-inner">Salle</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder" style="width: 80px;">
+                                <select class="form-select finder" v-on:change="finder" style="width: 120px;">
                                     <option selected></option>
                                     {% for salle in all_salles %}
                                     <option>{{salle.numero}}</option>
@@ -64,7 +64,7 @@
                             <div class="th-inner">Date</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder" id="creneau-date"
-                                    style="width: 70px;">
+                                    style="width: 120px;">
                                     <option selected></option>
                                     {% for creneau in all_creneau_deb %}
                                     <option>{{creneau.debut_preparation.strftime("%d-%m-%Y")}}</option>
@@ -76,7 +76,7 @@
                             <div class="th-inner">Début</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder" id="creneau-debut"
-                                    style="width: 70px;">
+                                    style="width: 120px;">
                                     <option selected></option>
                                     {% for creneau in all_creneau_deb %}
                                     <option>{{creneau.debut_preparation.strftime('%Hh%M')}}</option>
@@ -88,7 +88,7 @@
                             <div class="th-inner">Fin Prépa</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder" id="creneau-fin-prep"
-                                    style="width: 70px;">
+                                    style="width: 120px;">
                                     <option selected></option>
                                     {% for creneau in all_creneau_deb %}
                                     <option>{{creneau.fin_preparation.strftime('%Hh%M')}}</option>
@@ -100,7 +100,7 @@
                             <div class="th-inner">Fin</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder" id="creneau-fin"
-                                    style="width: 70px;">
+                                    style="width: 120px;">
                                     <option selected></option>
                                     {% for creneau in all_creneau_deb %}
                                     <option>{{creneau.fin.strftime('%Hh%M')}}</option>
