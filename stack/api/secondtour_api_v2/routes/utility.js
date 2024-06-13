@@ -161,6 +161,31 @@ router.route('/createtables').get(async (red, res) => {
 
 
 router.route('/init').get(async (req, res) => {
+    serie = await db.query(`SELECT * FROM serie`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (serie.length === 0)
+        return {'error': 'utility/init', 'on': 'serie'}
+
+
+    matiere = await db.query(`SELECT * FROM matiere`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (matiere.length === 0)
+        return {'error': 'utility/init', 'on': 'matiere'}
+
+    parametres = await db.query(`SELECT * FROM parametres`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (parametres.length === 0)
+        return {'error': 'utility/init', 'on': 'parametres'}
+
+    utilisateur = await db.query(`SELECT * FROM utilisateur`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (utilisateur.length === 0)
+        return {'error': 'utility/init', 'on': 'utilisateur'}
+
     await db.query(`insert into serie (id_serie, nom)
                     values (1, 'Générale');`).catch(e => {
         res.status(500).send(e)
