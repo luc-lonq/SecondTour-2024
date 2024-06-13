@@ -68,12 +68,10 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 # Configure the routes blueprint
-from .routes.register_routes import register_routes
 from .routes.main_routes import main_routes
 from .routes.admin_routes import admin_routes
 app.register_blueprint(main_routes, url_prefix='/')
 app.register_blueprint(admin_routes, url_prefix='/admin')
-app.register_blueprint(register_routes, url_prefix='/register')
 
 if(os.getenv("NETWORK_VISU") == "true"):
     requests.post("http://"+os.getenv("LOCAL_IP")+":3000/add", json={
