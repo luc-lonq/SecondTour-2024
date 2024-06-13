@@ -369,6 +369,13 @@ def salles():
             creneau["fin"] = datetime.strptime(creneau["fin"], '%a %b %d %H:%M:%S %Y') if type(
                 creneau["fin"]) == str else creneau["fin"]
 
+        matieres_loge = {}
+        for matiere in all_matieres:
+            if matiere["loge"]:
+                matieres_loge[matiere["id_matiere"]] = matiere["loge"]
+        logging.info(matieres_loge)
+
+
         # all_matieres = MATIERES.query.all()
         # all_creneaux = CRENEAU.query.order_by(CRENEAU.debut_preparation).all()
         # # Serialize table
@@ -398,7 +405,8 @@ def salles():
                                all_matieres=all_matieres, all_creneaux=all_creneaux, all_candidats=all_candidats,
                                all_choix_matieres=all_choix_matieres,
                                all_series=all_series, jour=parametres[0]["max_jour"],
-                               date=datetime.strptime(parametres[0]["date_premier_jour"], '%a %b %d %H:%M:%S %Y'))
+                               date=datetime.strptime(parametres[0]["date_premier_jour"], '%a %b %d %H:%M:%S %Y'),
+                               matieres_loge=matieres_loge)
     else:
         return redirect(url_for('main_routes.connexion'))
 

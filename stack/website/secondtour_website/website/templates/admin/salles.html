@@ -146,6 +146,48 @@
                                                                     {% endif %}
                                                                     {% endif %}
                                                                     {% endfor %}
+                                                                    {% else %}
+                                                                    {% for matiere, loge in matieres_loge.items() %}
+                                                                    {% if matiere == creneau.id_matiere and a_salle.id_salle == loge %}
+                                                                    {% for candidat in all_candidats %}
+                                                                    {% if candidat.id_candidat == creneau.id_candidat %}
+                                                                    {% if candidat.jour == j %}
+                                                                    {% if candidat.matin != m %}
+
+                                                                    <tr class="not-null creneauRow{{a_salle.id_salle}}{{j}}{{m}}">
+                                                                        <td scope="row">{{candidat.nom}}</td>
+                                                                        <td scope="row">{{candidat.prenom}}</td>
+                                                                        {% for matiere_scope in all_matieres %}
+                                                                        {% if matiere_scope.id_matiere ==
+                                                                        creneau.id_matiere %}
+                                                                        <td>
+                                                                            {{ matiere_scope.nom }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {% for serie in all_series %}
+                                                                            {% if serie.id_serie ==
+                                                                            matiere_scope.id_serie %}
+                                                                            {{ serie.nom }}
+                                                                            {% endif%}
+                                                                            {% endfor %}
+                                                                        </td>
+                                                                        {% endif %}
+                                                                        {% endfor %}
+                                                                        <td scope="row">
+                                                                            Début de préparation : {{creneau.debut_preparation.strftime("%Hh%M")}}
+                                                                            <br>
+                                                                            Début de passage : {{creneau.fin_preparation.strftime("%Hh%M")}}
+                                                                            <br>
+                                                                            Fin : {{creneau.fin.strftime("%Hh%M")}}
+                                                                        </td>
+                                                                        <td scope="row"></td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endif %}
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                    {% endif %}
+                                                                    {% endfor %}
                                                                     {% endif %}
                                                                     {% endfor %}
                                                                 </tbody>
