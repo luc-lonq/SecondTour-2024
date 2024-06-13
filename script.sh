@@ -25,7 +25,7 @@ while getopts "ir" flag; do
           cd stack
 
           docker compose up --build -d
-          sleep 2
+          sleep 5
 
           url="http://localhost:44300/utility/createtables"
           content_type_header="Content-Type: application/json"
