@@ -27,8 +27,6 @@ while getopts "ir" flag; do
           docker compose up --build -d
           sleep 5
 
-
-
         r)
           cd stack
           docker compose up -d;;
