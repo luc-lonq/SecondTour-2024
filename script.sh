@@ -27,26 +27,28 @@ while getopts "ir" flag; do
           docker compose up --build -d
           sleep 5
 
-          url="http://localhost:44300/utility/createtables"
-          content_type_header="Content-Type: application/json"
-          accept_header="accept: application/json"
-          response=$(curl -s --request GET \
-            --url "$url" \
-            --header "$content_type_header" \
-            --header "$accept_header")
-          echo $response
 
-          url="http://localhost:44300/utility/init"
-          content_type_header="Content-Type: application/json"
-          accept_header="accept: application/json"
-          response=$(curl -s --request GET \
-            --url "$url" \
-            --header "$content_type_header" \
-            --header "$accept_header")
-          echo $response;;
 
         r)
           cd stack
           docker compose up -d;;
     esac
 done
+
+url="http://localhost:44300/utility/createtables"
+content_type_header="Content-Type: application/json"
+accept_header="accept: application/json"
+response=$(curl -s --request GET \
+  --url "$url" \
+  --header "$content_type_header" \
+  --header "$accept_header")
+echo $response
+
+url="http://localhost:44300/utility/init"
+content_type_header="Content-Type: application/json"
+accept_header="accept: application/json"
+response=$(curl -s --request GET \
+  --url "$url" \
+  --header "$content_type_header" \
+  --header "$accept_header")
+echo $response;;
