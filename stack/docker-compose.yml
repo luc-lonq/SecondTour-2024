@@ -41,7 +41,7 @@ services:
     ports:
       - 33060:3306
     volumes:
-      - ./mysql/db:/var/lib/mysql
+      - ./mysql/db:/var/lib/mysql-secondtour
       - ./build/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       MYSQL_DATABASE: secondtour

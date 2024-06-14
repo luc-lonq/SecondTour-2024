@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts "ir" flag; do
+while getopts "i" flag; do
     case "${flag}" in
         i)
           docker -v
@@ -21,7 +21,7 @@ while getopts "ir" flag; do
             sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
           fi
           mkdir -p stack/api/secondtour_api_v2/logs
-          mkdir -p stack/website/secondtour_website/website/logs
+          mkdir -p stack/website/secondtour_website/website/logs;;
     esac
 done
 
@@ -46,4 +46,4 @@ response=$(sudo curl -s --request GET \
   --url "$url" \
   --header "$content_type_header" \
   --header "$accept_header")
-echo $response;;
+echo $response
