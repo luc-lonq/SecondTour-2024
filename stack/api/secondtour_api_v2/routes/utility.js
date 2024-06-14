@@ -161,30 +161,30 @@ router.route('/createtables').get(async (red, res) => {
 
 
 router.route('/init').get(async (req, res) => {
-    serie = await db.query(`SELECT * FROM serie`).catch(e => {
+    let serie = await db.query(`SELECT * FROM serie`).catch(e => {
         res.status(500).send(e)
     })
-    if (serie.length === 0)
-        return {'error': 'utility/init', 'on': 'serie'}
+    if (serie.length != 0)
+        res.send({'error': 'utility/init', 'on': 'serie'})
 
-
-    matiere = await db.query(`SELECT * FROM matiere`).catch(e => {
+    let matiere = await db.query(`SELECT * FROM matiere`).catch(e => {
         res.status(500).send(e)
     })
-    if (matiere.length === 0)
-        return {'error': 'utility/init', 'on': 'matiere'}
+    if (matiere.length != 0)
+        res.send({'error': 'utility/init', 'on': 'matiere'})
 
-    parametres = await db.query(`SELECT * FROM parametres`).catch(e => {
+    let parametres = await db.query(`SELECT * FROM parametres`).catch(e => {
         res.status(500).send(e)
     })
-    if (parametres.length === 0)
-        return {'error': 'utility/init', 'on': 'parametres'}
+    if (parametres.length != 0)
+        res.send({'error': 'utility/init', 'on': 'parametres'})
 
-    utilisateur = await db.query(`SELECT * FROM utilisateur`).catch(e => {
+    let utilisateur = await db.query(`SELECT * FROM utilisateur`).catch(e => {
         res.status(500).send(e)
     })
-    if (utilisateur.length === 0)
-        return {'error': 'utility/init', 'on': 'utilisateur'}
+    if (utilisateur.length != 0)
+        res.send({'error': 'utility/init', 'on': 'utilisateur'})
+
 
     await db.query(`insert into serie (id_serie, nom)
                     values (1, 'Générale');`).catch(e => {
@@ -195,97 +195,116 @@ router.route('/init').get(async (req, res) => {
         res.status(500).send(e)
     })
 
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (1, 1, 'SES', 20, 30, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (2, 1, 'Mathématiques', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (3, 1, 'Philosophie', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (4, 1, 'HLP', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (5, 1, 'HGGSP', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (6, 1, 'SVT', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (7, 1, 'Physique-Chimie', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (8, 1, 'SI', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (9, 1, 'NSI', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (10, 1, 'Anglais', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (11, 1, 'AMC', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (12, 1, 'Français', 20, 30, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (13, 1, 'Espagnol', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (14, 2, 'SIN', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (15, 2, 'ITEC', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (16, 2, 'EE', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (17, 2, 'AC', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (18, 2, 'Mathématiques-Physiques', 30, 40, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (19, 2, 'Philosophie', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
@@ -296,7 +315,8 @@ router.route('/init').get(async (req, res) => {
                                             heure_fin_apres_midi, intervalle, temps_pause_eleve,
                                             prof_max_passage_sans_pause,
                                             date_premier_jour)
-                    values (1, 1, '08:00', '13:00', '14:00', '13:00', '20:00', 10, 30, 5, '2024-07-09');`).catch(e => {
+                    values (1, 1, '08:00', '13:00', '14:00', '13:00', '20:00', 10, 30, 5,
+                            '2024-07-09');`).catch(e => {
         res.status(500).send(e)
     })
 
