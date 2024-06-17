@@ -377,10 +377,10 @@ def delete_salle(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_professeur(nom, prenom, salle, matiere, ret=False):
+def add_professeur(nom, salle, matiere, ret=False):
     try:
         professeur = {"id_professeur": "null", "nom": nom,
-                      "prenom": prenom, "salle": salle if salle else "null",
+                      "salle": salle if salle else "null",
                       "matiere": matiere if matiere else "null"}
         response = ask_api("data/insert/professeur", professeur)
         if response.status_code != 201:
@@ -415,10 +415,10 @@ def update_matiere(id, nom, id_serie, temps_preparation, temps_preparation_tiers
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def update_professeur_wep(id, nom, prenom, salle, matiere):
+def update_professeur_wep(id, nom, salle, matiere):
     try:
         professeur = {"filter": {"id_professeur": id}, "data": {
-            "nom": nom, "prenom": prenom, "salle": salle if salle else "null",
+            "nom": nom, "salle": salle if salle else "null",
             "matiere": matiere if matiere else "null"}}
         response = ask_api("data/updatefilter/professeur", professeur)
         if response.status_code != 202:
@@ -461,9 +461,9 @@ def delete_professeur(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_candidat(nom, prenom, id_serie, tiers_temps, jour, absent, matin, output=False):
+def add_candidat(nom, id_serie, tiers_temps, jour, absent, matin, output=False):
     try:
-        candidat = {"id_candidat": "null", "nom": nom, "prenom": prenom, "id_serie": id_serie,
+        candidat = {"id_candidat": "null", "nom": nom, "id_serie": id_serie,
                     "tiers_temps": "true" if tiers_temps == "True" else "false",
                     "absent": "true" if absent == "True" else "false",
                     "matin": "true" if matin == "True" else "false", "jour": jour}
@@ -486,9 +486,9 @@ def add_candidat(nom, prenom, id_serie, tiers_temps, jour, absent, matin, output
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_candidat_with_id(id, nom, prenom, id_serie, tiers_temps, jour, absent, matin):
+def add_candidat_with_id(id, nom, id_serie, tiers_temps, jour, absent, matin):
     try:
-        candidat = {"id_candidat": id, "nom": nom, "prenom": prenom, "id_serie": id_serie,
+        candidat = {"id_candidat": id, "nom": nom, "id_serie": id_serie,
                     "tiers_temps": "true" if tiers_temps == "True" else "false",
                     "absent": "true" if absent == "True" else "false",
                     "matin": "true" if matin == "True" else "false", "jour": jour}

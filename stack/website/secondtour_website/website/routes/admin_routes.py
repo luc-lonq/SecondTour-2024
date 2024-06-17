@@ -107,9 +107,9 @@ def candidats():
         if request.method == 'POST':
             form = request.form
             if form.get('submit_button') is not None:
-                if 'name' in form and 'surname' in form and 'serie' in form and 'tiers_temps' in form and 'jour' in form and 'matin' in form and 'absent' in form:
+                if 'name' in form and 'serie' in form and 'tiers_temps' in form and 'jour' in form and 'matin' in form and 'absent' in form:
                     result = main_database.add_candidat(
-                        form['name'], form['surname'], form['serie'], form['tiers_temps'], form['jour'], form['absent'],
+                        form['name'], form['serie'], form['tiers_temps'], form['jour'], form['absent'],
                         form['matin'], output=True)
                     if result[1][1] == 'danger':
                         flash(result[0], result[1])
@@ -136,13 +136,13 @@ def candidats():
                         flash(r[0], r[1])
                         logging.warning(r[0])
             elif form.get('modif_button') is not None:
-                if 'name' in form and 'surname' in form and 'serie' in form and 'id' in form and 'tiers_temps' in form and 'jour' in form and 'matin' in form and 'absent' in form:
+                if 'name' in form and 'serie' in form and 'id' in form and 'tiers_temps' in form and 'jour' in form and 'matin' in form and 'absent' in form:
                     if r := main_database.delete_candidat(form['id']):
                         flash(r[0], r[1])
                         logging.warning(r[0])
                     else:
                         result = main_database.add_candidat(
-                            form['name'], form['surname'], form['serie'], form['tiers_temps'], form['jour'],
+                            form['name'], form['serie'], form['tiers_temps'], form['jour'],
                             form['absent'], form['matin'], output=True)
                         if result[1][1] == 'danger':
                             flash(result[0], result[1])
@@ -184,7 +184,7 @@ def candidats():
 
                 response = ask_api("data/fetchmulti", ["serie", "matiere", "parametres"])
                 all_series, all_matieres, all_parametres = response.json()
-                col_names = ['nom', 'prenom', 'serie', 'matiere1', 'matiere2', 'tiers_temps', 'jour', 'matin']
+                col_names = ['nom', 'serie', 'matiere1', 'matiere2', 'tiers_temps', 'jour', 'matin']
                 data = pd.read_csv(file_path, names=col_names, header=None)
                 all_candidats = []
                 all_choix_matieres = []
@@ -239,7 +239,7 @@ def candidats():
                         err = True
 
                     if err is False:
-                        all_candidats.append({"id_candidat": i, "nom": row["nom"], "prenom": row["prenom"],
+                        all_candidats.append({"id_candidat": i, "nom": row["nom"],
                                               "id_serie": id_serie,
                                               "tiers_temps": "True" if int(row["tiers_temps"]) == 1 else "False",
                                               "absent": 0,
@@ -253,7 +253,7 @@ def candidats():
                 if err is False:
                     main_database.delete_all_candidats()
                     for candidat in all_candidats:
-                        main_database.add_candidat_with_id(candidat["id_candidat"], candidat["nom"], candidat["prenom"],
+                        main_database.add_candidat_with_id(candidat["id_candidat"], candidat["nom"],
                                                            candidat["id_serie"], candidat["tiers_temps"],
                                                            candidat["jour"], candidat["absent"], candidat["matin"])
                     for choix_matiere in all_choix_matieres:
@@ -433,9 +433,9 @@ def professeurs():
         if request.method == 'POST':
             form = request.form
             if form.get('submit_button') is not None:
-                if 'name' in form and 'surname' in form and 'salle' in form:
+                if 'name' in form and 'salle' in form:
                     result = main_database.add_professeur(
-                        form['name'], form['surname'], form['salle'],
+                        form['name'], form['salle'],
                         form['matiere'])
                     flash(result[0], result[1])
                     logging.warning(result[0])
@@ -446,10 +446,10 @@ def professeurs():
                         flash(r[0], r[1])
                         logging.warning(r[0])
             elif form.get('modify_button') is not None:
-                if 'prof_id' in form and 'name' in form and 'surname' in form and 'salle' in form:
+                if 'prof_id' in form and 'name' in form and 'salle' in form:
                     # result = main_database.delete_professeur(form['prof_id'])
                     result = main_database.update_professeur_wep(form['prof_id'],
-                                                                 form['name'], form['surname'], form['salle'],
+                                                                 form['name'], form['salle'],
                                                                  form['matiere'])
                     flash(result[0], result[1])
                     logging.warning(result[0])
@@ -465,7 +465,7 @@ def professeurs():
 
                 response = ask_api("data/fetchmulti", ["serie", "matiere"])
                 all_series, all_matieres = response.json()
-                col_names = ['nom', 'prenom', 'serie', 'matiere']
+                col_names = ['nom', 'serie', 'matiere']
                 data = pd.read_csv(file_path, names=col_names, header=None)
                 all_professeurs = []
                 err = False
@@ -492,12 +492,12 @@ def professeurs():
                         err = True
 
                     if err is False:
-                        all_professeurs.append({"nom": row["nom"], "prenom": row["prenom"], "matiere": id_matiere})
+                        all_professeurs.append({"nom": row["nom"], "matiere": id_matiere})
 
                 if err is False:
                     main_database.delete_all_professeurs()
                     for professeur in all_professeurs:
-                        main_database.add_professeur(professeur["nom"], professeur["prenom"], None, professeur["matiere"])
+                        main_database.add_professeur(professeur["nom"], None, professeur["matiere"])
                     flash("Les professeurs ont été ajouté", "success")
 
         response = ask_api("data/fetchmulti", ["candidat", "matiere", "professeur", "salle",

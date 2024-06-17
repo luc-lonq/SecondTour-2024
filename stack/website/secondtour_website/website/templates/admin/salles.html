@@ -99,7 +99,6 @@
                                                                 <thead>
                                                                     <tr>
                                                                         <th scope="col">Nom</th>
-                                                                        <th scope="col">Prénom</th>
                                                                         <th scope="col">Matière</th>
                                                                         <th scope="col">Série</th>
                                                                         <th scope="col">Horaires</th>
@@ -116,7 +115,6 @@
 
                                                                     <tr class="not-null creneauRow{{a_salle.id_salle}}{{j}}{{m}}">
                                                                         <td scope="row">{{candidat.nom}}</td>
-                                                                        <td scope="row">{{candidat.prenom}}</td>
                                                                         {% for matiere_scope in all_matieres %}
                                                                         {% if matiere_scope.id_matiere ==
                                                                         creneau.id_matiere %}
@@ -156,7 +154,6 @@
 
                                                                     <tr class="not-null creneauRow{{a_salle.id_salle}}{{j}}{{m}}">
                                                                         <td scope="row">{{candidat.nom}}</td>
-                                                                        <td scope="row">{{candidat.prenom}}</td>
                                                                         {% for matiere_scope in all_matieres %}
                                                                         {% if matiere_scope.id_matiere ==
                                                                         creneau.id_matiere %}

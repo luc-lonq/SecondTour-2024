@@ -29,12 +29,6 @@
                                 </div>
                             </th>
                             <th scope="col">
-                                <div class="th-inner">Prénom</div>
-                                <div class="filter-control">
-                                    <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
-                                </div>
-                            </th>
-                            <th scope="col">
                                 <div class="th-inner">Série</div>
                                 <div class="filter-control">
                                     <select class="form-select finder" v-on:change="finder">
@@ -59,7 +53,6 @@
                                 {% if candidat.id_serie == serie.id_serie %}
                                 <tr class="trfilter">
                                     <td scope="row">{{candidat.nom}}</td>
-                                    <td scope="row">{{candidat.prenom}}</td>
                                     {% for serie in all_series %}
                                         {% if serie.id_serie == candidat.id_serie %}
                                             <td scope="row">

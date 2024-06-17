@@ -38,13 +38,6 @@
                             </div>
                         </th>
                         <th scope="col">
-                            <div class="th-inner">Prénom</div>
-                            <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder"
-                                style="width: 100px;" placeholder="">
-                            </div>
-                        </th>
-                        <th scope="col">
                             <div class="th-inner">Série</div>
                             <div class="filter-control">
                                 <select class="form-select finder" v-on:change="finder">
@@ -101,7 +94,6 @@
                     <tr class="trfilter clickable {% if candidat.absent == False %}table-success{% else %}table-danger{% endif %}"
                         data-bs-target="#accordion{{candidat.id_candidat}}" data-bs-toggle="collapse">
                         <td scope="row">{{candidat.nom}}</td>
-                        <td scope="row">{{candidat.prenom}}</td>
                         <td scope="row">{% for a_serie in all_series %}
                             {% if a_serie.id_serie == candidat.id_serie %}
                             {{a_serie.nom}}{% endif %}
@@ -230,11 +222,6 @@
                                 aria-describedby="nameHelp" placeholder="Entrez un nom" required>
                         </div>
                         <div class="form-group">
-                            <label for="surnamePush">Prenom</label>
-                            <input type="text" class="form-control" id="surnamePush" name="surname"
-                                aria-describedby="surnameHelp" placeholder="Entrez un prénom" required>
-                        </div>
-                        <div class="form-group">
                             <label for="serieSelect">Serie</label>
                             <select class="form-control" id="serieSelect" name="serie"
                                 onchange="testMatiereCompatible()">
@@ -318,11 +305,6 @@
                                 placeholder="Entrez un nom" required>
                         </div>
                         <div class="form-group">
-                            <label for="surname">Prenom</label>
-                            <input type="text" class="form-control" id="surname" name="surname"
-                                aria-describedby="surnameHelp" placeholder="Entrez un prénom" required>
-                        </div>
-                        <div class="form-group">
                             <label for="serieSelectModif">Serie</label>
                             <select class="form-control" id="serieSelectModif" name="serie"
                                 onchange="testMatiereCompatible()">
@@ -402,14 +384,13 @@
                     <p style="color: orange;">Attention, l'importation depuis un fichier csv n'ajoute pas plusieurs candidats, mais écrase la liste actuelle</p>
                     <p>Votre fichier csv doit contenir les colonnes suivantes :</p>
                     <ul>
-                        <li>Le nom du candidat</li>
-                        <li>Le prénom du candidat</li>
+                        <li>Le nom et prénom du candidat</li>
                         <li>Le nom de la série du candidat</li>
                         <li>Le nom de la matière n°1 du candidat</li>
                         <li>Le nom de la matière n°2 du candidat</li>
                         <li>Si le candidat dispose d'un tiers temps (0=non, 1=oui)</li>
                         <li>Le jour de passage du candidat (1 étant le jour établi dans les paramètres)</li>
-                        <li>Si le condidat passe le matin ou l'après-midi (0=après-midi, 1=matin)</li>
+                        <li>Si le candidat passe le matin ou l'après-midi (0=après-midi, 1=matin)</li>
                     </ul>
                     <p>Le nom de la série et de la matière doivent être identiques aux noms affichés dans les onglets série et matière</p>
                     <form method="post" id="importCandidatsForm" enctype="multipart/form-data">
@@ -617,11 +598,9 @@
 
         //Set the name
         form_elements[0].value = candidat['nom'];
-        //Set the surname
-        form_elements[1].value = candidat['prenom'];
         //Set the serie
         id_serie = serie['id_serie'];
-        select = form_elements[2];
+        select = form_elements[1];
         for (var i = 0; i < select.length; i++) {
             if (select.options[i].id == "serieModif" + id_serie) {
                 select.options[i].selected = true;
@@ -629,21 +608,21 @@
         }
         //Set the tiers temps
         if (candidat['tiers_temps'] == true) {
-            form_elements[5].options[1].selected = true;
+            form_elements[4].options[1].selected = true;
         } else {
-            form_elements[5].options[0].selected = true;
+            form_elements[4].options[0].selected = true;
         }
         //Set matin
         if (candidat['matin'] == true) {
-            form_elements[6].options[0].selected = true;
+            form_elements[5].options[0].selected = true;
         } else {
-            form_elements[6].options[1].selected = true;
+            form_elements[5].options[1].selected = true;
         }
         //Set absent
         if (candidat['absent'] == true) {
-            form_elements[7].options[1].selected = true;
+            form_elements[6].options[1].selected = true;
         } else {
-            form_elements[7].options[0].selected = true;
+            form_elements[6].options[0].selected = true;
         }
 
         testMatiereCompatible();
@@ -651,7 +630,7 @@
         //Set the matiere1
         if (matiere1 != null) {
             id_matiere1 = matiere1['id_matiere'];
-            select = form_elements[3];
+            select = form_elements[2];
             console.log(id_matiere1);
             for (var i = 0; i < select.length; i++) {
                 if (select.options[i].id == "matiere1_" + id_matiere1) {
@@ -662,7 +641,7 @@
         if (matiere2 != null) {
             //Set the matiere2
             id_matiere2 = matiere2['id_matiere'];
-            select = form_elements[4];
+            select = form_elements[3];
             for (var i = 0; i < select.length; i++) {
                 if (select.options[i].id == "matiere2_" + id_matiere2) {
                     select.options[i].selected = true;

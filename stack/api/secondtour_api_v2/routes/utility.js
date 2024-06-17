@@ -41,7 +41,7 @@ router.route('/createtables').get(async (red, res) => {
                 id_matiere                    int auto_increment
                     primary key,
                 id_serie                      int         not null,
-                nom                           varchar(30) not null,
+                nom                           varchar(50) not null,
                 temps_preparation             int         not null,
                 temps_preparation_tiers_temps int         not null,
                 temps_passage                 int         not null,
@@ -80,8 +80,7 @@ router.route('/createtables').get(async (red, res) => {
             (
                 id_candidat int auto_increment
                     primary key,
-                nom         varchar(200) not null,
-                prenom      varchar(150) not null,
+                nom         varchar(100) not null,
                 id_serie    int          not null,
                 tiers_temps tinyint(1)   not null,
                 absent      tinyint(1)   not null,
@@ -98,8 +97,7 @@ router.route('/createtables').get(async (red, res) => {
             (
                 id_professeur int auto_increment
                     primary key,
-                nom           varchar(30) not null,
-                prenom        varchar(30) not null,
+                nom           varchar(100) not null,
                 salle         int         null,
                 matiere       int         null,
                 constraint fk_professeur__matiere
@@ -187,18 +185,18 @@ router.route('/init').get(async (req, res) => {
 
 
     await db.query(`insert into serie (id_serie, nom)
-                    values (1, 'Générale');`).catch(e => {
+                    values (1, 'GEN');`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into serie (id_serie, nom)
-                    values (2, 'Technologique STI2D');`).catch(e => {
+                    values (2, 'STI2D');`).catch(e => {
         res.status(500).send(e)
     })
 
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (1, 1, 'SES', 20, 30, 30, 40, null);`).catch(e => {
+                    values (1, 1, 'Sciences éco. et sociales', 20, 30, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
@@ -216,19 +214,19 @@ router.route('/init').get(async (req, res) => {
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (4, 1, 'HLP', 20, 30, 20, 30, null);`).catch(e => {
+                    values (4, 1, 'Humanités, littérature philo', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (5, 1, 'HGGSP', 20, 30, 20, 30, null);`).catch(e => {
+                    values (5, 1, 'Hist-géo, géopol et sci pol', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (6, 1, 'SVT', 20, 30, 20, 30, null);`).catch(e => {
+                    values (6, 1, 'Sc. de la vie et de la terre', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
@@ -240,13 +238,13 @@ router.route('/init').get(async (req, res) => {
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (8, 1, 'SI', 60, 80, 20, 30, null);`).catch(e => {
+                    values (8, 1, 'Sc. ingénieur', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (9, 1, 'NSI', 20, 30, 20, 30, null);`).catch(e => {
+                    values (9, 1, 'Numérique  sc. informatiques', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
@@ -258,13 +256,13 @@ router.route('/init').get(async (req, res) => {
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (11, 1, 'AMC', 20, 30, 20, 30, null);`).catch(e => {
+                    values (11, 1, ' Anglais, monde contemporain', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (12, 1, 'Français', 20, 30, 30, 40, null);`).catch(e => {
+                    values (12, 1, 'Francais', 20, 30, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
@@ -276,31 +274,31 @@ router.route('/init').get(async (req, res) => {
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (14, 2, 'SIN', 60, 80, 20, 30, null);`).catch(e => {
+                    values (14, 2, "Systèmes d'information et numérique", 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (15, 2, 'ITEC', 60, 80, 20, 30, null);`).catch(e => {
+                    values (15, 2, 'Innovation technologique et éco-conception', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (16, 2, 'EE', 60, 80, 20, 30, null);`).catch(e => {
+                    values (16, 2, 'Energies et environnement', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (17, 2, 'AC', 60, 80, 20, 30, null);`).catch(e => {
+                    values (17, 2, 'Architecture et construction', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (18, 2, 'Mathématiques-Physiques', 30, 40, 30, 40, null);`).catch(e => {
+                    values (18, 2, 'Physique chimie et maths', 30, 40, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
@@ -330,12 +328,60 @@ router.route('/init').get(async (req, res) => {
 })
 
 router.route('/fixtures').get(async (req, res) => {
+    let serie = await db.query(`SELECT * FROM serie`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (serie.length != 0)
+        res.send({'error': 'utility/fixtures', 'on': 'serie'})
+
+    let matiere = await db.query(`SELECT * FROM matiere`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (matiere.length != 0)
+        res.send({'error': 'utility/fixtures', 'on': 'matiere'})
+
+    let parametres = await db.query(`SELECT * FROM parametres`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (parametres.length != 0)
+        res.send({'error': 'utility/fixtures', 'on': 'parametres'})
+
+    let utilisateur = await db.query(`SELECT * FROM utilisateur`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (utilisateur.length != 0)
+        res.send({'error': 'utility/fixtures', 'on': 'utilisateur'})
+
+    let candidat = await db.query(`SELECT * FROM candidat`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (candidat.length != 0)
+        res.send({'error': 'utility/fixtures', 'on': 'candidat'})
+
+    let professeur = await db.query(`SELECT * FROM professeur`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (professeur.length != 0)
+        res.send({'error': 'utility/fixtures', 'on': 'professeur'})
+
+    let choix_matiere = await db.query(`SELECT * FROM choix_matiere`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (choix_matiere.length != 0)
+        res.send({'error': 'utility/fixtures', 'on': 'choix_matiere'})
+
+    let salle = await db.query(`SELECT * FROM salle`).catch(e => {
+        res.status(500).send(e)
+    })
+    if (salle.length != 0)
+        res.send({'error': 'utility/fixtures', 'on': 'salle'})
+
     await db.query(`insert into serie (id_serie, nom)
-                    values (1, 'Générale');`).catch(e => {
+                    values (1, 'GEN');`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into serie (id_serie, nom)
-                    values (2, 'Technologique STI2D');`).catch(e => {
+                    values (2, 'STI2D');`).catch(e => {
         res.status(500).send(e)
     })
 
@@ -502,695 +548,714 @@ router.route('/fixtures').get(async (req, res) => {
     })
 
 
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (1, 'AVINIO', 'Romain', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (1, 'AVINIO Romain', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (2, 'BARTHOLOME', 'Jules', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (2, 'BARTHOLOME Jules', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (3, 'BERTHEOT', 'Tonin', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (3, 'BERTHEOT Tonin', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (4, 'BOISSON', 'Tony', 2, 1, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (4, 'BOISSON Tony', 2, 1, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (5, 'BONNIN', 'Titouan', 2, 1, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (5, 'BONNIN Titouan', 2, 1, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (6, 'BRUNEAU', 'Shana', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (6, 'BRUNEAU Shana', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (7, 'BUCHHEIT', 'Guillaume', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (7, 'BUCHHEIT Guillaume', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (8, 'CAILLER', 'Noah', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (8, 'CAILLER Noah', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (9, 'FOUQUET', 'Gauthier', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (9, 'FOUQUET Gauthier', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (10, 'FRELAND', 'Louis', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (10, 'FRELAND Louis', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (11, 'HERRY', 'Tifany', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (11, 'HERRY Tifany', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (12, 'LOUGUET', 'Antoine', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (12, 'LOUGUET Antoine', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (13, 'MANELPHE', 'Arthur', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (13, 'MANELPHE Arthur', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (14, 'MILLET', 'Lucas', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (14, 'MILLET Lucas', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (15, 'MOREAU', 'Lou', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (15, 'MOREAU Lou', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (16, 'REDON', 'Tom', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (16, 'REDON Tom', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (17, 'RIMBAUD', 'Hugo', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (17, 'RIMBAUD Hugo', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (18, 'TEXIER', 'Benoit', 2, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (18, 'TEXIER Benoit', 2, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (19, 'AKDENIZ', 'Beyza', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (19, 'AKDENIZ Beyza', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (20, 'AUDOIN', 'Tom', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (20, 'AUDOIN Tom', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (21, 'BARTHONNET', 'Donovan', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (21, 'BARTHONNET Donovan', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (22, 'BEAUCOUR', 'Maéline', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (22, 'BEAUCOUR Maéline', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (23, 'BELIVIER', 'Hanna', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (23, 'BELIVIER Hanna', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (24, 'BENADIE', 'Emilie-Rose', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (24, 'BENADIE Emilie-Rose', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (25, 'BERRIAU', 'Gabriel', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (25, 'BERRIAU Gabriel', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (26, 'DESSONNAUD-TAMY', 'Capucine', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (26, 'DESSONNAUD-TAMY Capucine', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (27, 'BONHOURE', 'Mathis', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (27, 'BONHOURE Mathis', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (28, 'BONNET', 'Louise', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (28, 'BONNET Louise', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (29, 'BOUAN', 'Hugo', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (29, 'BOUAN Hugo', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (30, 'BOURNET', 'Luca', 1, 1, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (30, 'BOURNET Luca', 1, 1, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (31, 'BRAYNAS', 'Solane', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (31, 'BRAYNAS Solane', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (32, 'CHALLAS', 'Alexis', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (32, 'CHALLAS Alexis', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (33, 'CHAUSSAT', 'Lorenzo', 1, 0, 1, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (33, 'CHAUSSAT Lorenzo', 1, 0, 1, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (34, 'COEFFIC', 'Noé', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (34, 'COEFFIC Noé', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (35, 'DECO', 'Baptiste', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (35, 'DECO Baptiste', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (36, 'DELACROIX', 'Alexander', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (36, 'DELACROIX Alexander', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (37, 'DI MARIA-REINARD', 'Amoti', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (37, 'DI MARIA-REINARD Amoti', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (38, 'DJAKOVITCH', 'Inès', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (38, 'DJAKOVITCH Inès', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (39, 'DJERDJAR', 'Gabin', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (39, 'DJERDJAR Gabin', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (40, 'DRAPEAU', 'Teddy', 1, 1, 1, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (40, 'DRAPEAU Teddy', 1, 1, 1, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (41, 'EDOUARD LUQUE', 'Nolane', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (41, 'EDOUARD LUQUE Nolane', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (42, 'EL IDRISSI', 'Amina', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (42, 'EL IDRISSI Amina', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (43, 'FEAO', 'Upaleto', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (43, 'FEAO Upaleto', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (44, 'FOURRE--DEGRE', 'Julien', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (44, 'FOURRE--DEGRE Julien', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (45, 'GAINCHE', 'Amaury', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (45, 'GAINCHE Amaury', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (46, 'GENDREAU', 'Luna', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (46, 'GENDREAU Luna', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (47, 'GERALDES BAPTISTA', 'Océane', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (47, 'GERALDES BAPTISTA Océane', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (48, 'GOUINEAU', 'Omérine', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (48, 'GOUINEAU Omérine', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (49, 'GOUJON', 'Emma', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (49, 'GOUJON Emma', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (50, 'GUILLOZO', 'Lucie', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (50, 'GUILLOZO Lucie', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (51, 'GURBUZ', 'Mélissa', 1, 1, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (51, 'GURBUZ Mélissa', 1, 1, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (52, 'HERAUD', 'Louise', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (52, 'HERAUD Louise', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (53, 'HOLLANDE SANSON', 'Keliah', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (53, 'HOLLANDE SANSON Keliah', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (54, 'JUCHEREAU', 'Camille', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (54, 'JUCHEREAU Camille', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (55, 'LEDOUX', 'Mélina', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (55, 'LEDOUX Mélina', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (56, 'LEGER', 'Victor', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (56, 'LEGER Victor', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (57, 'MAZUREK', 'Loane', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (57, 'MAZUREK Loane', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (58, 'PAIN', 'Clarence', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (58, 'PAIN Clarence', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (59, 'PAUTROT', 'Nino', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (59, 'PAUTROT Nino', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (60, 'PLAUQUIN', 'Emma', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (60, 'PLAUQUIN Emma', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (61, 'PYDO', 'Aymeric', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (61, 'PYDO Aymeric', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (62, 'SCHLUMBERGER', 'Jeanne', 1, 0, 0, 1, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (62, 'SCHLUMBERGER Jeanne', 1, 0, 0, 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (63, 'ALTER', 'Annaëlle', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (63, 'ALTER Annaëlle', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (64, 'ANDRADE', 'Angel', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (64, 'ANDRADE Angel', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (65, 'BATIER', 'Louis', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (65, 'BATIER Louis', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (66, 'BOUCHENY', 'Mathias', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (66, 'BOUCHENY Mathias', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (67, 'BRUNET', 'Axel', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (67, 'BRUNET Axel', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (68, 'DA SILVA', 'Enzo', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (68, 'DA SILVA Enzo', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (69, 'FIERRARD', 'Elise', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (69, 'FIERRARD Elise', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (70, 'GENOUD', 'Philomène', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (70, 'GENOUD Philomène', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (71, 'GUIET', 'Camille', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (71, 'GUIET Camille', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (72, 'HENNETON', 'Malcom', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (72, 'HENNETON Malcom', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (73, 'HENSTOCK', 'Sebastian', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (73, 'HENSTOCK Sebastian', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (74, 'HOUDE', 'Marion', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (74, 'HOUDE Marion', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (75, 'LAUNETTE', 'Damien', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (75, 'LAUNETTE Damien', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (76, 'LOU', 'Loan', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (76, 'LOU Loan', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (77, 'LOZACH', 'Lysandre', 1, 1, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (77, 'LOZACH Lysandre', 1, 1, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (78, 'MICHALLET-FERRIER', 'Tania', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (78, 'MICHALLET-FERRIER Tania', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (79, 'MILOUD OULD BOUZIANE', 'Mattys', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (79, 'MILOUD OULD BOUZIANE Mattys', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (80, 'MINET', 'Léandre', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (80, 'MINET Léandre', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (81, 'MONTERRAIN', 'Killian', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (81, 'MONTERRAIN Killian', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (82, 'ORGE', 'Laura', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (82, 'ORGE Laura', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (83, 'PASSARD', 'Camille', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (83, 'PASSARD Camille', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (84, 'PELISSON', 'Camille', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (84, 'PELISSON Camille', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (85, 'PETIT', 'Morgane', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (85, 'PETIT Morgane', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (86, 'PICQUOT', 'Samuel', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (86, 'PICQUOT Samuel', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (87, 'POIRET', 'Robin', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (87, 'POIRET Robin', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (88, 'PONIENSKI', 'Lola', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (88, 'PONIENSKI Lola', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (89, 'REBERE-AGION', 'Léane', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (89, 'REBERE-AGION Léane', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (90, 'RENARD', 'Audélie', 1, 1, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (90, 'RENARD Audélie', 1, 1, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (91, 'ROY', 'Baptiste', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (91, 'ROY Baptiste', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (92, 'ROYER', 'Paul', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (92, 'ROYER Paul', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (93, 'SA', 'Jénawé', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (93, 'SA Jénawé', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (94, 'SABATIER', 'Amandine', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (94, 'SABATIER Amandine', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (95, 'SALANOVA', 'Lilou', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (95, 'SALANOVA Lilou', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (96, 'SERCEAU', 'Lylia', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (96, 'SERCEAU Lylia', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (97, 'SHAIPOV', 'Akhmed', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (97, 'SHAIPOV Akhmed', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (98, 'SIMON', 'Daniel', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (98, 'SIMON Daniel', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (99, 'SIMONNET', 'Clara', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (99, 'SIMONNET Clara', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (100, 'SIOU--MALOISEL', 'Youenn', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (100, 'SIOU--MALOISEL Youenn', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (101, 'TEIXEIRA', 'Lola', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (101, 'TEIXEIRA Lola', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (102, 'TERNUS', 'Manolo', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (102, 'TERNUS Manolo', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (103, 'TESSIER', 'Alexis', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (103, 'TESSIER Alexis', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (104, 'TREPOS', 'Guilhem', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (104, 'TREPOS Guilhem', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (105, 'VASSAUX', 'Manon', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (105, 'VASSAUX Manon', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (106, 'VERGELOT', 'Erine', 1, 1, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (106, 'VERGELOT Erine', 1, 1, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (107, 'YILMAZ', 'Teoman', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (107, 'YILMAZ Teoman', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into candidat (id_candidat, nom, prenom, id_serie, tiers_temps, absent, matin, jour)
-                    values (108, 'ZAIM', 'Ilyass', 1, 0, 0, 0, 1);`).catch(e => {
+    await db.query(`insert into candidat (id_candidat, nom, id_serie, tiers_temps, absent, matin, jour)
+                    values (108, 'ZAIM Ilyass', 1, 0, 0, 0, 1);`).catch(e => {
         res.status(500).send(e)
     })
 
 
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (1, 1, 'SES', 20, 30, 30, 40, null);`).catch(e => {
+                    values (1, 1, 'Sciences éco. et sociales', 20, 30, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (2, 1, 'Mathématiques', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (3, 1, 'Philosophie', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (4, 1, 'HLP', 20, 30, 20, 30, null);`).catch(e => {
+                    values (4, 1, 'Humanités, littérature philo', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (5, 1, 'HGGSP', 20, 30, 20, 30, null);`).catch(e => {
+                    values (5, 1, 'Hist-géo, géopol et sci pol', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (6, 1, 'SVT', 20, 30, 20, 30, null);`).catch(e => {
+                    values (6, 1, 'Sc. de la vie et de la terre', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (7, 1, 'Physique-Chimie', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (8, 1, 'SI', 60, 80, 20, 30, 40);`).catch(e => {
+                    values (8, 1, 'Sc. ingénieur', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (9, 1, 'NSI', 20, 30, 20, 30, null);`).catch(e => {
+                    values (9, 1, 'Numérique  sc. informatiques', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (10, 1, 'Anglais', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (11, 1, 'AMC', 20, 30, 20, 30, null);`).catch(e => {
+                    values (11, 1, ' Anglais, monde contemporain', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (12, 1, 'Français', 20, 30, 30, 40, null);`).catch(e => {
+                    values (12, 1, 'Francais', 20, 30, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (13, 1, 'Espagnol', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (14, 2, 'SIN', 60, 80, 20, 30, 40);`).catch(e => {
+                    values (14, 2, "Systèmes d'information et numérique", 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (15, 2, 'ITEC', 60, 80, 20, 30, 40);`).catch(e => {
+                    values (15, 2, 'Innovation technologique et éco-conception', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (16, 2, 'EE', 60, 80, 20, 30, 40);`).catch(e => {
+                    values (16, 2, 'Energies et environnement', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (17, 2, 'AC', 60, 80, 20, 30, 40);`).catch(e => {
+                    values (17, 2, 'Architecture et construction', 60, 80, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (18, 2, 'Mathématiques-Physiques', 30, 40, 30, 40, null);`).catch(e => {
+                    values (18, 2, 'Physique chimie et maths', 30, 40, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation, temps_preparation_tiers_temps,
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (19, 2, 'Philosophie', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
 
 
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (1, 'BOISSEAU', 'François-Robert', 1, 1);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (1, 'BOISSEAU François-Robert', 1, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (2, 'BRIAUD', 'Benedicte', 2, 1);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (2, 'BRIAUD Benedicte', 2, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (3, 'CAQUINEAU', 'Didier', 3, 1);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (3, 'CAQUINEAU Didier', 3, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (4, 'GEORGES', 'Camille', 4, 1);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (4, 'GEORGES Camille', 4, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (5, 'JASKULA', 'Thomas', 5, 1);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (5, 'JASKULA Thomas', 5, 1);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (6, 'BRACHET', 'Cyrille', 6, 2);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (6, 'BRACHET Cyrille', 6, 2);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (7, 'FORGET', 'Thomas', 7, 2);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (7, 'FORGET Thomas', 7, 2);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (8, 'LAHBIB', 'Olivier', 8, 3);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (8, 'LAHBIB Olivier', 8, 3);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (9, 'LESTABLE', 'Christine', 9, 3);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (9, 'LESTABLE Christine', 9, 3);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (10, 'PELLICER-ESQUIEU', 'Antoine', 10, 3);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (10, 'PELLICER-ESQUIEU Antoine', 10, 3);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (11, 'NAVARON', 'Remi', 11, 4);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (11, 'NAVARON Remi', 11, 4);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (12, 'COSSE', 'Eric', 12, 5);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (12, 'COSSE Eric', 12, 5);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (13, 'DURAND', 'Marie', 13, 5);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (13, 'DURAND Marie', 13, 5);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (14, 'LACRAMPE', 'Herve Alexandre', 14, 5);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (14, 'LACRAMPE Herve Alexandre', 14, 5);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (15, 'LAROCHE', 'Olivier', 15, 5);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (15, 'LAROCHE Olivier', 15, 5);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (16, 'CHASTANG', 'Charlotte', 16, 6);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (16, 'CHASTANG Charlotte', 16, 6);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (17, 'LAVIE', 'Pascal', 17, 6);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (17, 'LAVIE Pascal', 17, 6);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (18, 'POMPOUGNAC', 'Alexandre', 18, 6);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (18, 'POMPOUGNAC Alexandre', 18, 6);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (19, 'BERNAND', 'Nadege', 19, 7);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (19, 'BERNAND Nadege', 19, 7);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (20, 'TOUSSAINT', 'Arnaud', 20, 7);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (20, 'TOUSSAINT Arnaud', 20, 7);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (21, 'PORCHET', 'Philippe', 21, 8);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (21, 'PORCHET Philippe', 21, 8);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (22, 'GOGUET', 'Johnny', 22, 9);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (22, 'GOGUET Johnny', 22, 9);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (23, 'FOUGERE', 'Lauranne', 23, 10);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (23, 'FOUGERE Lauranne', 23, 10);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (24, 'SURAUD', 'Marie', 24, 11);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (24, 'SURAUD Marie', 24, 11);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (25, 'SCHWARTZ', 'Elodie', 25, 12);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (25, 'SCHWARTZ Elodie', 25, 12);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (26, 'DELFINI', 'Benoit', 26, 13);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (26, 'DELFINI Benoit', 26, 13);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (27, 'PERRON', 'Pascal', 27, 14);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (27, 'PERRON Pascal', 27, 14);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (28, 'PROUST', 'Laurent', 28, 14);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (28, 'PROUST Laurent', 28, 14);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (29, 'VIART', 'Philippe', 29, 15);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (29, 'VIART Philippe', 29, 15);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (30, 'GROSS', 'Jean-Noel', 30, 16);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (30, 'GROSS Jean-Noel', 30, 16);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (31, 'MADEC', 'Olivier', 31, 17);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (31, 'MADEC Olivier', 31, 17);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (32, 'OUALA', 'Hafid', 32, 18);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (32, 'OUALA Hafid', 32, 18);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (33, 'BAERT', 'Philippe', 32, 18);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (33, 'BAERT Philippe', 32, 18);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (34, 'BAUX', 'Pierre', 33, 18);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (34, 'BAUX Pierre', 33, 18);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (35, 'BELRHITRI', 'Yahya', 33, 18);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (35, 'BELRHITRI Yahya', 33, 18);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (36, 'CHEVAL', 'Sophie', 34, 18);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (36, 'CHEVAL Sophie', 34, 18);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (37, 'GOLIGER', 'Georges', 34, 18);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (37, 'GOLIGER Georges', 34, 18);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (38, 'VOISIN', 'Mederic', 35, 18);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (38, 'VOISIN Mederic', 35, 18);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (39, 'SIBOTTIER', 'Denis', 35, 18);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (39, 'SIBOTTIER Denis', 35, 18);`).catch(e => {
         res.status(500).send(e)
     })
-    await db.query(`insert into professeur (id_professeur, nom, prenom, salle, matiere)
-                    values (40, 'FOURCASSIE', 'Tolsan', 36, 19);`).catch(e => {
+    await db.query(`insert into professeur (id_professeur, nom, salle, matiere)
+                    values (40, 'FOURCASSIE Tolsan', 36, 19);`).catch(e => {
         res.status(500).send(e)
     })
 

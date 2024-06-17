@@ -61,9 +61,6 @@
                                                                         <th scope="col" style="max-width: 8rem">
                                                                             <div class="th-inner">Nom</div>
                                                                         </th>
-                                                                        <th scope="col" style="max-width: 8rem">
-                                                                            <div class="th-inner">Prénom</div>
-                                                                        </th>
                                                                         <th scope="col" style="max-width: 16rem">
                                                                             <div class="th-inner">Epreuve 1</div>
                                                                         </th>
@@ -79,9 +76,7 @@
                                                                     {% if candidat.jour == j+1 %}
                                                                     {% if candidat.matin != m %}
                                                                     <tr class="serieRow{{serie.id_serie}}{{j}}{{m}}">
-                                                                        <td scope="row" style="max-width: 8rem">{{candidat.nom}}</td>
-                                                                        <td scope="row" style="max-width: 8rem">{{candidat.prenom}}</td>
-                                                                        {% for creneau in all_creneaux %}
+                                                                        <td scope="row" style="max-width: 8rem">{{candidat.nom}}</td>                                                                        {% for creneau in all_creneaux %}
                                                                         {% if creneau.id_candidat == candidat.id_candidat %}
                                                                         <td scope="row" style="max-width: 16rem">
                                                                             <div class="calendar-subject">

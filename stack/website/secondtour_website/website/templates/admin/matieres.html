@@ -22,12 +22,7 @@
                         <th scope="col">
                             <div class="th-inner">Nom</div>
                             <div class="filter-control">
-                                <select class="form-select finder break-doublons" v-on:change="finder">
-                                    <option select></option>
-                                    {% for matiere in all_matieres %}
-                                    <option>{{matiere.nom}}</option>
-                                    {% endfor %}
-                                </select>
+                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
@@ -89,7 +84,7 @@
                         </td>
                         <td scope="row">
                             {% for a_prof in all_profs %}
-                            {% if a_prof.matiere == a_matiere.id_matiere %}{{ a_prof.nom }} {{a_prof.prenom}}
+                            {% if a_prof.matiere == a_matiere.id_matiere %}{{ a_prof.nom }}
                             <br>{% endif %}
                             {% endfor %}
                         </td>
@@ -140,9 +135,6 @@
                                                     <div class="th-inner">Nom</div>
                                                 </th>
                                                 <th scope="col">
-                                                    <div class="th-inner">Prénom</div>
-                                                </th>
-                                                <th scope="col">
                                                     <div class="th-inner">Série</div>
                                                 </th>
                                                 <th scope="col">
@@ -158,7 +150,6 @@
                                             a_choix_matiere.matiere2 == a_matiere.id_matiere %}
                                             <tr class="not-null">
                                                 <td scope="row">{{a_candidat.nom}}</td>
-                                                <td scope="row">{{a_candidat.prenom}}</td>
                                                 {% for a_serie in all_series %}
                                                 {% if a_serie.id_serie == a_matiere.id_serie %}
                                                 <td scope="row">{{a_serie.nom}}</td>
