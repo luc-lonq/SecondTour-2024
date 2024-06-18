@@ -40,11 +40,17 @@
                                 </div>
                             </th>
                             <th scope="col">
-                            <div class="th-inner">Epreuves</div>
+                            <div class="th-inner">Matière 1</div>
                             <div class="filter-control">
                                 <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
-                        </th>
+                            </th>
+                            <th>
+                            <div class="th-inner">Matière 2</div>
+                            <div class="filter-control">
+                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
+                            </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,33 +67,33 @@
                                         {% endif %}
                                     {% endfor %}
 
-                                    <td scope="row">
+                                    {% for creneau in all_creneaux %}
+                                    {% if creneau.id_candidat == candidat.id_candidat %}
+                                    <td scope="row" style="max-width: 16rem">
                                         <div class="calendar-subject">
-                                            {% for creneau in all_creneaux %}
-                                            {% if creneau.id_candidat == candidat.id_candidat %}
                                             {% for matiere in all_matieres %}
                                             {% if matiere.id_matiere == creneau.id_matiere %}
-                                            {{creneau.debut_preparation.strftime('%d-%m-%Y | %Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}} |
+                                            {{creneau.debut_preparation.strftime('%d-%m-%Y | %Hh%M')}} - {{creneau.fin.strftime('%Hh%M')}}
                                             {% for salle in all_salles %}
                                             {% if salle.id_salle == creneau.id_salle %}
-                                            {{salle.numero}}
-                                            {% endif %}
-                                            {% endfor %}
-                                            {% if matiere.loge %}
-                                            {% for salle in all_salles %}
-                                            {% if matiere.loge == salle.id_salle %}
-                                             ({{salle.numero}})
-                                            {% endif %}
-                                            {% endfor %}
-                                            {% endif %}
-                                             | {{matiere.nom}}
                                             <br>
                                             {% endif %}
                                             {% endfor %}
+                                            {% if matiere.loge %}{% for salle in all_salles %}{% if
+                                            matiere.loge == salle.id_salle %}{{salle.numero}}
+                                            {% endif %}{% endfor %}
+                                            {% else %}
+                                            {% for salle in all_salles %}{% if
+                                            creneau.id_salle == salle.id_salle %}{{salle.numero}}
+                                            {% endif %}{% endfor %}
+                                            {% endif %}
+                                             | {{matiere.nom}}
                                             {% endif %}
                                             {% endfor %}
                                         </div>
                                     </td>
+                                    {% endif %}
+                                    {% endfor %}
                                 </tr>
                                 {% endif %}
                             {% endfor %}

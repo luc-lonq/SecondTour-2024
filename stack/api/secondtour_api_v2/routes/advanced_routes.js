@@ -126,7 +126,10 @@ router.route('/fetchfilter/:table').post(async (req, res) => {
       content[element] === 'false'
     )
       condition += element + ' = ' + content[element]
-    else condition += element + " = '" + content[element] + "'"
+    else {
+        content[element] = content[element].replace(/'/g, "''");
+        condition += element + " = '" + content[element] + "'"
+    }
   })
   let result = await db
     .query(`SELECT * FROM ${table} WHERE ${condition};`)
@@ -273,7 +276,10 @@ router.route('/insert/:table').put(async (req, res) => {
         content[element] === 'false'
       )
         values += content[element]
-      else values += "'" + content[element] + "'"
+      else {
+          content[element] = content[element].replace(/'/g, "''");
+          values += "'" + content[element] + "'"
+      }
     }
     if (index != Object.keys(content).length - 1) values += ', '
   })
@@ -407,7 +413,10 @@ router.route('/deletefilter/:table').delete(async (req, res) => {
       content[element] === 'false'
     )
       condition += element + ' = ' + content[element]
-    else condition += element + " = '" + content[element] + "'"
+    else {
+        content[element] = content[element].replace(/'/g, "''");
+        condition += element + " = '" + content[element] + "'"
+    }
   })
   let result = await db
     .query(`DELETE FROM ${table} WHERE ${condition};`)
@@ -544,7 +553,10 @@ router.route('/updatefilter/:table').patch(async (req, res) => {
       content_condition[element] === 'false'
     )
       condition += element + ' = ' + content_condition[element]
-    else condition += element + " = '" + content_condition[element] + "'"
+    else {
+        content_condition[element] = content_condition[element].replace(/'/g, "''")
+        condition += element + " = '" + content_condition[element] + "'"
+    }
   })
   let content_data = content['data']
   let data = ''
@@ -565,7 +577,10 @@ router.route('/updatefilter/:table').patch(async (req, res) => {
         content_data[element] === 'false'
       )
         data += element + ' = ' + content_data[element]
-      else data += element + ' = ' + "'" + content_data[element] + "'"
+      else {
+          content_data[element] = content_data[element].replace(/'/g, "''")
+          data += element + ' = ' + "'" + content_data[element] + "'"
+      }
     }
     if (index != Object.keys(content_data).length - 1) data += ', '
   })

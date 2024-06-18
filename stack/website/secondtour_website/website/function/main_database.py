@@ -11,8 +11,6 @@ def delete_all_content():
         # choix matiere
         response = ask_api("data/delete/choix_matiere", {})
         if response.status_code != 202:
-            logging.warning(
-                "Erreur lors de la suppression des choix des matières")
             return "Erreur lors de la suppression des choix de matières", "danger"
 
         # creneaux
@@ -64,7 +62,8 @@ def delete_all_content():
 
 def insert_admin():
     response = ask_api("data/insert/utilisateur", {"id_utilisateur": "null", "email": "admin@ac-poitiers.fr",
-                       "password": "$p5k2$3e8$AfpOzesj$.KoGR.raCRkA3gne.aZrF1bQobRfdSIH", "admin": "true", "id_professeur": "null"})
+                                                   "password": "$p5k2$3e8$AfpOzesj$.KoGR.raCRkA3gne.aZrF1bQobRfdSIH",
+                                                   "admin": "true", "id_professeur": "null"})
     if response.status_code != 201:
         logging.warning("Erreur lors de la suppression des données")
 
@@ -153,7 +152,6 @@ def update_serie(id, nom):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-
 def delete_serie(id):
     try:
         candidat_filter = {"id_serie": id}
@@ -179,14 +177,14 @@ def delete_serie(id):
             if response.status_code != 202:
                 logging.warning(
                     "Impossible de supprimer les choix matiere des candidats correspondants à cette serie")
-                return ['Impossible de supprimer les choix matiere des candidats correspondants à cette serie', 'danger']
+                return ['Impossible de supprimer les choix matiere des candidats correspondants à cette serie',
+                        'danger']
 
         response = ask_api(f"data/deletefilter/candidat", candidat_filter)
         if response.status_code != 202:
             logging.warning(
                 "Impossible de supprimer les candidats correspondants à cette serie")
             return ['Impossible de supprimer les candidats correspondants à cette serie', 'danger']
-
 
         matiere_filter = {"id_serie": id}
         response = ask_api(f"data/fetchfilter/matiere", matiere_filter)
@@ -223,7 +221,8 @@ def delete_serie(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_matiere(name, serie_id, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge, ret=False):
+def add_matiere(name, serie_id, temps_preparation, temps_preparation_tiers_temps, temps_passage,
+                temps_passage_tiers_temps, loge, ret=False):
     try:
         serie_filter = {"id_serie": serie_id}
         response = ask_api("data/fetchfilter/serie", serie_filter)
@@ -239,8 +238,10 @@ def add_matiere(name, serie_id, temps_preparation, temps_preparation_tiers_temps
                 return ("Erreur lors de la récupération de la serie correspondantes", "danger")
             return "Erreur lors de la récupération de la serie correspondantes", "danger"
 
-        matiere = {"id_matiere": "null", "id_serie": serie['id_serie'], "nom": name, "temps_preparation": temps_preparation,
-                   "temps_preparation_tiers_temps": temps_preparation_tiers_temps, "temps_passage": temps_passage, "temps_passage_tiers_temps": temps_passage_tiers_temps, "loge": loge if loge else "null"}
+        matiere = {"id_matiere": "null", "id_serie": serie['id_serie'], "nom": name,
+                   "temps_preparation": temps_preparation,
+                   "temps_preparation_tiers_temps": temps_preparation_tiers_temps, "temps_passage": temps_passage,
+                   "temps_passage_tiers_temps": temps_passage_tiers_temps, "loge": loge if loge else "null"}
         response = ask_api("data/insert/matiere", matiere)
         if response.status_code != 201:
             logging.warning("Erreur lors de l'insertion d'une matiere")
@@ -274,15 +275,11 @@ def delete_matiere(id):
         response = ask_api(
             f"data/updatefilter/choix_matiere", choix_matiere_filter)
         if response.status_code != 202:
-            logging.warning(
-                "Impossible de modifier le choix de matière du candidat")
             return ['Impossible de modifier le choix de matière du candidat', 'danger']
         choix_matiere_filter = {"filter": {"matiere2": id}, "data": {"matiere2": 'null'}}
         response = ask_api(
             f"data/updatefilter/choix_matiere", choix_matiere_filter)
         if response.status_code != 202:
-            logging.warning(
-                "Impossible de modifier le choix de matière du candidat")
             return ['Impossible de modifier le choix de matière du candidat', 'danger']
         professeur_filter = {"filter": {"matiere": id}, "data": {"matiere": 'null'}}
         response = ask_api(
@@ -399,11 +396,14 @@ def add_professeur(nom, salle, matiere, ret=False):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-
-def update_matiere(id, nom, id_serie, temps_preparation, temps_preparation_tiers_temps, temps_passage, temps_passage_tiers_temps, loge):
+def update_matiere(id, nom, id_serie, temps_preparation, temps_preparation_tiers_temps, temps_passage,
+                   temps_passage_tiers_temps, loge):
     try:
-        matiere = {"filter": {"id_matiere": id}, "data": {"id_matiere": id, "id_serie": id_serie, "nom": nom, "temps_preparation": temps_preparation,
-                                                          "temps_preparation_tiers_temps": temps_preparation_tiers_temps, "temps_passage": temps_passage, "temps_passage_tiers_temps": temps_passage_tiers_temps, "loge": loge if loge else "null"}}
+        matiere = {"filter": {"id_matiere": id},
+                   "data": {"id_matiere": id, "id_serie": id_serie, "nom": nom, "temps_preparation": temps_preparation,
+                            "temps_preparation_tiers_temps": temps_preparation_tiers_temps,
+                            "temps_passage": temps_passage, "temps_passage_tiers_temps": temps_passage_tiers_temps,
+                            "loge": loge if loge else "null"}}
         response = ask_api("data/updatefilter/matiere", matiere)
         if response.status_code != 202:
             logging.warning("Erreur lors de l'insertion des matieres")
@@ -502,6 +502,7 @@ def add_candidat_with_id(id, nom, id_serie, tiers_temps, jour, absent, matin):
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
+
 def delete_candidat(id):
     try:
         # choix matiere
@@ -558,6 +559,7 @@ def delete_all_candidats():
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
+
 def delete_all_professeurs():
     try:
         response = ask_api("data/delete/professeur", {})
@@ -572,15 +574,60 @@ def delete_all_professeurs():
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
+def delete_all_salles():
+    try:
+        response = ask_api("data/fetchmulti", ["salle", "matiere", "professeur"])
+        salles, matieres, professeurs = response.json()
+        for matiere in matieres:
+            if matiere["loge"]:
+                filter = {"filter": {"id_matiere": matiere["id_matiere"]},
+                          "data": {"id_matiere": matiere["id_matiere"],
+                                   "id_serie": matiere["id_serie"],
+                                   "nom": matiere["nom"],
+                                   "temps_preparation": matiere["temps_preparation"],
+                                   "temps_preparation_tiers_temps": matiere["temps_preparation_tiers_temps"],
+                                   "temps_passage": matiere["temps_passage"],
+                                   "temps_passage_tiers_temps": matiere["temps_passage_tiers_temps"],
+                                   "loge": "null"
+                                   }}
+                ask_api("data/updatefilter/matiere", filter)
+
+        for professeur in professeurs:
+            if professeur["salle"]:
+                filter = {"filter": {"id_professeur": professeur["id_professeur"]},
+                          "data": {"id_professeur": professeur["id_professeur"],
+                                   "nom": professeur["nom"],
+                                   "salle": "null",
+                                   "matiere": professeur["matiere"]
+                                   }}
+                ask_api("data/updatefilter/professeur", filter)
+
+        response = ask_api("data/delete/creneau", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des creneaux")
+
+        response = ask_api("data/delete/salle", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des salles")
+            return "Erreur lors de la suppression des salles", "danger"
+        return ['Toutes les salles ont correctement été supprimés !', 'success']
+
+    except Exception:
+        logging.warning('Erreur : ' + traceback.format_exc())
+        return ['Erreur : ' + traceback.format_exc(), 'danger']
+
+
 def add_choix_matiere(id_candidat, matiere1, matiere2):
     try:
         choix_matiere = {"id_choix_matiere": "null", "id_candidat": id_candidat,
                          "matiere1": matiere1, "matiere2": matiere2}
         response = ask_api("data/insert/choix_matiere", choix_matiere)
         if response.status_code != 201:
-            logging.warning("Erreur lors de la creation du choix de matiere")
-            return "Erreur lors de la creation du choix de matiere", 'danger'
-        return ['Les choix du candidat ont bien été crées', 'success']
+            logging.warning("Erreur lors de la creation du choix des matières du candidat")
+            return "Erreur lors de la creation du choix des matières du candidat", 'danger'
+        return
 
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
@@ -602,7 +649,8 @@ def delete_choix_matiere(id):
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def add_creneau(id_candidat, id_matiere, id_salle, debut_preparation, fin_preparation, fin, auto_commit=True, ret=False):
+def add_creneau(id_candidat, id_matiere, id_salle, debut_preparation, fin_preparation, fin, auto_commit=True,
+                ret=False):
     try:
         if type(debut_preparation) == str:
             debut_preparation = json.loads(json.dumps(datetime.strptime(
@@ -685,7 +733,8 @@ def delete_all_creneaux():
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 
-def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, loge_apresmidi, fin_apresmidi, intervalle, pause, passage, date_debut):
+def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, loge_apresmidi, fin_apresmidi, intervalle, pause,
+                      passage, date_debut):
     try:
         response = ask_api("data/delete/parametres", [])
         if response.status_code != 202:
@@ -703,7 +752,6 @@ def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, loge_apresm
                       "temps_pause_eleve": pause, "prof_max_passage_sans_pause": passage,
                       "date_premier_jour": date_debut}
 
-
         response = ask_api("data/insert/parametres", parametres)
         if response.status_code != 201:
             logging.warning("Erreur lors de la creation des parametres")
@@ -712,7 +760,6 @@ def change_parametres(jour, debut_matin, fin_matin, debut_apresmidi, loge_apresm
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
-
 
 
 def to_dict(row):

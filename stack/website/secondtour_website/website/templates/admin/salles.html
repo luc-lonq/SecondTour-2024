@@ -9,10 +9,15 @@
             <i class=" fas fa-print ml-s"></i>
         </button>
         <div class="name-finder" style="justify-content: end;">
-            <button href="#" type="button" class="btn btn-success" data-bs-toggle="modal"
+            <button href="#" type="button" class="btn btn-success me-3" data-bs-toggle="modal"
                 data-bs-target="#addSalleModal">
                 Ajouter
                 <i class="fas fa-plus ml-s"></i>
+            </button>
+            <button href="#" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#importSalleModal"
+                id="buttonImport">
+                Importer
+                <i class="bi bi-file-earmark-spreadsheet-fill ml-s"></i>
             </button>
         </div>
     </div>
@@ -287,6 +292,36 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" name="delete_button" id="ModalSubmitButton" value="" form="deleteSalleForm"
                         class="btn btn-danger">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="importSalleModal" tabindex="-1" role="dialog" aria-labelledby="importSalleModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Importer</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p style="color: orange;">Attention, l'importation depuis un fichier csv n'ajoute pas plusieurs salles, mais écrase la liste actuelle</p>
+                    <p>Votre fichier csv doit contenir la colonne suivante :</p>
+                    <ul>
+                        <li>Le nom de la salle</li>
+                    </ul>
+                    <p>La première ligne du fichier csv n'est pas lu, vous pouvez donc mettre le nom des colonnes sur la première ligne</p>
+                    <form method="post" id="importSalleForm" enctype="multipart/form-data">
+                        <input class="form-control" type="file" id="formFile" name="file">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" name="import_button" id="ModalImportButton" value=""
+                        form="importSalleForm" class="btn btn-success">Importer</button>
                 </div>
             </div>
         </div>

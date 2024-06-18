@@ -111,16 +111,19 @@ def candidats():
                     result = main_database.add_candidat(
                         form['name'], form['serie'], form['tiers_temps'], form['jour'], form['absent'],
                         form['matin'], output=True)
-                    if result[1][1] == 'danger':
-                        flash(result[0], result[1])
+                    if result[2] == 'danger':
+                        flash(result[1], result[2])
                         logging.warning(result[0])
-                    else:
+                    if result[2] == 'success':
+                        flash(result[1], result[2])
+                        logging.warning(result[0])
                         if 'matiere1' in form and 'matiere2' in form:
                             if form['matiere1'] or form['matiere2']:
                                 second_result = main_database.add_choix_matiere(
                                     result[0]["id_candidat"], form['matiere1'], form['matiere2'])
-                                flash(second_result[0], second_result[1])
-                                logging.warning(second_result[0])
+                                if second_result and second_result[1] == 'danger':
+                                    flash(second_result[0], second_result[1])
+                                    logging.warning(second_result[0])
                             else:
                                 flash(result[1][0], result[1][1])
                                 logging.warning(result[1][0])
@@ -144,11 +147,10 @@ def candidats():
                         result = main_database.add_candidat(
                             form['name'], form['serie'], form['tiers_temps'], form['jour'],
                             form['absent'], form['matin'], output=True)
-                        if result[1][1] == 'danger':
-                            flash(result[0], result[1])
+                        if result[2] == 'danger':
+                            flash(result[1], result[2])
                             logging.warning(result[0])
                         else:
-                            logging.info('choix_matiere')
                             if 'matiere1' in form and 'matiere2' in form:
                                 if form['matiere1'] or form['matiere2']:
                                     second_result = main_database.add_choix_matiere(
@@ -353,6 +355,28 @@ def salles():
                     if r := main_database.delete_salle(form['id']):
                         flash(r[0], r[1])
                         logging.warning(r[0])
+
+            elif request.files:
+                main_database.delete_all_salles()
+                uploaded_file = request.files['file']
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+                uploaded_file.save(file_path)
+
+                col_names = ['salle']
+                data = pd.read_csv(file_path, names=col_names, header=None)
+                err = False
+                # Loop through the Rows
+                for i, row in data.iterrows():
+                    if i == 0:
+                        continue
+                    result = main_database.add_salle(row['salle'])
+                    if result[1] == 'danger':
+                        err = True
+
+                if err:
+                    main_database.delete_all_salles()
+                else:
+                    flash("Les salles ont été ajouté", "success")
 
         response = ask_api("data/fetchmulti", ["candidat", "choix_matiere",
                                                "serie", "matiere", "professeur", "salle", "creneau", "parametres"])
