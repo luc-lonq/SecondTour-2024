@@ -133,6 +133,7 @@
                                             <tr>
                                                 <th scope="col">Nom</th>
                                                 <th scope="col">Professeurs</th>
+                                                <th scope="col">Salle</th>
                                                 <th scope="col">Date</th>
                                                 <th scope="col">Heure de début</th>
                                                 <th scope="col">Heure de début d'oral</th>
@@ -151,6 +152,13 @@
                                                     {% if a_prof.salle == a_creneau.id_salle %}
                                                     {{ a_prof.nom }}
                                                     <br>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </td>
+                                                <td scope="row">
+                                                    {% for a_salle in all_salles %}
+                                                    {% if a_salle.id_salle == a_creneau.id_salle %}
+                                                    {{ a_salle.numero }}
                                                     {% endif %}
                                                     {% endfor %}
                                                 </td>
