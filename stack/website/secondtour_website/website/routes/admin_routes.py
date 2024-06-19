@@ -688,12 +688,21 @@ def matieres():
 
         response = ask_api(
             "data/fetchmulti",
-            ["candidat", "serie", "matiere", "salle", "choix_matiere", "professeur"])
+            ["candidat", "serie", "matiere", "salle", "choix_matiere", "professeur", "creneau"])
         if response.status_code != 200:
             flash("Une erreur est survenue lors de la récupération des données", "danger")
-        all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_profs = response.json()
+        all_candidats, all_series, all_matieres, all_salles, all_choix_matieres, all_profs, all_creneaux = response.json()
         all_candidats.sort(key=lambda candidat: candidat['nom'])
         all_matieres.sort(key=lambda matiere: matiere['nom'])
+
+        for creneau in all_creneaux:
+            creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"],
+                                                             '%a %b %d %H:%M:%S %Y') if type(
+                creneau["debut_preparation"]) == str else creneau["debut_preparation"]
+            creneau["fin_preparation"] = datetime.strptime(creneau["fin_preparation"], '%a %b %d %H:%M:%S %Y') if type(
+                creneau["fin_preparation"]) == str else creneau["fin_preparation"]
+            creneau["fin"] = datetime.strptime(creneau["fin"], '%a %b %d %H:%M:%S %Y') if type(
+                creneau["fin"]) == str else creneau["fin"]
 
         # all_matieres = MATIERES.query.order_by(MATIERES.nom).all()
         # all_series = SERIE.query.all()
@@ -702,7 +711,7 @@ def matieres():
         # all_choix_matieres = CHOIX_MATIERE.query.all()
         return render_template('admin/matieres.html', all_matieres=all_matieres, all_series=all_series,
                                all_salles=all_salles, all_candidats=all_candidats,
-                               all_choix_matieres=all_choix_matieres, all_profs=all_profs,)
+                               all_choix_matieres=all_choix_matieres, all_profs=all_profs, all_creneaux=all_creneaux)
     else:
         return redirect(url_for('main_routes.connexion'))
 

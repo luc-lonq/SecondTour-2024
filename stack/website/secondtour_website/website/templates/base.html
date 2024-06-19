@@ -374,7 +374,7 @@
             };
             doc.setFontSize(17);
             doc.setLineWidth(4);
-            doc.text(20, 20, num_salle + ' ' + date + ' ' + demi_journee_string);
+            doc.text(20, 20, 'Salle ' + num_salle + ' ' + date + ' ' + demi_journee_string);
             //doc.text(200, y = y + 30, "Liste d'émargement");
             doc.setFontSize(20);
             centered_text("Liste d'émargement", 45, doc);
@@ -385,6 +385,9 @@
                 theme: 'grid',
                 styles: {
                   minCellHeight: 40
+                },
+                columnStyles: {
+                    0: {cellWidth: 150}
                 },
                 didParseCell: function (table) {
                   if (table.section === 'head') {

@@ -250,25 +250,25 @@ router.route('/init').get(async (req, res) => {
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (10, 1, 'Anglais', 20, 30, 20, 30, null);`).catch(e => {
+                    values (10, 1, 'LLCER Anglais', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (11, 1, ' Anglais, monde contemporain', 20, 30, 20, 30, null);`).catch(e => {
+                    values (11, 1, 'LLCER Anglais, monde contemporain', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (12, 1, 'Francais', 20, 30, 30, 40, null);`).catch(e => {
+                    values (12, 1, 'Français', 20, 30, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (13, 1, 'Espagnol', 20, 30, 20, 30, null);`).catch(e => {
+                    values (13, 1, 'LLCER Espagnol', 20, 30, 20, 30, null);`).catch(e => {
         res.status(500).send(e)
     })
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
@@ -305,6 +305,18 @@ router.route('/init').get(async (req, res) => {
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
                     values (19, 2, 'Philosophie', 20, 30, 20, 30, null);`).catch(e => {
+        res.status(500).send(e)
+    })
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
+                                         temps_passage, temps_passage_tiers_temps, loge)
+                    values (20, 1, 'LLCER Allemand', 20, 30, 20, 30, null);`).catch(e => {
+        res.status(500).send(e)
+    })
+    await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
+                                         temps_preparation_tiers_temps,
+                                         temps_passage, temps_passage_tiers_temps, loge)
+                    values (19, 2, 'Français', 20, 30, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
 

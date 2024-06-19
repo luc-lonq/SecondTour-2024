@@ -38,8 +38,8 @@
                                 <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
                         </th>
-                        <th scope="col" class="modifier align-text-top">Modifier</th>
-                        <th scope="col" class="supprimer align-text-top">Supprimer</th>
+                        <th scope="col" style="width:8%" class="modifier align-text-top">Modifier</th>
+                        <th scope="col" style="width:8%" class="supprimer align-text-top">Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -137,9 +137,9 @@
                                                                         {% endif %}
                                                                         {% endfor %}
                                                                         <td scope="row">
-                                                                            Début de préparation : {{creneau.debut_preparation.strftime("%Hh%M")}}
+                                                                            Début : {{creneau.debut_preparation.strftime("%Hh%M")}}
                                                                             <br>
-                                                                            Début de passage : {{creneau.fin_preparation.strftime("%Hh%M")}}
+                                                                            Début d'oral : {{creneau.fin_preparation.strftime("%Hh%M")}}
                                                                             <br>
                                                                             Fin : {{creneau.fin.strftime("%Hh%M")}}
                                                                         </td>
@@ -176,9 +176,9 @@
                                                                         {% endif %}
                                                                         {% endfor %}
                                                                         <td scope="row">
-                                                                            Début de préparation : {{creneau.debut_preparation.strftime("%Hh%M")}}
+                                                                            Début : {{creneau.debut_preparation.strftime("%Hh%M")}}
                                                                             <br>
-                                                                            Début de passage : {{creneau.fin_preparation.strftime("%Hh%M")}}
+                                                                            Début d'oral : {{creneau.fin_preparation.strftime("%Hh%M")}}
                                                                             <br>
                                                                             Fin : {{creneau.fin.strftime("%Hh%M")}}
                                                                         </td>
@@ -339,68 +339,6 @@
         doc.text(textOffset, y, text);
     }
 
-    function downloadPDFEmargement(name, num_salle, demi_journee, date, output = false) {
-        let doc = new jsPDF('p', 'pt', 'a4');
-        let htmlstring = '';
-        let tempVarToCheckPageHeight = 0;
-        let pageHeight = 0;
-        let page_n = 0;
-        let demi_journee_string
-        if (demi_journee == 0) {
-            demi_journee_string = 'Matin';
-        } else {
-            demi_journee_string = "Après Midi"
-        }
-
-        pageHeight = doc.internal.pageSize.height;
-        specialElementHandlers = {
-            // element with id of "bypass" - jQuery style selector
-            '#bypassme': function (element, renderer) {
-                // true = "handled elsewhere, bypass text extraction"
-                return true
-            }
-        };
-        margins = {
-            top: 150,
-            bottom: 60,
-            left: 40,
-            right: 40,
-            width: 600
-        };
-        doc.setFontSize(17);
-        doc.setLineWidth(4);
-        doc.text(20, 20, num_salle + ' ' + date + ' ' + demi_journee_string);
-        //doc.text(200, y = y + 30, "Liste d'émargement");
-        doc.setFontSize(20);
-        centered_text("Liste d'émargement", 45, doc);
-        if (document.getElementById(name)) {
-            doc.autoTable({
-                html: '#' + name,
-                startY: 70,
-                theme: 'grid',
-                styles: {
-                    minCellHeight: 40
-                },
-                didParseCell: function (table) {
-                    if (table.section === 'head') {
-                        table.cell.styles.fillColor = '#4c5cff';
-                    }
-                }
-            });
-        }
-
-        if (!output) {
-            if (demi_journee == 0) {
-                demi_journee_string = 'matin';
-            } else {
-                demi_journee_string = "apresmidi"
-            }
-            doc.save(num_salle + 'emargement' + date + demi_journee_string);
-        } else {
-            return doc;
-        }
-    }
-
     function downloadAllEmargement(jour_debut, date) {
         let zip = new JSZip();
         let all_salles = JSON.parse('{{all_salles|tojson}}');
@@ -466,7 +404,7 @@
 
                         doc.setFontSize(17);
                         doc.setLineWidth(4);
-                        doc.text(20, 20, num_salle + ' ' + date_st + ' ' + demi_journee_string);
+                        doc.text(20, 20, 'Salle ' + num_salle + ' ' + date_st + ' ' + demi_journee_string);
                         //doc.text(200, y = y + 30, "Liste d'émargement");
                         doc.setFontSize(20);
                         centered_text("Liste d'émargement", 45, doc);
@@ -477,6 +415,9 @@
                                 theme: 'grid',
                                 styles: {
                                     minCellHeight: 40
+                                },
+                                columnStyles: {
+                                    0: {cellWidth: 150}
                                 },
                                 didParseCell: function (table) {
                                     if (table.section === 'head') {

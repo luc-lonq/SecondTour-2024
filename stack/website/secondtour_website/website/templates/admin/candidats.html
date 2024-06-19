@@ -49,7 +49,13 @@
                             </div>
                         </th>
                         <th scope="col">
-                            <div class="th-inner">Matières</div>
+                            <div class="th-inner">Matière 1</div>
+                            <div class="filter-control">
+                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="th-inner">Matière 2</div>
                             <div class="filter-control">
                                 <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
@@ -109,11 +115,13 @@
                             {% endfor %}
                             {% endif %}
                             {% endfor %}
+                        </td>
+                        <td scope="row">
                             {% for a_choix_matiere in all_choix_matieres %}
                             {% if a_choix_matiere.id_candidat == candidat.id_candidat %}
                             {% for a_matiere in all_matieres %}
                             {% if a_matiere.id_matiere == a_choix_matiere.matiere2 %}
-                             - {{a_matiere.nom}}
+                            {{a_matiere.nom}}
                             {% endif %}
                             {% endfor %}
                             {% endif %}

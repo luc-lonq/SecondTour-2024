@@ -131,33 +131,40 @@
                                         id="tableAccordionProf{{a_matiere.id_matiere}}">
                                         <thead>
                                             <tr>
-                                                <th scope="col">
-                                                    <div class="th-inner">Nom</div>
-                                                </th>
-                                                <th scope="col">
-                                                    <div class="th-inner">Série</div>
-                                                </th>
-                                                <th scope="col">
-                                                    <div class="th-inner">Tiers temps</div>
-                                                </th>
+                                                <th scope="col">Nom</th>
+                                                <th scope="col">Professeurs</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Heure de début</th>
+                                                <th scope="col">Heure de début d'oral</th>
+                                                <th scope="col">Heure de fin</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for a_candidat in all_candidats %}
-                                            {% for a_choix_matiere in all_choix_matieres %}
-                                            {% if a_choix_matiere.id_candidat == a_candidat.id_candidat %}
-                                            {% if a_choix_matiere.matiere1 == a_matiere.id_matiere or
-                                            a_choix_matiere.matiere2 == a_matiere.id_matiere %}
+                                            {% for a_creneau in all_creneaux %}
+                                            {% if a_candidat.id_candidat == a_creneau.id_candidat %}
+                                            {% if a_creneau.id_matiere == a_matiere.id_matiere %}
                                             <tr class="not-null">
                                                 <td scope="row">{{a_candidat.nom}}</td>
-                                                {% for a_serie in all_series %}
-                                                {% if a_serie.id_serie == a_matiere.id_serie %}
-                                                <td scope="row">{{a_serie.nom}}</td>
-                                                {% endif %}
-                                                {% endfor %}
                                                 <td scope="row">
-                                                    {% if a_candidat.tiers_temps %}Oui{% else %}Non{% endif %}
+                                                    {% for a_prof in all_profs %}
+                                                    {% if a_prof.salle == a_creneau.id_salle %}
+                                                    {{ a_prof.nom }}
+                                                    <br>
+                                                    {% endif %}
+                                                    {% endfor %}
                                                 </td>
+                                                <td scope="row">
+                                                    {{a_creneau.debut_preparation.strftime("%d-%m-%Y")}}
+                                                </td>
+                                                <td scope="row">
+                                                    {{a_creneau.debut_preparation.strftime("%Hh%M")}}
+                                                </td>
+                                                <td scope="row">
+                                                    {{a_creneau.fin_preparation.strftime("%Hh%M")}}
+                                                </td>
+                                                <td scope="row">
+                                                    {{a_creneau.fin.strftime("%Hh%M")}}</td>
                                             </tr>
                                             {% endif %}
                                             {% endif %}
