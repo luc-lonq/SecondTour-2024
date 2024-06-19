@@ -618,6 +618,40 @@ def delete_all_salles():
         logging.warning('Erreur : ' + traceback.format_exc())
         return ['Erreur : ' + traceback.format_exc(), 'danger']
 
+def delete_all_matieres():
+    try:
+        response = ask_api("data/fetchmulti", ["professeur"])
+        professeurs = response.json()[0]
+
+        for professeur in professeurs:
+            if professeur["salle"]:
+                filter = {"filter": {"id_professeur": professeur["id_professeur"]},
+                          "data": {"id_professeur": professeur["id_professeur"],
+                                   "nom": professeur["nom"],
+                                   "salle": professeur["salle"],
+                                   "matiere": "null"
+                                   }}
+                ask_api("data/updatefilter/professeur", filter)
+
+        response = ask_api("data/delete/creneau", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des creneaux")
+
+        response = ask_api("data/delete/choix_matiere", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des choix_matiere")
+
+        response = ask_api("data/delete/matiere", {})
+        if response.status_code != 202:
+            logging.warning(
+                "Erreur lors de la suppression des matiere")
+            return "Erreur lors de la suppression des matiere", "danger"
+
+    except Exception:
+        logging.warning('Erreur : ' + traceback.format_exc())
+        return ['Erreur : ' + traceback.format_exc(), 'danger']
 
 def add_choix_matiere(id_candidat, matiere1, matiere2):
     try:

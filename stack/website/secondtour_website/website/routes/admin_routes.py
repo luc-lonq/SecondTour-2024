@@ -487,9 +487,9 @@ def professeurs():
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
                 uploaded_file.save(file_path)
 
-                response = ask_api("data/fetchmulti", ["serie", "matiere"])
-                all_series, all_matieres = response.json()
-                col_names = ['nom', 'serie', 'matiere']
+                response = ask_api("data/fetchmulti", ["serie", "matiere", "salle"])
+                all_series, all_matieres, all_salles = response.json()
+                col_names = ['nom', 'serie', 'matiere', 'salle']
                 data = pd.read_csv(file_path, names=col_names, header=None)
                 all_professeurs = []
                 err = False
@@ -499,6 +499,7 @@ def professeurs():
                         continue
                     id_serie = None
                     id_matiere = None
+                    id_salle = None
 
                     for serie in all_series:
                         if row["serie"] == serie["nom"]:
@@ -511,17 +512,25 @@ def professeurs():
                         if matiere["id_serie"] == id_serie or id_serie is None:
                             if row["matiere"] == matiere["nom"]:
                                 id_matiere = matiere["id_matiere"]
+                    for salle in all_salles:
+                        if row["salle"] == salle["numero"]:
+                            id_salle = salle[("id_salle"
+                                              "")]
                     if id_matiere is None:
                         flash("Ligne " + str(i + 1) + ": Erreur sur la matière", "danger")
                         err = True
 
+                    if id_salle is None:
+                        flash("Ligne " + str(i + 1) + ": Erreur sur la salle", "danger")
+                        err = True
+
                     if err is False:
-                        all_professeurs.append({"nom": row["nom"], "matiere": id_matiere})
+                        all_professeurs.append({"nom": row["nom"], "matiere": id_matiere, "salle": id_salle})
 
                 if err is False:
                     main_database.delete_all_professeurs()
                     for professeur in all_professeurs:
-                        main_database.add_professeur(professeur["nom"], None, professeur["matiere"])
+                        main_database.add_professeur(professeur["nom"], professeur["salle"], professeur["matiere"])
                     flash("Les professeurs ont été ajouté", "success")
 
         response = ask_api("data/fetchmulti", ["candidat", "matiere", "professeur", "salle",
@@ -685,6 +694,41 @@ def matieres():
                     if r := main_database.delete_matiere(form['id']):
                         flash(r[0], r[1])
                         logging.warning(r[0])
+
+            elif request.files:
+                main_database.delete_all_matieres()
+                uploaded_file = request.files['file']
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+                uploaded_file.save(file_path)
+
+                response = ask_api("data/fetchmulti", ["serie"])
+                all_series = response.json()[0]
+
+                col_names = ['nom', 'serie', 'prep', 'prep_tiers', 'pass', 'pass_tiers']
+                data = pd.read_csv(file_path, names=col_names, header=None)
+                id_serie = None
+                err = False
+                # Loop through the Rows
+                for i, row in data.iterrows():
+                    if not err:
+                        if i == 0:
+                            continue
+
+                        for serie in all_series:
+                            if row["serie"] == serie["nom"]:
+                                id_serie = serie["id_serie"]
+                                break
+                        if id_serie is None:
+                            err = True
+                        result = main_database.add_matiere(row['nom'], id_serie, row['prep'], row['prep_tiers'],
+                                                           row['pass'], row['pass_tiers'], None)
+                        if result[1] == 'danger':
+                            err = True
+
+                if err:
+                    main_database.delete_all_matieres()
+                else:
+                    flash("Les salles ont été ajouté", "success")
 
         response = ask_api(
             "data/fetchmulti",
