@@ -316,7 +316,7 @@ router.route('/init').get(async (req, res) => {
     await db.query(`insert into matiere (id_matiere, id_serie, nom, temps_preparation,
                                          temps_preparation_tiers_temps,
                                          temps_passage, temps_passage_tiers_temps, loge)
-                    values (19, 2, 'Français', 20, 30, 30, 40, null);`).catch(e => {
+                    values (21, 2, 'Français', 20, 30, 30, 40, null);`).catch(e => {
         res.status(500).send(e)
     })
 
