@@ -19,13 +19,13 @@ while getopts "i" flag; do
               sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
             sudo apt-get -y update
             sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-          fi
-          mkdir -p stack/api/secondtour_api_v2/logs
-          mkdir -p stack/website/secondtour_website/website/logs;;
+          fi;;
     esac
 done
 
 cd stack
+mkdir -p api/secondtour_api_v2/logs
+mkdir -p website/secondtour_website/website/logs
 
 sudo docker compose up --build -d
 sleep 5
