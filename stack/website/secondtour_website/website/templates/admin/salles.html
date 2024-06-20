@@ -32,20 +32,20 @@
             <table class="table table-light table-striped table-hover" id="calendar">
                 <thead>
                     <tr>
-                        <th scope="col">
+                        <th scope="col" style="width: 85%">
                             <div class="th-inner">Numéro</div>
                             <div class="filter-control">
                                 <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
                         </th>
-                        <th scope="col" style="width:8%" class="modifier align-text-top">Modifier</th>
-                        <th scope="col" style="width:8%" class="supprimer align-text-top">Supprimer</th>
+                        <th scope="col" class="modifier align-text-top">Modifier</th>
+                        <th scope="col" class="supprimer align-text-top">Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for a_salle in all_salles %}
                     <tr class="trfilter clickable salleRow" data-bs-toggle="collapse" data-bs-target="#accordion{{a_salle.id_salle}}">
-                        <td scope="row">{{a_salle.numero}}{% for a_matiere in all_matieres %}{% if a_matiere.loge ==
+                        <td scope="row" style="width: 85%">{{a_salle.numero}}{% for a_matiere in all_matieres %}{% if a_matiere.loge ==
                             a_salle.id_salle %} - Loge {{a_matiere.nom}} {% for serie in all_series %}{% if serie.id_serie ==
                             a_matiere.id_serie %}{{ serie.nom }}{% endif%}{% endfor %}{% endif %}{% endfor %}</td>
                         <td scope="row">

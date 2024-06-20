@@ -661,7 +661,7 @@ def add_choix_matiere(id_candidat, matiere1, matiere2):
         if response.status_code != 201:
             logging.warning("Erreur lors de la creation du choix des matières du candidat")
             return "Erreur lors de la creation du choix des matières du candidat", 'danger'
-        return
+        return "Les choix de matières du candidat ont été créé", "success"
 
     except Exception:
         logging.warning('Erreur : ' + traceback.format_exc())

@@ -218,6 +218,7 @@
                         <div class="form-group">
                             <label for="selectSerie">Série</label>
                             <select class="form-control" id="selectSerie" name="serie">
+                                <option selected value></option>
                                 {% for a_serie in all_series %}
                                 <option id="serie{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}</option>
                                 {% endfor %}

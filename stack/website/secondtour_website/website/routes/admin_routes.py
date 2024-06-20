@@ -125,7 +125,7 @@ def candidats():
                                 if form['matiere1'] or form['matiere2']:
                                     second_result = main_database.add_choix_matiere(
                                         result[0]["id_candidat"], form['matiere1'], form['matiere2'])
-                                    if second_result and second_result[1] != 'danger':
+                                    if second_result[1] != 'danger':
                                         flash(
                                             "Modification correctement effecutée", second_result[1])
                                         logging.warning(

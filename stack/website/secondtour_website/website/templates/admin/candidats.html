@@ -33,8 +33,7 @@
                         <th scope="col">
                             <div class="th-inner">Nom</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder"
-                                    style="width: 200px;" placeholder="">
+                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
                         </th>
                         <th scope="col">
@@ -99,7 +98,7 @@
                     {% for candidat in all_candidats %}
                     <tr class="trfilter clickable {% if candidat.absent == False %}table-success{% else %}table-danger{% endif %}"
                         data-bs-target="#accordion{{candidat.id_candidat}}" data-bs-toggle="collapse">
-                        <td scope="row">{{candidat.nom}}</td>
+                        <td scope="row" style="max-width: 250px;">{{candidat.nom}}</td>
                         <td scope="row">{% for a_serie in all_series %}
                             {% if a_serie.id_serie == candidat.id_serie %}
                             {{a_serie.nom}}{% endif %}
@@ -317,7 +316,7 @@
                             <select class="form-control" id="serieSelectModif" name="serie"
                                 onchange="testMatiereCompatible()">
                                 {% for a_serie in all_series %}
-                                <option id="serieModif{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">
+                                <option id="serieModif{{a_serie.id_serie}}" value="{{a_serie.id_serie}}">{{a_serie.nom}}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -578,6 +577,7 @@
                 candidat = all_candidats[i];
             }
         }
+
         var serie;
         for (var i = 0; i < all_series.length; i++) {
             if (all_series[i]['id_serie'] == candidat['id_serie']) {
@@ -623,15 +623,15 @@
         }
         //Set matin
         if (candidat['matin'] == true) {
-            form_elements[5].options[0].selected = true;
+            form_elements[6].options[0].selected = true;
         } else {
-            form_elements[5].options[1].selected = true;
+            form_elements[6].options[1].selected = true;
         }
         //Set absent
         if (candidat['absent'] == true) {
-            form_elements[6].options[1].selected = true;
+            form_elements[7].options[1].selected = true;
         } else {
-            form_elements[6].options[0].selected = true;
+            form_elements[7].options[0].selected = true;
         }
 
         testMatiereCompatible();
@@ -640,7 +640,6 @@
         if (matiere1 != null) {
             id_matiere1 = matiere1['id_matiere'];
             select = form_elements[2];
-            console.log(id_matiere1);
             for (var i = 0; i < select.length; i++) {
                 if (select.options[i].id == "matiere1_" + id_matiere1) {
                     select.options[i].selected = true;

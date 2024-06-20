@@ -24,17 +24,16 @@
             <table class="table table-light table-striped table-hover" id="calendar">
                 <thead>
                     <tr>
-                        <th scope="col" style="width: 10%;">
+                        <th scope="col">
                             <div class="th-inner">Nom</div>
                             <div class="filter-control">
-                                <input type="text" class="form-control finder" v-on:keyup="finder"
-                                    style="width: 120px;" placeholder="">
+                                <input type="text" class="form-control finder" v-on:keyup="finder" placeholder="">
                             </div>
                         </th>
-                        <th scope="col" style="width: 16%;">
+                        <th scope="col">
                             <div class="th-inner">Matière</div>
                             <div class="filter-control">
-                                <select class="form-select finder" v-on:change="finder">
+                                <select class="form-select finder" v-on:change="finder" style="max-width: 250px">
                                     <option selected></option>
                                     {% for matiere in all_matieres %}
                                     <option>{{matiere.nom}}</option>
@@ -42,7 +41,7 @@
                                 </select>
                             </div>
                         </th>
-                        <th scope="col" style="width: 10%;">
+                        <th scope="col">
                             <div class="th-inner">Salle</div>
                             <div class="filter-control">
                                 <select class="form-select finder" v-on:change="finder" style="width: 120px;">
@@ -53,7 +52,7 @@
                                 </select>
                             </div>
                         </th>
-                        <th scope="col" style="width: 10%;">
+                        <th scope="col">
                             <div class="th-inner">Date</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder" id="creneau-date"
@@ -65,7 +64,7 @@
                                 </select>
                             </div>
                         </th>
-                        <th scope="col" style="width: 10%;">
+                        <th scope="col">
                             <div class="th-inner">Début</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder" id="creneau-debut"
@@ -77,7 +76,7 @@
                                 </select>
                             </div>
                         </th>
-                        <th scope="col" style="width: 10%;">
+                        <th scope="col">
                             <div class="th-inner">Fin Prépa</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder" id="creneau-fin-prep"
@@ -89,7 +88,7 @@
                                 </select>
                             </div>
                         </th>
-                        <th scope="col" style="width: 10%;">
+                        <th scope="col">
                             <div class="th-inner">Fin</div>
                             <div class="filter-control">
                                 <select class="form-select finder break-doublons" v-on:change="finder" id="creneau-fin"
@@ -101,8 +100,8 @@
                                 </select>
                             </div>
                         </th>
-                        <th scope="col" style="width: 10%;" class="align-text-top">Modifier</th>
-                        <th scope="col" class="supprimer align-text-top" style="width: 10%;">Supprimer</th>
+                        <th scope="col" class="align-text-top">Modifier</th>
+                        <th scope="col" class="supprimer align-text-top">Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,23 +109,23 @@
                     <tr class="trfilter">
                         {% for candidat in all_candidats %}
                         {% if candidat.id_candidat == a_creneau.id_candidat %}
-                        <td scope="row">{{candidat.nom}}</td>
+                        <td scope="row" style="max-width: 300px">{{candidat.nom}}</td>
                         {% endif %}
                         {% endfor %}
                         {% for matiere in all_matieres %}
                         {% if matiere.id_matiere == a_creneau.id_matiere %}
-                        <td scope="row">{{matiere.nom}}</td>
+                        <td scope="row" style="max-width: 250px">{{matiere.nom}}</td>
                         {% endif %}
                         {% endfor %}
                         {% for salle in all_salles %}
                         {% if salle.id_salle == a_creneau.id_salle %}
-                        <td scope="row">{{salle.numero}}</td>
+                        <td scope="row" style="width: 75px">{{salle.numero}}</td>
                         {% endif %}
                         {% endfor %}
-                        <td scope="row">{{a_creneau.debut_preparation.strftime("%d-%m-%Y")}}</td>
-                        <td scope="row">{{a_creneau.debut_preparation.strftime('%Hh%M')}}</td>
-                        <td scope="row">{{a_creneau.fin_preparation.strftime('%Hh%M')}}</td>
-                        <td scope="row">{{a_creneau.fin.strftime('%Hh%M')}}</td>
+                        <td scope="row" style="width: 100px">{{a_creneau.debut_preparation.strftime("%d-%m-%Y")}}</td>
+                        <td scope="row" style="width: 75px">{{a_creneau.debut_preparation.strftime('%Hh%M')}}</td>
+                        <td scope="row" style="width: 75px">{{a_creneau.fin_preparation.strftime('%Hh%M')}}</td>
+                        <td scope="row" style="width: 75px">{{a_creneau.fin.strftime('%Hh%M')}}</td>
                         <td scope="row">
                             <form method="post" action="{{url_for('admin_routes.creneau')}}"
                                 id="modifyCreneauForm{{a_creneau.id_creneau}}">
