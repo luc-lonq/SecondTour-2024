@@ -1,6 +1,19 @@
 const express = require('express')
 const router = express.Router()
 
+/**
+ * @swagger
+ * /utility/createtables:
+ *    get:
+ *      tags:
+ *          - Automated Data Operation
+ *      description: creates all the tables in the database
+ *      responses:
+ *          '200':
+ *              description: Tables created correctly
+ *          '500':
+ *              description: Error occured during the creations of the tables
+ */
 router.route('/createtables').get(async (red, res) => {
   await db.query(`create table if not exists salle
     (
@@ -157,7 +170,19 @@ router.route('/createtables').get(async (red, res) => {
   res.status(200).send({'utility':'createtables'})
 })
 
-
+/**
+ * @swagger
+ * /utility/init:
+ *    get:
+ *      tags:
+ *          - Automated Data Operation
+ *      description: initialize some data in the database, won't add data if the database is not empty
+ *      responses:
+ *          '200':
+ *              description: Initialization data successfully created
+ *          '500':
+ *              description: The database is not empty
+ */
 router.route('/init').get(async (req, res) => {
     let serie = await db.query(`SELECT * FROM serie`).catch(e => {
         res.status(500).send(e)
@@ -339,6 +364,20 @@ router.route('/init').get(async (req, res) => {
     res.status(200).send({'utility': 'init'})
 })
 
+
+/**
+ * @swagger
+ * /utility/fixtures:
+ *    get:
+ *      tags:
+ *          - Automated Data Operation
+ *      description: creates a complete set of data for testing purposes, won't add data if the database is not empty
+ *      responses:
+ *          '200':
+ *              description: Testing data successfully created
+ *          '500':
+ *              description: The database is not empty
+ */
 router.route('/fixtures').get(async (req, res) => {
     let serie = await db.query(`SELECT * FROM serie`).catch(e => {
         res.status(500).send(e)

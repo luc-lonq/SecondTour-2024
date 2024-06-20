@@ -7,6 +7,11 @@ from . import main_database
 from ..database.main_database import *
 
 
+#    @brief Main function to generate the exam schedule.
+#    This function retrieves necessary data, organizes candidates,
+#    and creates exam slots while respecting the constraints of room availability,
+#    professor availability, and candidate preferences.
+#    @return None
 def generation_calendrier():
     (all_candidats, all_professeurs, all_choix_matieres, all_matieres, all_salles, all_creneau, parametres) = get_data()
     parametres = parametres[0]
@@ -22,7 +27,7 @@ def generation_calendrier():
         passages = [passage_m1, passage_m2]
         start, end = get_horaires(candidat, parametres, passages)
         creneaux_candidat = []
-        break_time = None
+        heure_debut = None
 
         for _ in range(3):
 
@@ -82,18 +87,18 @@ def generation_calendrier():
                 if (creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
                         == timedelta(minutes=parametres["temps_pause_eleve"])):
                     break
-                if not break_time:
-                    break_time = creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
+                if not heure_debut:
+                    heure_debut = creneaux_candidat[0]["debut_preparation"]
                     swap_passage(passages)
                     local_creneau = delete_creneaux(candidat["id_candidat"], local_creneau)
                     creneaux_candidat.clear()
 
                 else:
-                    if (creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
-                            <= break_time):
+                    if (creneaux_candidat[0]["debut_preparation"]
+                            >= heure_debut):
                         break
                     else:
-                        break_time = creneaux_candidat[1]["debut_preparation"] - creneaux_candidat[0]["fin"]
+                        heure_debut = creneaux_candidat[0]["debut_preparation"]
                         swap_passage(passages)
                         local_creneau = delete_creneaux(candidat["id_candidat"], local_creneau)
                         creneaux_candidat.clear()
@@ -111,6 +116,10 @@ def generation_calendrier():
     flash(result[0], result[1])
 
 
+#    @brief Retrieves necessary data from the API.
+#    This function fetches information about candidates, professors,
+#    subject choices, subjects, rooms, slots, and exam parameters.
+#    @return tuple Containing all necessary data.
 def get_data():
     logging.info('main_calendrier')
 
@@ -125,6 +134,10 @@ def get_data():
     return response.json()
 
 
+#    @brief Organizes the list of candidates.
+#    This function sorts candidates by placing those without extra time first and those with extra time last.
+#    @param all_candidats List of candidates.
+#    @return list Sorted list of candidates.
 def order_candidats_list(all_candidats):
     list_candidats = []
     for candidat in all_candidats:
@@ -140,6 +153,13 @@ def order_candidats_list(all_candidats):
     return list_candidats_ordered
 
 
+#    @brief Calculates start and end times for a candidate's exams.
+#    This function determines the start and end times of a half day depending on
+#    when the candidat is set to have his exam.
+#    @param candidat Dictionary containing candidate information.
+#    @param parametres Dictionary containing global parameters.
+#    @param passages List of passages for the candidate's subjects.
+#    @return tuple Containing start and end times.
 def get_horaires(candidat, parametres, passages):
     if candidat["matin"]:
         t = datetime.strptime(parametres["heure_debut_matin"], "%H:%M:%S")
@@ -165,6 +185,15 @@ def get_horaires(candidat, parametres, passages):
     return start, end
 
 
+#    @brief Retrieves detailed information for a candidate.
+#    This function finds the subjects chosen by the candidate, the professors,
+#    and the rooms associated with these subjects.
+#    @param candidat Dictionary containing candidate information.
+#    @param all_choix_matieres List of all subject choices.
+#    @param all_matieres List of all subjects.
+#    @param all_professeurs List of all professors.
+#    @param all_salles List of all rooms.
+#    @return tuple Containing information about the candidate's subjects, professors, and rooms.
 def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_professeurs,
                              all_salles):
     # Find the choix matiere correspondant
@@ -224,6 +253,14 @@ def get_infos_about_candidat(candidat, all_choix_matieres, all_matieres, all_pro
          "temps_preparation": temps_preparation_m2}
 
 
+#    @brief Retrieves all slots for a candidate in a half-day period.
+#    This function retrieves all exam slots for a candidate within a specified half-day period.
+#    @param local_creneau List of local slots.
+#    @param jour_passage Day of the exam for the candidate.
+#    @param start Start time for the half-day period.
+#    @param end End time for the half-day period.
+#    @param date_premier_jour The start date of the exam period.
+#    @return list List of slots within the specified half-day period.
 def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end, date_premier_jour):
     for creneau in local_creneau:
         creneau["debut_preparation"] = datetime.strptime(creneau["debut_preparation"], '%a %b %d %H:%M:%S %Y') if type(
@@ -248,6 +285,12 @@ def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end, date_
     return creneaux_from_half_day
 
 
+#    @brief Checks if a room is available.
+#    This function checks if a room is available for the specified exam slot.
+#    @param passage Dictionary containing exam passage information.
+#    @param creneaux_from_half_day List of slots for the half-day period.
+#    @param heure_debut_preparation_voulue Desired start time for preparation.
+#    @return dict The available room or None.
 def is_a_salle_available(passage, creneaux_from_half_day, heure_debut_preparation_voulue):
     for salle in passage["salle"]:
         salle_available = True
@@ -267,6 +310,14 @@ def is_a_salle_available(passage, creneaux_from_half_day, heure_debut_preparatio
     return None
 
 
+#    @brief Checks if a candidate is available.
+#    This function checks if a candidate is available for the specified exam slot.
+#    @param passage Dictionary containing exam passage information.
+#    @param candidat Dictionary containing candidate information.
+#    @param creneau Dictionary containing slot information.
+#    @param heure_debut_preparation_voulue Desired start time for preparation.
+#    @param parametres Dictionary containing global parameters.
+#    @return bool True if the candidate is available, False otherwise.
 def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_voulue, parametres):
     if creneau["id_candidat"] == candidat["id_candidat"] \
             and not ((heure_debut_preparation_voulue
@@ -281,6 +332,14 @@ def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_vo
     return True
 
 
+#    @brief Checks if a professor is overwhelmed.
+#    This function checks if a professor has reached the maximum number of consecutive exam passages without a break.
+#    @param passage Dictionary containing exam passage information.
+#    @param salle Dictionary containing room information.
+#    @param all_creneaux List of all slots.
+#    @param heure_debut_passage_voulue Desired start time for the passage.
+#    @param max_passage_sans_pause Maximum number of passages without a break.
+#    @return bool True if the professor is overwhelmed, False otherwise.
 def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue, max_passage_sans_pause):
     prof_in_salle = []
 
@@ -320,6 +379,16 @@ def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue,
     return False
 
 
+#    @brief Creates a slot in the local schedule.
+#    This function creates an exam slot in the local schedule for a candidate.
+#    @param jour_passage Day of the exam for the candidate.
+#    @param heure_debut_preparation_voulue Desired start time for preparation.
+#    @param candidat Dictionary containing candidate information.
+#    @param passage Dictionary containing exam passage information.
+#    @param local_creneau List of local slots.
+#    @param salle Dictionary containing room information.
+#    @param date_debut Start date of the exam period.
+#    @return tuple Updated local schedule and the created slot.
 def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candidat, passage, local_creneau, salle,
                             date_debut):
     heure_debut_preparation_voulue_datetime = datetime.strptime(
@@ -344,6 +413,12 @@ def create_creneau_in_local(jour_passage, heure_debut_preparation_voulue, candid
     return local_creneau, creneau
 
 
+#    @brief Creates a slot in the global schedule.
+#    This function adds an exam slot to the global schedule in the main database.
+#    @param creneau Dictionary containing slot information.
+#    @param date_debut Start date of the exam period.
+#    @param jour_candidat Day of the exam for the candidate.
+#    @return None
 def create_creneau(creneau, date_debut, jour_candidat):
     creneau["debut_preparation"] = datetime.strptime(
         f'{date_debut.day + jour_candidat - 1}/{date_debut.month}/{date_debut.year} {creneau["debut_preparation"].hour}:{creneau["debut_preparation"].minute}:{creneau["debut_preparation"].second}',
@@ -363,6 +438,11 @@ def create_creneau(creneau, date_debut, jour_candidat):
     return
 
 
+#    @brief Deletes slots for a candidate in the local schedule.
+#    This function removes all exam slots for a specified candidate from the local schedule.
+#    @param id_candidat ID of the candidate.
+#    @param local_creneau List of local slots.
+#    @return list Updated list of local slots.
 def delete_creneaux(id_candidat, local_creneau):
     new_local_creneau = []
     for i in range(len(local_creneau)):
@@ -372,6 +452,10 @@ def delete_creneaux(id_candidat, local_creneau):
     return new_local_creneau
 
 
+#    @brief Swaps the order of exam passages for a candidate.
+#    This function swaps the order of two exam passages for a candidate.
+#    @param passage List containing two exam passages.
+#    @return list Updated list with swapped passages.
 def swap_passage(passage):
     passage_temp = passage[0]
     passage[0] = passage[1]
@@ -380,6 +464,9 @@ def swap_passage(passage):
     return passage
 
 
+#    @brief Tests if the calendar is complete.
+#    This function checks if all candidates have been scheduled for all their chosen subjects.
+#    @return list Containing a message and a status ('success' or 'danger').
 def test_calendar_complete():
     response = ask_api("data/fetchmulti",
                        ["creneau", "candidat", "choix_matiere"])
@@ -435,30 +522,3 @@ def test_calendar_complete():
     else:
         logging.warning("Le calendrier est complet !")
         return ['Calendrier généré avec succès', 'success']
-
-
-if (os.getenv("NETWORK_VISU") == "true"):
-    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
-        "type": "node",
-        "name": "website-calendar",
-        "data": {
-            "name": "Génération du calendrier",
-            "id": "website-calendar",
-            "size": 46,
-            "fsize": 30
-        },
-        "position": {
-            "x": 315,
-            "y": 632
-        }
-    })
-    requests.post("http://" + os.getenv("LOCAL_IP") + ":3000/add", json={
-        "type": "edge",
-        "name": "website:website-calendar",
-        "data": {
-            "id": "website:website-calendar",
-            "weight": 1,
-            "source": "website",
-            "target": "website-calendar"
-        }
-    })

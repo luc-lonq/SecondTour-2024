@@ -23,25 +23,6 @@ class MySQLDatabase {
           throw err;
         }
       });
-
-      if (process.env.NETWORK_VISU == 'true') {
-        axios.post('http://' + process.env.LOCAL_IP + ':3000/add', {
-          type: 'node',
-          name: 'mysql',
-          data: {
-            name: 'mysql',
-            id: 'mysql',
-            size: 123,
-            fsize: 50
-          },
-          position: {
-            x: 680,
-            y: 90
-          }
-        }).catch(err => {
-          console.log(err);
-        });
-      }
     } catch (e) {
       if (_it < 10) {
         console.log("Can't connect to database, retry in 10 seconds...", _host, _user, _password, _database);

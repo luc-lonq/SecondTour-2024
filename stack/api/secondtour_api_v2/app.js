@@ -279,27 +279,6 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
-  // Send a post request to http://localhost:3000/add
-  if (process.env.NETWORK_VISU == 'true') {
-    axios
-      .post('http://' + process.env.LOCAL_IP + ':3000/add', {
-        type: 'node',
-        name: 'api',
-        data: {
-          name: 'api',
-          id: 'api',
-          size: 123,
-          fsize: 50
-        },
-        position: {
-          x: 310,
-          y: 330
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
 })
 
 app.use(express.json())
