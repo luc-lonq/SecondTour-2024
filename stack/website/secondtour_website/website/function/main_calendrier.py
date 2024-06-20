@@ -311,27 +311,33 @@ def is_a_salle_available(passage, creneaux_from_half_day, heure_debut_preparatio
                 creneaux_count += 1
         liste_salle.append([salle, creneaux_count])
 
-    test_salle = None
+    test_salle = []
+    n_creneaux_in_salle = 0
     for salle in liste_salle:
-        logging.info(salle)
-        if test_salle is None:
-            test_salle = salle
+        if len(test_salle) == 0:
+            test_salle.append(salle)
+            n_creneaux_in_salle = salle[1]
         else:
-            if salle[1] < test_salle[1]:
-                test_salle = salle
+            if salle[1] < n_creneaux_in_salle:
+                test_salle = [salle]
+                n_creneaux_in_salle = salle[1]
+            elif salle[1] == n_creneaux_in_salle:
+                test_salle.append(salle)
 
-    for creneau in creneaux_from_half_day:
-        if creneau["id_salle"] == test_salle[0]["id_salle"] \
-                and not ((heure_debut_preparation_voulue + passage["temps_preparation"]
-                          >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
-                         or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage[
-                    "temps_passage"]
-                             <= timedelta(hours=creneau["fin_preparation"].hour,
-                                          minutes=creneau["fin_preparation"].minute))):
-            test_salle = None
-            break
-    if test_salle:
-        return test_salle[0]
+    for salle in test_salle:
+        chosen_salle = salle
+        for creneau in creneaux_from_half_day:
+            if creneau["id_salle"] == salle[0]["id_salle"] \
+                    and not ((heure_debut_preparation_voulue + passage["temps_preparation"]
+                              >= timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute))
+                             or (heure_debut_preparation_voulue + passage["temps_preparation"] + passage[
+                        "temps_passage"]
+                                 <= timedelta(hours=creneau["fin_preparation"].hour,
+                                              minutes=creneau["fin_preparation"].minute))):
+                chosen_salle = None
+                break
+        if chosen_salle:
+            return chosen_salle[0]
 
     return None
 

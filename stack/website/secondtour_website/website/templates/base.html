@@ -192,16 +192,33 @@
           },
           finder: function () {
             // Declare variables
-            let elements = document.getElementsByClassName('finder')
-            let table, tr
-            table = document.getElementById('calendar')
+            let elements = document.getElementsByClassName('finder');
+            let table, tr;
+            table = document.getElementById('calendar');
 
             if (table) {
-              tr = table.getElementsByClassName('trfilter')
-              console.log(tr)
+              tr = table.getElementsByClassName('trfilter');
 
-              // Loop through all table rows, and hide those who don't match the search query
-              this.finder_sub(tr, elements)
+              // Filter table rows
+              this.finder_sub(tr, elements);
+            }
+
+            // Select all accordion elements
+            let accordion = document.getElementsByClassName('clickable');
+            for (let i = 0; i < accordion.length; i++) {
+              let targetId = accordion[i].getAttribute('data-bs-target');
+              let targetElement = document.querySelector(targetId);
+
+              // Collapse the accordion if it's expanded
+              if (accordion[i].getAttribute("aria-expanded") === "true") {
+                accordion[i].setAttribute("aria-expanded", "false");
+                if (targetElement) {
+                  let bsCollapse = new bootstrap.Collapse(targetElement, {
+                    toggle: false
+                  });
+                  bsCollapse.hide();
+                }
+              }
             }
           },
           finder_sub: function (

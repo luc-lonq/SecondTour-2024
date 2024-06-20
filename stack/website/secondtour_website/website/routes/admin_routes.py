@@ -231,7 +231,7 @@ def candidats():
                     for choix_matiere in all_choix_matieres:
                         main_database.add_choix_matiere(choix_matiere["id_candidat"], choix_matiere["matiere1"],
                                                         choix_matiere["matiere2"])
-                    flash("Les candidats ont été ajouté", "success")
+                    flash("Les candidats ont été ajoutés", "success")
 
 
 
@@ -331,7 +331,7 @@ def salles():
                 if err:
                     main_database.delete_all_salles()
                 else:
-                    flash("Les salles ont été ajouté", "success")
+                    flash("Les salles ont été ajoutés", "success")
 
         response = ask_api("data/fetchmulti", ["candidat", "choix_matiere",
                                                "serie", "matiere", "professeur", "salle", "creneau", "parametres"])
@@ -471,7 +471,7 @@ def professeurs():
                     main_database.delete_all_professeurs()
                     for professeur in all_professeurs:
                         main_database.add_professeur(professeur["nom"], professeur["salle"], professeur["matiere"])
-                    flash("Les professeurs ont été ajouté", "success")
+                    flash("Les professeurs ont été ajoutés", "success")
 
         response = ask_api("data/fetchmulti", ["candidat", "matiere", "professeur", "salle",
                                                "creneau", "serie"])
@@ -638,7 +638,7 @@ def matieres():
                 if err:
                     main_database.delete_all_matieres()
                 else:
-                    flash("Les salles ont été ajouté", "success")
+                    flash("Les salles ont été ajoutés", "success")
 
         response = ask_api(
             "data/fetchmulti",
