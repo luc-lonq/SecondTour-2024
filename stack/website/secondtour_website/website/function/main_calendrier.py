@@ -360,7 +360,6 @@ def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_vo
                          <= timedelta(hours=creneau["debut_preparation"].hour,
                                       minutes=creneau["debut_preparation"].minute))):
         return False
-
     return True
 
 
