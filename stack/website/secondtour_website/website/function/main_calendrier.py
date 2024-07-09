@@ -73,7 +73,7 @@ def generation_calendrier():
                     if chosed_salle:
                         if is_prof_owerhelmed(passage, chosed_salle, creneaux_from_half_day, heure_debut_preparation_voulue,
                                               heure_debut_preparation_voulue + passage["temps_preparation"],
-                                              parametres["prof_max_passage_sans_pause"], start, end, tech):
+                                              parametres["prof_max_passage_sans_pause"], start, end, tech, candidat["tiers_temps"]):
                             aucune_collision = False
 
                     if len(creneaux_from_half_day) == 0:
@@ -384,7 +384,7 @@ def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_vo
 #    @param heure_debut_passage_voulue Desired start time for the passage.
 #    @param max_passage_sans_pause Maximum number of passages without a break.
 #    @return bool True if the professor is overwhelmed, False otherwise.
-def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_prep_voulue, heure_debut_passage_voulue, max_passage_sans_pause, start, end, tech):
+def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_prep_voulue, heure_debut_passage_voulue, max_passage_sans_pause, start, end, tech, tt):
     prof_in_salle = []
 
     for prof in passage["professeur"]:
@@ -417,6 +417,14 @@ def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_prep_voulue, he
 
         if valid is None:
             return True
+        
+
+    for creneau_prof in creneau_all_prof:
+        for creneau in creneau_prof:
+            if heure_debut_prep_voulue > timedelta(hours=creneau["fin_preparation"].hour, minutes=creneau["fin_preparation"].minute
+                    ) and heure_debut_prep_voulue < timedelta(hours=creneau["fin"].hour, minutes=creneau["fin"].minute):
+                return True
+
 
     for creneau_prof in creneau_all_prof:
         if len(creneau_prof) < max_passage_sans_pause:

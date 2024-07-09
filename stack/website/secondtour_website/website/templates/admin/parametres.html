@@ -76,7 +76,7 @@
         <div class="form-group" style="margin-top: 0.5em">
             <label for="selectPassage" class="text-white text-decoration-none">Nombre d'oraux max que les professeurs peuvent faire sans pause</label>
             <select class="form-control" id="selectPassage" name="passage">
-                {% for i in range(1, 6) %}
+                {% for i in range(1, 11) %}
                 <option value="{{ i }}" {% if parametres.prof_max_passage_sans_pause == i %}selected{% endif %}>{{ i }}</option>
                 {% endfor %}
             </select>

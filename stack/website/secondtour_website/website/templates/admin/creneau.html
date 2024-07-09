@@ -497,10 +497,11 @@
                         let datetime_debut_creneau_offset = new Date(datetime_debut_creneau)
                         datetime_debut_creneau_offset.setMinutes(datetime_debut_creneau.getMinutes() - temps_pas + parseInt('{{parametres.intervalle}}'))
 
-                        let datetime_fin_creneau = new Date(remove_GMT_in_date(all_creneaux[i].fin))
+                        let datetime_fin = new Date(datetime_debut_creneau)
+                        datetime_fin.setMinutes(datetime_fin.getMinutes() + temps_pas)
 
                         let datetime_it = new Date(datetime_debut_creneau_offset)
-                        while (datetime_it < datetime_fin_creneau) {
+                        while (datetime_it < datetime_fin) {
                             times_to_disable.push(new Date(datetime_it))
                             datetime_it = new Date(datetime_it.setMinutes(datetime_it.getMinutes()+parseInt('{{parametres.intervalle}}')))
                         }
@@ -536,7 +537,7 @@
                         times_to_disable[i].getFullYear() === datetime_now.getFullYear() &&
                         times_to_disable[i].getHours() === datetime_now.getHours() &&
                         times_to_disable[i].getMinutes() === datetime_now.getMinutes()) {
-                    option_debut_prep.disabled = true;
+                    //option_debut_prep.disabled = true;
                     break;
                 }
             }
