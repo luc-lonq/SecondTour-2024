@@ -13,15 +13,28 @@ from ..database.main_database import *
 #    professor availability, and candidate preferences.
 #    @return None
 def generation_calendrier():
-    (all_candidats, all_professeurs, all_choix_matieres, all_matieres, all_salles, all_creneau, parametres) = get_data()
+    (all_candidats, all_professeurs, all_choix_matieres, all_matieres, all_salles, all_creneau, parametres, all_series) = get_data()
     parametres = parametres[0]
 
     list_candidats = order_candidats_list(all_candidats)
     local_creneau = []
 
+    id_serie_tech = None
+    for serie in all_series:
+        if serie["nom"] == "STI2D":
+            id_serie_tech = serie["id_serie"]
+
     for candidat in list_candidats:
         if candidat["absent"]:
             continue
+
+        logging.info(id_serie_tech)
+        tech = False
+        if candidat["id_serie"] == id_serie_tech:
+            tech = True
+            logging.info("cindidat tech")
+            
+
         passage_m1, passage_m2 = get_infos_about_candidat(candidat, all_choix_matieres, all_matieres,
                                                           all_professeurs, all_salles)
         passages = [passage_m1, passage_m2]
@@ -39,8 +52,6 @@ def generation_calendrier():
             for passage in passages:
                 creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, candidat["jour"], start,
                                                                        end, parametres["date_premier_jour"])
-                logging.info(start)
-                logging.info(creneaux_from_half_day)
                 heure_debut_preparation_voulue = start
                 while (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
                        <= end):
@@ -60,9 +71,9 @@ def generation_calendrier():
                             aucune_collision = False
 
                     if chosed_salle:
-                        if is_prof_owerhelmed(passage, chosed_salle, creneaux_from_half_day,
+                        if is_prof_owerhelmed(passage, chosed_salle, creneaux_from_half_day, heure_debut_preparation_voulue,
                                               heure_debut_preparation_voulue + passage["temps_preparation"],
-                                              parametres["prof_max_passage_sans_pause"]):
+                                              parametres["prof_max_passage_sans_pause"], start, end, tech):
                             aucune_collision = False
 
                     if len(creneaux_from_half_day) == 0:
@@ -141,7 +152,7 @@ def get_data():
         flash("Une erreur est survenue lors de la suppression des données", "danger")
 
     response = ask_api("data/fetchmulti", ["candidat", "professeur", "choix_matiere",
-                                           "matiere", "salle", "creneau", "parametres"])
+                                           "matiere", "salle", "creneau", "parametres", "serie"])
     if response.status_code != 200:
         flash("Une erreur est survenue lors de la récupération des données", "danger")
     return response.json()
@@ -291,7 +302,6 @@ def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end, date_
         if creneau["debut_preparation"].year == date_premier_jour.year \
                 and creneau["debut_preparation"].month == date_premier_jour.month \
                 and creneau["debut_preparation"].day == date_premier_jour.day + jour_passage - 1:
-            logging.info(creneau)
             if timedelta(hours=creneau["debut_preparation"].hour, minutes=creneau["debut_preparation"].minute) >= start and timedelta(
                     hours=creneau["fin"].hour, minutes=creneau["fin"].minute) <= end:
                 creneaux_from_half_day.append(creneau)
@@ -374,7 +384,7 @@ def is_candidat_available(passage, candidat, creneau, heure_debut_preparation_vo
 #    @param heure_debut_passage_voulue Desired start time for the passage.
 #    @param max_passage_sans_pause Maximum number of passages without a break.
 #    @return bool True if the professor is overwhelmed, False otherwise.
-def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue, max_passage_sans_pause):
+def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_prep_voulue, heure_debut_passage_voulue, max_passage_sans_pause, start, end, tech):
     prof_in_salle = []
 
     for prof in passage["professeur"]:
@@ -389,6 +399,24 @@ def is_prof_owerhelmed(passage, salle, all_creneaux, heure_debut_passage_voulue,
             if prof["salle"] == creneau["id_salle"]:
                 creneau_from_a_prof.append(creneau)
         creneau_all_prof.append(creneau_from_a_prof)
+
+    if not tech:
+        horaire_debut_prep_valid = []
+        horaire_debut_prep_valid.append(start)
+        horaire = start
+        while(horaire + passage["temps_preparation"] + passage["temps_passage"] < end):
+            horaire_debut_prep_valid.append(horaire)
+            horaire = horaire + passage["temps_passage"]
+            horaire_debut_prep_valid.append(horaire)
+            horaire = horaire + passage["temps_preparation"]
+
+        valid = None
+        for horaire_debut in horaire_debut_prep_valid:
+            if horaire_debut == heure_debut_prep_voulue:
+                valid = True
+
+        if valid is None:
+            return True
 
     for creneau_prof in creneau_all_prof:
         if len(creneau_prof) < max_passage_sans_pause:
