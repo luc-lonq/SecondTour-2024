@@ -39,6 +39,8 @@ def generation_calendrier():
             for passage in passages:
                 creneaux_from_half_day = get_all_creneau_from_half_day(local_creneau, candidat["jour"], start,
                                                                        end, parametres["date_premier_jour"])
+                logging.info(start)
+                logging.info(creneaux_from_half_day)
                 heure_debut_preparation_voulue = start
                 while (heure_debut_preparation_voulue + passage["temps_preparation"] + passage["temps_passage"]
                        <= end):
@@ -289,7 +291,8 @@ def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end, date_
         if creneau["debut_preparation"].year == date_premier_jour.year \
                 and creneau["debut_preparation"].month == date_premier_jour.month \
                 and creneau["debut_preparation"].day == date_premier_jour.day + jour_passage - 1:
-            if timedelta(hours=creneau["debut_preparation"].hour) >= start and timedelta(
+            logging.info(creneau)
+            if timedelta(hours=creneau["debut_preparation"].hour, minutes=creneau["debut_preparation"].minute) >= start and timedelta(
                     hours=creneau["fin"].hour) <= end:
                 creneaux_from_half_day.append(creneau)
 
