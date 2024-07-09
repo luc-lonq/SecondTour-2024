@@ -293,7 +293,7 @@ def get_all_creneau_from_half_day(local_creneau, jour_passage, start, end, date_
                 and creneau["debut_preparation"].day == date_premier_jour.day + jour_passage - 1:
             logging.info(creneau)
             if timedelta(hours=creneau["debut_preparation"].hour, minutes=creneau["debut_preparation"].minute) >= start and timedelta(
-                    hours=creneau["fin"].hour) <= end:
+                    hours=creneau["fin"].hour, minutes=creneau["fin"].minute) <= end:
                 creneaux_from_half_day.append(creneau)
 
     return creneaux_from_half_day
