@@ -1,9 +1,0 @@
-delete from creneau;
-delete from choix_matiere;
-delete from professeur;
-delete from matiere;
-delete from candidat;
-delete from salle;
-delete from serie;
-delete from parametres;
-delete from utilisateur;
