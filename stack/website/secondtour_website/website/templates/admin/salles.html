@@ -3,9 +3,8 @@
 {% block sub_content %}
 <div class="main-div-admin" xmlns:v-on="http://www.w3.org/1999/xhtml">
     <div class="d-flex flex-row" style="justify-content: space-between;align-items:center; width:100%;">
-        <button class="btn btn-primary" onclick="downloadAllEmargement({{jour}}, '{{date}}')"
-            style="width: max-content; white-space:nowrap; background-color:blue;">
-            Télécharger les fiches d'émargements
+        <button class="btn btn-primary" data-bs-toggle="modal" style="background-color:blue; width:30em"
+                data-bs-target="#downloadCalendar">Télécharger les fiches d'émargement
             <i class=" fas fa-print ml-s"></i>
         </button>
         <div class="name-finder" style="justify-content: end;">
@@ -326,6 +325,39 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="downloadCalendar" tabindex="-1" role="dialog"
+        aria-labelledby="downloadCalendar" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Télécharger les calendriers</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% for j in range(1,jour+1) %}
+                    {% set n_jour = date.strftime('%d')|int + j %}
+                    <p style="margin-top: 2em">Jour : {% if n_jour < 10 %}0{% endif %}{{n_jour}}{{date.strftime('-%m-%Y')}}</p>
+                    <div class="d-flex" style="margin-bottom: 1em">
+                        {% for m in range(2) %}
+                        <button class="btn btn-primary" id="emargementDl{{j}}{{m}}"
+                                onclick="downloadAllEmargement({{jour}},'{{date}}',{{j}},{{m}})"
+                                style="margin-right: 1em">
+                                {% if m != 1 %}Matin{% else %}Après-midi{% endif %}
+                            <i class=" fas fa-print ml-s"></i>
+                        </button>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -339,7 +371,7 @@
         doc.text(textOffset, y, text);
     }
 
-    function downloadAllEmargement(jour_debut, date) {
+    function downloadAllEmargement(jour_debut, date, jour, matin) {
         let zip = new JSZip();
         let all_salles = JSON.parse('{{all_salles|tojson}}');
 
@@ -349,7 +381,7 @@
         let tempVarToCheckPageHeight = 0;
         let pageHeight = 0;
         let demi_journee_string
-
+        let date_st
 
         pageHeight = doc.internal.pageSize.height;
         specialElementHandlers = {
@@ -367,74 +399,71 @@
           width: 600
         };
 
+        if (matin == 0) {
+            demi_journee_string = 'Matin';
+        } else {
+            demi_journee_string = "Après Midi"
+        }
 
-        let page_n = 1;
         for (let i = 0; i < all_salles.length; i++) {
             let salle = all_salles[i];
-            for (let jour = 1; jour <= jour_debut; jour++) {
-                let date_it = new Date(date)
-                date_it.setDate(date_it.getDate() + jour - 1)
-                let date_jour
-                let date_month
-                if (date_it.getDate() < 10) {
-                    date_jour = '0' + date_it.getDate().toString()
-                } else {
-                    date_jour = date_it.getDate().toString()
-                }
-                if (date_it.getMonth() + 1 < 10) {
-                    date_month = '0' + (date_it.getMonth() + 1).toString()
-                } else {
-                    date_month = date_it.getMonth().toString()
-                }
-
-
-                for (let matin = 0; matin < 2; matin++) {
-                    let name = 'tableEmargement' + salle.id_salle + jour + matin;
-                    let num_salle = salle.numero;
-                    let date_st = date_jour + '-' + date_month + '-' + date_it.getFullYear();
-
-                    let tr = document.getElementsByClassName('creneauRow' + all_salles[i]['id_salle'].toString() + jour.toString() + matin.toString())
-                    if (tr.length > 0) {
-
-                        if (matin == 0) {
-                            demi_journee_string = 'Matin';
-                        } else {
-                            demi_journee_string = "Après Midi"
-                        }
-
-                        doc.setFontSize(17);
-                        doc.setLineWidth(4);
-                        doc.text(20, 20, 'Salle ' + num_salle + ' ' + date_st + ' ' + demi_journee_string);
-                        //doc.text(200, y = y + 30, "Liste d'émargement");
-                        doc.setFontSize(20);
-                        centered_text("Liste d'émargement", 45, doc);
-                        if (document.getElementById(name)) {
-                            doc.autoTable({
-                                html: '#' + name,
-                                startY: 70,
-                                theme: 'grid',
-                                styles: {
-                                    minCellHeight: 40
-                                },
-                                columnStyles: {
-                                    0: {cellWidth: 150}
-                                },
-                                didParseCell: function (table) {
-                                    if (table.section === 'head') {
-                                        table.cell.styles.fillColor = '#4c5cff';
-                                    }
-                                }
-                            });
-                        }
-                        doc.addPage()
-                        page_n += 1
-
-                    }
-                }
+            let date_it = new Date(date)
+            date_it.setDate(date_it.getDate() + jour - 1)
+            let date_jour
+            let date_month
+            if (date_it.getDate() < 10) {
+                date_jour = '0' + date_it.getDate().toString()
+            } else {
+                date_jour = date_it.getDate().toString()
             }
+            if (date_it.getMonth() + 1 < 10) {
+                date_month = '0' + (date_it.getMonth() + 1).toString()
+            } else {
+                date_month = date_it.getMonth().toString()
+            }
+
+
+            let name = 'tableEmargement' + salle.id_salle + jour + matin;
+            let num_salle = salle.numero;
+            date_st = date_jour + '-' + date_month + '-' + date_it.getFullYear();
+
+            console.log('creneauRow' + all_salles[i]['id_salle'].toString() + jour.toString() + matin.toString())
+            let tr = document.getElementsByClassName('creneauRow' + all_salles[i]['id_salle'].toString() + jour.toString() + matin.toString())
+            console.log(tr)
+            if (tr.length > 0) {
+
+                
+
+                doc.setFontSize(17);
+                doc.setLineWidth(4);
+                doc.text(20, 20, 'Salle ' + num_salle + ' ' + date_st + ' ' + demi_journee_string);
+                //doc.text(200, y = y + 30, "Liste d'émargement");
+                doc.setFontSize(20);
+                centered_text("Liste d'émargement", 45, doc);
+                if (document.getElementById(name)) {
+                    doc.autoTable({
+                        html: '#' + name,
+                        startY: 70,
+                        theme: 'grid',
+                        styles: {
+                            minCellHeight: 40
+                        },
+                        columnStyles: {
+                            0: {cellWidth: 150}
+                        },
+                        didParseCell: function (table) {
+                            if (table.section === 'head') {
+                                table.cell.styles.fillColor = '#4c5cff';
+                            }
+                        }
+                    });
+                }
+                doc.addPage()
+
+            }
+            
         }
-        doc.deletePage(page_n)
-        doc.save("Emargement Second Groupe")
+        doc.save("Emargement Second Groupe " + date_st + " " + demi_journee_string)
     }
 
     $('.modifRow').click(function () {
